@@ -55,9 +55,34 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
     consumo_combustivel: "",
     fonte_ganho: "",
     fonte_ganho_outros: "",
-    categoria_ganho: "",
     valor_ganho: "",
   });
+
+  // Função para formatar valores monetários (2 casas decimais)
+  const formatMoney = (value: string): string => {
+    const numbers = value.replace(/\D/g, "");
+    if (!numbers) return "";
+    const cents = parseInt(numbers);
+    return (cents / 100).toFixed(2);
+  };
+
+  // Função para formatar consumo (1 casa decimal)
+  const formatConsumption = (value: string): string => {
+    const numbers = value.replace(/\D/g, "");
+    if (!numbers) return "";
+    const decimal = parseInt(numbers);
+    return (decimal / 10).toFixed(1);
+  };
+
+  const handleMoneyChange = (field: string, value: string) => {
+    const formatted = formatMoney(value);
+    setFormData({ ...formData, [field]: formatted });
+  };
+
+  const handleConsumptionChange = (value: string) => {
+    const formatted = formatConsumption(value);
+    setFormData({ ...formData, consumo_combustivel: formatted });
+  };
 
   useEffect(() => {
     if (open) {
@@ -111,7 +136,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
         preco_combustivel: parseFloat(formData.preco_combustivel),
         consumo_combustivel: parseFloat(formData.consumo_combustivel),
         fonte_ganho: fonteGanhoFinal,
-        categoria_ganho: formData.categoria_ganho,
+        categoria_ganho: fonteGanhoFinal,
         valor_ganho: parseFloat(formData.valor_ganho),
       });
 
@@ -135,7 +160,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
         consumo_combustivel: "",
         fonte_ganho: "",
         fonte_ganho_outros: "",
-        categoria_ganho: "",
         valor_ganho: "",
       });
       onSuccess();
@@ -267,10 +291,9 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
               <Label htmlFor="preco_combustivel">Preço Combustível</Label>
               <Input
                 id="preco_combustivel"
-                type="number"
-                step="0.01"
+                type="text"
                 value={formData.preco_combustivel}
-                onChange={(e) => setFormData({ ...formData, preco_combustivel: e.target.value })}
+                onChange={(e) => handleMoneyChange("preco_combustivel", e.target.value)}
                 placeholder="R$"
                 required
               />
@@ -280,10 +303,9 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
               <Label htmlFor="consumo_combustivel">Consumo</Label>
               <Input
                 id="consumo_combustivel"
-                type="number"
-                step="0.01"
+                type="text"
                 value={formData.consumo_combustivel}
-                onChange={(e) => setFormData({ ...formData, consumo_combustivel: e.target.value })}
+                onChange={(e) => handleConsumptionChange(e.target.value)}
                 placeholder="Litros"
                 required
               />
@@ -323,24 +345,12 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="categoria_ganho">Categoria</Label>
-              <Input
-                id="categoria_ganho"
-                value={formData.categoria_ganho}
-                onChange={(e) => setFormData({ ...formData, categoria_ganho: e.target.value })}
-                placeholder="Ex: Corridas padrão"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="valor_ganho">Valor Ganho</Label>
               <Input
                 id="valor_ganho"
-                type="number"
-                step="0.01"
+                type="text"
                 value={formData.valor_ganho}
-                onChange={(e) => setFormData({ ...formData, valor_ganho: e.target.value })}
+                onChange={(e) => handleMoneyChange("valor_ganho", e.target.value)}
                 placeholder="R$"
                 required
               />

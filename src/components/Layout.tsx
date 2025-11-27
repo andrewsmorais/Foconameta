@@ -139,7 +139,10 @@ export const Layout = ({
           {menuItems.map(item => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
-          return;
+          return <Link key={item.path} to={item.path} className={cn("flex items-center px-4 py-3 rounded-lg transition-colors", isActive ? "bg-sidebar-accent text-sidebar-primary" : "text-sidebar-foreground hover:bg-sidebar-accent/50")}>
+                <Icon className="w-5 h-5 mr-3" />
+                <span className="font-medium">{item.label}</span>
+              </Link>;
         })}
         </nav>
       </aside>

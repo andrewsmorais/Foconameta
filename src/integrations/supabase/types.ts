@@ -133,6 +133,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          cpf: string | null
+          created_at: string | null
+          id: string
+          nome_completo: string | null
+          telefone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          cpf?: string | null
+          created_at?: string | null
+          id: string
+          nome_completo?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          cpf?: string | null
+          created_at?: string | null
+          id?: string
+          nome_completo?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       turnos_km: {
         Row: {
           categoria_ganho: string

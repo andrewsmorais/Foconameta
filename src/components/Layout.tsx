@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -13,6 +13,9 @@ import {
   LogOut,
   User,
   Car,
+  Settings,
+  DollarSign,
+  Route,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,6 +27,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { ThemeToggle } from "./ThemeToggle";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,19 +37,50 @@ interface LayoutProps {
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-  { icon: Navigation, label: "KM", path: "/km" },
-  { icon: TrendingUp, label: "Ganhos & Despesas", path: "/ganhos-despesas" },
+  { icon: Route, label: "Menu KM", path: "/km" },
+  { icon: DollarSign, label: "Ganhos & Despesas", path: "/ganhos-despesas" },
   { icon: Wrench, label: "Manutenções", path: "/manutencoes" },
   { icon: Target, label: "Metas", path: "/metas" },
   { icon: FileText, label: "Relatórios", path: "/relatorios" },
   { icon: Car, label: "Veículos", path: "/veiculos" },
+  { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 export const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (data) setProfile(data);
+    } catch (error) {
+      console.error("Error loading profile:", error);
+    }
+  };
+
+  const getInitials = () => {
+    if (!profile?.nome_completo) return "?";
+    const names = profile.nome_completo.split(" ");
+    return names.length > 1
+      ? `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase()
+      : names[0][0].toUpperCase();
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -55,31 +92,40 @@ export const Layout = ({ children }: LayoutProps) => {
       {/* Sidebar Desktop */}
       <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-sidebar border-r border-sidebar-border">
         <div className="flex items-center justify-between h-16 px-6 border-b border-sidebar-border">
-          <h1 className="text-xl font-bold text-sidebar-foreground">
-            Driver Finance
-          </h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-sidebar-foreground">
-                <User className="w-5 h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">Minha Conta</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-2">
+            <Car className="h-6 w-6 text-sidebar-primary" />
+            <h1 className="text-lg font-bold text-sidebar-foreground">
+              Bateu a Meta
+            </h1>
+          </div>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs">{getInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">Minha Conta</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
           {menuItems.map((item) => {
@@ -118,9 +164,12 @@ export const Layout = ({ children }: LayoutProps) => {
         )}
       >
         <div className="flex items-center justify-between h-16 px-6 border-b border-sidebar-border">
-          <h1 className="text-xl font-bold text-sidebar-foreground">
-            Driver Finance
-          </h1>
+          <div className="flex items-center gap-2">
+            <Car className="h-6 w-6 text-sidebar-primary" />
+            <h1 className="text-lg font-bold text-sidebar-foreground">
+              Bateu a Meta
+            </h1>
+          </div>
           <Button
             variant="ghost"
             size="icon"
@@ -166,30 +215,39 @@ export const Layout = ({ children }: LayoutProps) => {
             >
               <Menu className="w-5 h-5" />
             </Button>
-            <h1 className="ml-4 text-lg font-bold">Driver Finance</h1>
+            <div className="ml-4 flex items-center gap-2">
+              <Car className="h-5 w-5 text-primary" />
+              <h1 className="text-lg font-bold">Bateu a Meta</h1>
+            </div>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="w-5 h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">Minha Conta</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs">{getInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">Minha Conta</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
 
         {/* Page Content */}

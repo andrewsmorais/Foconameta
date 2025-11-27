@@ -11,16 +11,19 @@ import Manutencoes from "./pages/Manutencoes";
 import Metas from "./pages/Metas";
 import Relatorios from "./pages/Relatorios";
 import Veiculos from "./pages/Veiculos";
+import Configuracoes from "./pages/Configuracoes";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <Toaster />
-    <Sonner />
-    <BrowserRouter>
+    <ThemeProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route
@@ -93,10 +96,21 @@ const App = () => (
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/configuracoes"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Configuracoes />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

@@ -200,11 +200,12 @@ const Dashboard = () => {
       </div>
 
       {/* Charts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Composição Financeira</CardTitle>
-        </CardHeader>
-          <CardContent className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Composição Financeira</CardTitle>
+          </CardHeader>
+          <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -231,9 +232,16 @@ const Dashboard = () => {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-            
-            {/* Metas */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+          </CardContent>
+        </Card>
+
+        {/* Metas */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Metas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <p className="text-sm font-bold text-foreground mb-1">Meta Diária</p>
                 <p className="text-lg font-bold text-success">-</p>
@@ -250,9 +258,10 @@ const Dashboard = () => {
                   {periodo === "mes" ? `R$ ${metrics.valorMeta.toFixed(2)}` : "-"}
                 </p>
               </div>
-          </div>
-        </CardContent>
-      </Card>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Métricas Adicionais */}
       <Card>

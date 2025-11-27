@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { startOfWeek, endOfWeek, format, eachDayOfInterval, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
 interface DashboardMetrics {
   totalGanhos: number;
@@ -204,32 +205,62 @@ const Dashboard = () => {
             <CardTitle>Composição Financeira</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <ResponsiveContainer width="100%" height={300} className="md:w-2/3">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius)",
+                    }}
+                    formatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+              
+              {/* Métricas financeiras ao lado direito (desktop) */}
+              <div className="flex flex-col gap-4 w-full md:w-1/3">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Ganhos Totais</p>
+                  <p className="text-2xl font-bold text-primary">
+                    R$ {metrics.totalGanhos.toFixed(2)}
+                  </p>
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Despesas Totais</p>
+                  <p className="text-2xl font-bold text-destructive">
+                    R$ {metrics.totalDespesas.toFixed(2)}
+                  </p>
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">Lucro Líquido</p>
+                  <p className="text-2xl font-bold text-success">
+                    R$ {metrics.lucroLiquido.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 

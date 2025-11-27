@@ -247,7 +247,11 @@ const KM = () => {
                     </div>
                     <div className="col-span-full mt-4 pt-4 border-t">
                       <h4 className="font-semibold mb-3 text-base">Métricas Calculadas</h4>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        <div>
+                          <p className="text-muted-foreground mb-1"><span className="font-bold">KM Rodados:</span></p>
+                          <p>{kmRodados.toFixed(2)} km</p>
+                        </div>
                         <div>
                           <p className="text-muted-foreground mb-1"><span className="font-bold">Ganhos Brutos:</span></p>
                           <p className="text-primary">R$ {turno.valor_ganho.toFixed(2)}</p>
@@ -276,6 +280,47 @@ const KM = () => {
             );
           })}
         </div>
+      )}
+
+      {/* Resumo do Período */}
+      {turnos.length > 0 && (
+        <Card className="bg-muted/50">
+          <CardHeader>
+            <CardTitle>Resumo do Período</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div>
+                <p className="text-muted-foreground mb-1"><span className="font-bold">KM Rodados Total:</span></p>
+                <p className="text-xl font-semibold">
+                  {turnos.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0).toFixed(2)} km
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1"><span className="font-bold">Total de Horas Trabalhadas:</span></p>
+                <p className="text-xl font-semibold">
+                  {turnos.reduce((sum, t) => sum + (t.total_horas || 0), 0).toFixed(1)} h
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1"><span className="font-bold">Consumo Médio:</span></p>
+                <p className="text-xl font-semibold">
+                  {(() => {
+                    const totalKm = turnos.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0);
+                    const totalLitros = turnos.reduce((sum, t) => sum + (t.consumo_combustivel || 0), 0);
+                    return totalLitros > 0 ? (totalKm / totalLitros).toFixed(2) : "0.00";
+                  })()} km/L
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1"><span className="font-bold">Preço Médio Combustível/Litro:</span></p>
+                <p className="text-xl font-semibold">
+                  R$ {(turnos.reduce((sum, t) => sum + (t.preco_combustivel || 0), 0) / turnos.length).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
       
       {editingTurno && (

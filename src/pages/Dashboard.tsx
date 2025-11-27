@@ -15,6 +15,10 @@ interface DashboardMetrics {
   lucroLiquido: number;
   progressoMeta: number;
   valorMeta: number;
+  kmRodados: number;
+  horasTrabalhadas: number;
+  lucroPorKm: number;
+  ganhosPorHora: number;
 }
 
 const Dashboard = () => {
@@ -24,6 +28,10 @@ const Dashboard = () => {
     lucroLiquido: 0,
     progressoMeta: 0,
     valorMeta: 0,
+    kmRodados: 0,
+    horasTrabalhadas: 0,
+    lucroPorKm: 0,
+    ganhosPorHora: 0,
   });
   const [chartData, setChartData] = useState<any[]>([]);
   const [periodo, setPeriodo] = useState("semana");
@@ -62,6 +70,10 @@ const Dashboard = () => {
       const totalGanhos = turnos?.reduce((sum, t) => sum + (t.valor_ganho || 0), 0) || 0;
       const lucroLiquido = turnos?.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0) || 0;
       const totalDespesas = totalGanhos - lucroLiquido;
+      const kmRodados = turnos?.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0) || 0;
+      const horasTrabalhadas = turnos?.reduce((sum, t) => sum + (t.total_horas || 0), 0) || 0;
+      const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
+      const ganhosPorHora = horasTrabalhadas > 0 ? totalGanhos / horasTrabalhadas : 0;
 
       // Buscar meta ativa
       const { data: metas } = await supabase
@@ -82,6 +94,10 @@ const Dashboard = () => {
         lucroLiquido,
         progressoMeta,
         valorMeta,
+        kmRodados,
+        horasTrabalhadas,
+        lucroPorKm,
+        ganhosPorHora,
       });
 
       // Preparar dados do gráfico
@@ -204,61 +220,51 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle>Composição Financeira</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <ResponsiveContainer width="100%" height={300} className="md:w-2/3">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "var(--radius)",
-                    }}
-                    formatter={(value: number) => `R$ ${value.toFixed(2)}`}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-              
-              {/* Métricas financeiras ao lado direito (desktop) */}
-              <div className="flex flex-col gap-4 w-full md:w-1/3">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Ganhos Totais</p>
-                  <p className="text-2xl font-bold text-primary">
-                    R$ {metrics.totalGanhos.toFixed(2)}
-                  </p>
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Despesas Totais</p>
-                  <p className="text-2xl font-bold text-destructive">
-                    R$ {metrics.totalDespesas.toFixed(2)}
-                  </p>
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Lucro Líquido</p>
-                  <p className="text-2xl font-bold text-success">
-                    R$ {metrics.lucroLiquido.toFixed(2)}
-                  </p>
-                </div>
+          <CardContent className="space-y-6">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                  }}
+                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+            
+            {/* Metas */}
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+              <div className="text-center">
+                <p className="text-sm font-medium text-muted-foreground mb-1">Meta Diária</p>
+                <p className="text-lg font-bold">-</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-muted-foreground mb-1">Meta Semanal</p>
+                <p className="text-lg font-bold">
+                  {periodo === "semana" ? `R$ ${metrics.valorMeta.toFixed(2)}` : "-"}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-muted-foreground mb-1">Meta Mensal</p>
+                <p className="text-lg font-bold">
+                  {periodo === "mes" ? `R$ ${metrics.valorMeta.toFixed(2)}` : "-"}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -290,6 +296,29 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Métricas Adicionais */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Métricas de Desempenho</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Lucro Por KM</p>
+              <p className="text-2xl font-bold">R$ {metrics.lucroPorKm.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Ganhos/Hora</p>
+              <p className="text-2xl font-bold">R$ {metrics.ganhosPorHora.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Horas Trabalhadas</p>
+              <p className="text-2xl font-bold">{metrics.horasTrabalhadas.toFixed(1)} h</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

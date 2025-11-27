@@ -185,16 +185,13 @@ const Configuracoes = () => {
         </CardContent>
       </Card>
 
-      {/* Atalhos */}
+      {/* Veículos */}
       <Card>
-        <CardHeader>
-          <CardTitle>Atalhos</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 pt-6">
           <Link to="/veiculos">
             <Button variant="outline" className="w-full justify-start">
               <Car className="mr-2 h-4 w-4" />
-              Registrar Veículo
+              Adicionar Veículo
             </Button>
           </Link>
         </CardContent>

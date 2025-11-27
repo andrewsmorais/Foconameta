@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, Target } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { startOfWeek, endOfWeek, format, eachDayOfInterval, parseISO } from "date-fns";
+import { format, eachDayOfInterval, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 
 interface DashboardMetrics {
   totalGanhos: number;
@@ -22,6 +25,11 @@ interface DashboardMetrics {
 }
 
 const Dashboard = () => {
+  const hoje = new Date();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: hoje,
+    to: hoje,
+  });
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     totalGanhos: 0,
     totalDespesas: 0,
@@ -34,7 +42,6 @@ const Dashboard = () => {
     ganhosPorHora: 0,
   });
   const [chartData, setChartData] = useState<any[]>([]);
-  const [periodo, setPeriodo] = useState("semana");
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -43,18 +50,11 @@ const Dashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Determinar período
-      const hoje = new Date();
-      let dataInicio: Date;
-      let dataFim: Date;
-
-      if (periodo === "semana") {
-        dataInicio = startOfWeek(hoje, { weekStartsOn: 0 });
-        dataFim = endOfWeek(hoje, { weekStartsOn: 0 });
-      } else {
-        dataInicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-        dataFim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-      }
+      // Usar o intervalo de datas selecionado
+      if (!dateRange?.from || !dateRange?.to) return;
+      
+      const dataInicio = dateRange.from;
+      const dataFim = dateRange.to;
 
       // Buscar turnos do período
       const { data: turnos, error: turnosError } = await supabase
@@ -75,13 +75,12 @@ const Dashboard = () => {
       const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
       const ganhosPorHora = horasTrabalhadas > 0 ? totalGanhos / horasTrabalhadas : 0;
 
-      // Buscar meta ativa
+      // Buscar meta ativa (não filtrar por tipo específico)
       const { data: metas } = await supabase
         .from("metas")
         .select("*")
         .eq("user_id", user.id)
         .eq("ativa", true)
-        .eq("tipo", periodo === "semana" ? "semanal" : "mensal")
         .limit(1);
 
       const meta = metas?.[0];
@@ -139,7 +138,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadDashboardData();
-  }, [periodo]);
+  }, [dateRange]);
 
   if (loading) {
     return <div className="text-center py-8">Carregando...</div>;
@@ -147,17 +146,43 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Select value={periodo} onValueChange={setPeriodo}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="semana">Semana</SelectItem>
-            <SelectItem value="mes">Mês</SelectItem>
-          </SelectContent>
-        </Select>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-[280px] justify-start text-left font-normal",
+                !dateRange && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {dateRange?.from ? (
+                dateRange.to ? (
+                  <>
+                    {format(dateRange.from, "dd/MM/yyyy")} -{" "}
+                    {format(dateRange.to, "dd/MM/yyyy")}
+                  </>
+                ) : (
+                  format(dateRange.from, "dd/MM/yyyy")
+                )
+              ) : (
+                <span>Selecione o período</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={setDateRange}
+              numberOfMonths={2}
+              locale={ptBR}
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Metrics Cards */}
@@ -249,13 +274,13 @@ const Dashboard = () => {
               <div className="text-center">
                 <p className="text-sm font-bold text-foreground mb-1">Meta Semanal</p>
                 <p className="text-lg font-bold text-success">
-                  {periodo === "semana" ? `R$ ${metrics.valorMeta.toFixed(2)}` : "-"}
+                  R$ {metrics.valorMeta.toFixed(2)}
                 </p>
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-foreground mb-1">Meta Mensal</p>
                 <p className="text-lg font-bold text-success">
-                  {periodo === "mes" ? `R$ ${metrics.valorMeta.toFixed(2)}` : "-"}
+                  R$ {metrics.valorMeta.toFixed(2)}
                 </p>
               </div>
             </div>

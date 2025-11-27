@@ -282,28 +282,28 @@ const KM = () => {
         })}
       </div>
 
-      {/* Resumo do Período */}
+      {/* Resumo do Período e Métricas Calculadas */}
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Resumo do Período</CardTitle>
+          <CardTitle>Métricas Calculadas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">KM Rodados Total</p>
-              <p className="text-xl font-bold">
+              <p className="text-sm font-bold text-foreground mb-1">KM Rodados Total</p>
+              <p className="text-xl font-bold text-success">
                 {turnos.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0).toFixed(2)} km
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Total de Horas Trabalhadas</p>
-              <p className="text-xl font-bold">
+              <p className="text-sm font-bold text-foreground mb-1">Total de Horas Trabalhadas</p>
+              <p className="text-xl font-bold text-success">
                 {turnos.reduce((sum, t) => sum + (t.total_horas || 0), 0).toFixed(1)} h
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Consumo Médio do Período</p>
-              <p className="text-xl font-bold">
+              <p className="text-sm font-bold text-foreground mb-1">Consumo Médio do Período</p>
+              <p className="text-xl font-bold text-success">
                 {(() => {
                   const totalKm = turnos.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0);
                   const totalLitros = turnos.reduce((sum, t) => sum + (t.consumo_combustivel || 0), 0);
@@ -312,8 +312,8 @@ const KM = () => {
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Preço Médio Combustível/Litro</p>
-              <p className="text-xl font-bold">
+              <p className="text-sm font-bold text-foreground mb-1">Preço Médio Combustível/Litro</p>
+              <p className="text-xl font-bold text-success">
                 R$ {(turnos.reduce((sum, t) => sum + (t.preco_combustivel || 0), 0) / turnos.length).toFixed(2)}
               </p>
             </div>

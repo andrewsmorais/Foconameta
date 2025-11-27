@@ -146,7 +146,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="space-y-4">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <Popover>
           <PopoverTrigger asChild>
@@ -172,7 +172,7 @@ const Dashboard = () => {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="range"
               selected={dateRange}

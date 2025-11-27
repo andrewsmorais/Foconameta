@@ -102,20 +102,17 @@ const KM = () => {
                       <CardTitle className="text-lg">
                         {turno.veiculos.modelo} - {turno.veiculos.placa}
                       </CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {format(new Date(turno.data), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-success">
-                        R$ {turno.valor_ganho.toFixed(2)}
-                      </div>
-                      <p className="text-xs text-muted-foreground">Valor Ganho</p>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Data → Valor Ganho</p>
+                      <p className="font-medium">
+                        {format(new Date(turno.data), "dd/MM/yyyy", { locale: ptBR })} → R$ {turno.valor_ganho.toFixed(2)}
+                      </p>
+                    </div>
                     <div>
                       <p className="text-muted-foreground">KM Inicial → KM Final</p>
                       <p className="font-medium">

@@ -200,6 +200,35 @@ const Configuracoes = () => {
         </CardContent>
       </Card>
 
+      {/* Políticas Legais */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Políticas Legais</CardTitle>
+          <CardDescription>Informações sobre reembolso e privacidade</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h3 className="font-semibold mb-2">Política de Reembolso</h3>
+            <p className="text-sm text-muted-foreground">
+              Você tem direito a reembolso total em até <strong>7 dias</strong> após a compra, 
+              conforme garantido pela legislação do consumidor.
+            </p>
+          </div>
+          
+          <Separator />
+          
+          <div>
+            <h3 className="font-semibold mb-2">Política de Privacidade (LGPD)</h3>
+            <p className="text-sm text-muted-foreground">
+              Seus dados pessoais são coletados e tratados de acordo com a Lei Geral de Proteção 
+              de Dados (LGPD - Lei nº 13.709/2018). Armazenamos apenas as informações necessárias 
+              para o funcionamento do aplicativo e garantimos a segurança dos seus dados. 
+              Você tem direito de acessar, corrigir ou excluir suas informações a qualquer momento.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Sobre o Aplicativo */}
       <Card>
         <CardHeader>

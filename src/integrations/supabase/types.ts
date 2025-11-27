@@ -14,7 +14,220 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ganhos_despesas: {
+        Row: {
+          categoria: string
+          created_at: string
+          data: string
+          id: string
+          observacoes: string | null
+          recorrente: boolean
+          tipo: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          data: string
+          id?: string
+          observacoes?: string | null
+          recorrente?: boolean
+          tipo: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          data?: string
+          id?: string
+          observacoes?: string | null
+          recorrente?: boolean
+          tipo?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      manutencoes: {
+        Row: {
+          comprovante_url: string | null
+          created_at: string
+          data: string
+          id: string
+          km_atual: number
+          observacoes: string | null
+          proximo_km: number | null
+          tipo_manutencao: string
+          user_id: string
+          valor: number
+          veiculo_id: string
+        }
+        Insert: {
+          comprovante_url?: string | null
+          created_at?: string
+          data: string
+          id?: string
+          km_atual: number
+          observacoes?: string | null
+          proximo_km?: number | null
+          tipo_manutencao: string
+          user_id: string
+          valor: number
+          veiculo_id: string
+        }
+        Update: {
+          comprovante_url?: string | null
+          created_at?: string
+          data?: string
+          id?: string
+          km_atual?: number
+          observacoes?: string | null
+          proximo_km?: number | null
+          tipo_manutencao?: string
+          user_id?: string
+          valor?: number
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manutencoes_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metas: {
+        Row: {
+          ativa: boolean
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          id: string
+          tipo: string
+          user_id: string
+          valor_meta: number
+        }
+        Insert: {
+          ativa?: boolean
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          id?: string
+          tipo: string
+          user_id: string
+          valor_meta: number
+        }
+        Update: {
+          ativa?: boolean
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          id?: string
+          tipo?: string
+          user_id?: string
+          valor_meta?: number
+        }
+        Relationships: []
+      }
+      turnos_km: {
+        Row: {
+          categoria_ganho: string
+          consumo_combustivel: number
+          created_at: string
+          data: string
+          fonte_ganho: string
+          hora_fim: string
+          hora_inicio: string
+          id: string
+          km_final: number
+          km_inicial: number
+          lucro_liquido: number | null
+          preco_combustivel: number
+          tipo_combustivel: string
+          total_horas: number | null
+          user_id: string
+          valor_ganho: number
+          veiculo_id: string
+        }
+        Insert: {
+          categoria_ganho: string
+          consumo_combustivel: number
+          created_at?: string
+          data: string
+          fonte_ganho: string
+          hora_fim: string
+          hora_inicio: string
+          id?: string
+          km_final: number
+          km_inicial: number
+          lucro_liquido?: number | null
+          preco_combustivel: number
+          tipo_combustivel: string
+          total_horas?: number | null
+          user_id: string
+          valor_ganho: number
+          veiculo_id: string
+        }
+        Update: {
+          categoria_ganho?: string
+          consumo_combustivel?: number
+          created_at?: string
+          data?: string
+          fonte_ganho?: string
+          hora_fim?: string
+          hora_inicio?: string
+          id?: string
+          km_final?: number
+          km_inicial?: number
+          lucro_liquido?: number | null
+          preco_combustivel?: number
+          tipo_combustivel?: string
+          total_horas?: number | null
+          user_id?: string
+          valor_ganho?: number
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "turnos_km_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      veiculos: {
+        Row: {
+          ano: number | null
+          created_at: string
+          id: string
+          modelo: string
+          placa: string
+          user_id: string
+        }
+        Insert: {
+          ano?: number | null
+          created_at?: string
+          id?: string
+          modelo: string
+          placa: string
+          user_id: string
+        }
+        Update: {
+          ano?: number | null
+          created_at?: string
+          id?: string
+          modelo?: string
+          placa?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

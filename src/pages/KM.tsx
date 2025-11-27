@@ -20,6 +20,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+interface FonteGanho {
+  id: string;
+  fonte_ganho: string;
+  quantidade_corridas: number;
+  valor_ganho: number;
+}
+
 interface Turno {
   id: string;
   data: string;
@@ -40,6 +47,7 @@ interface Turno {
     modelo: string;
     placa: string;
   };
+  turno_fontes_ganho?: FonteGanho[];
 }
 
 const KM = () => {
@@ -57,7 +65,13 @@ const KM = () => {
         .from("turnos_km")
         .select(`
           *,
-          veiculos (modelo, placa)
+          veiculos (modelo, placa),
+          turno_fontes_ganho (
+            id,
+            fonte_ganho,
+            quantidade_corridas,
+            valor_ganho
+          )
         `)
         .eq("user_id", user.id)
         .order("data", { ascending: false })
@@ -215,13 +229,21 @@ const KM = () => {
                       <p className="text-muted-foreground mb-1"><span className="font-bold">Consumo:</span></p>
                       <p>{turno.consumo_combustivel.toFixed(1)} L</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1"><span className="font-bold">Fonte de Ganho:</span></p>
-                      <p>{turno.fonte_ganho}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1"><span className="font-bold">Quantidade de Corridas:</span></p>
-                      <p>{turno.quantidade_corridas || 0}</p>
+                    <div className="col-span-full">
+                      <p className="text-muted-foreground mb-2"><span className="font-bold">Fontes de Ganho:</span></p>
+                      <div className="ml-4 space-y-1">
+                        {turno.turno_fontes_ganho && turno.turno_fontes_ganho.length > 0 ? (
+                          turno.turno_fontes_ganho.map((fonte) => (
+                            <p key={fonte.id} className="text-sm">
+                              • <span className="font-bold">{fonte.fonte_ganho}:</span> {fonte.quantidade_corridas} corridas - R$ {fonte.valor_ganho.toFixed(2)}
+                            </p>
+                          ))
+                        ) : (
+                          <p className="text-sm">
+                            • <span className="font-bold">{turno.fonte_ganho}:</span> {turno.quantidade_corridas} corridas - R$ {turno.valor_ganho.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
                     </div>
                     <div className="col-span-full mt-4 pt-4 border-t">
                       <h4 className="font-semibold mb-3 text-base">Métricas Calculadas</h4>

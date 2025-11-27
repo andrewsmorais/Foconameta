@@ -53,11 +53,11 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
     tipo_combustivel: "",
     preco_combustivel: "",
     consumo_combustivel: "",
-    fonte_ganho: "",
-    fonte_ganho_outros: "",
-    quantidade_corridas: "",
-    valor_ganho: "",
   });
+
+  const [fontesGanhoList, setFontesGanhoList] = useState([
+    { fonte_ganho: "", fonte_ganho_outros: "", quantidade_corridas: "", valor_ganho: "" }
+  ]);
 
   // Função para formatar valores monetários (2 casas decimais)
   const formatMoney = (value: string): string => {
@@ -113,6 +113,22 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
     }
   };
 
+  const addFonteGanho = () => {
+    setFontesGanhoList([...fontesGanhoList, { fonte_ganho: "", fonte_ganho_outros: "", quantidade_corridas: "", valor_ganho: "" }]);
+  };
+
+  const removeFonteGanho = (index: number) => {
+    if (fontesGanhoList.length > 1) {
+      setFontesGanhoList(fontesGanhoList.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateFonteGanho = (index: number, field: string, value: string) => {
+    const updated = [...fontesGanhoList];
+    updated[index] = { ...updated[index], [field]: value };
+    setFontesGanhoList(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -121,28 +137,52 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      const fonteGanhoFinal = formData.fonte_ganho === "outros" 
-        ? formData.fonte_ganho_outros 
-        : formData.fonte_ganho;
+      // Calculate totals from all income sources
+      const totalQuantidadeCorridas = fontesGanhoList.reduce((sum, fonte) => 
+        sum + (parseInt(fonte.quantidade_corridas) || 0), 0
+      );
+      const totalValorGanho = fontesGanhoList.reduce((sum, fonte) => 
+        sum + (parseFloat(fonte.valor_ganho) || 0), 0
+      );
 
-      const { error } = await supabase.from("turnos_km").insert({
+      // Insert main shift record with aggregated values
+      const { data: turnoData, error: turnoError } = await supabase
+        .from("turnos_km")
+        .insert({
+          user_id: user.id,
+          veiculo_id: formData.veiculo_id,
+          data: formData.data,
+          km_inicial: parseFloat(formData.km_inicial),
+          km_final: parseFloat(formData.km_final),
+          hora_inicio: formData.hora_inicio,
+          hora_fim: formData.hora_fim,
+          tipo_combustivel: formData.tipo_combustivel,
+          preco_combustivel: parseFloat(formData.preco_combustivel),
+          consumo_combustivel: parseFloat(formData.consumo_combustivel),
+          fonte_ganho: fontesGanhoList[0].fonte_ganho === "outros" ? fontesGanhoList[0].fonte_ganho_outros : fontesGanhoList[0].fonte_ganho,
+          categoria_ganho: fontesGanhoList[0].fonte_ganho === "outros" ? fontesGanhoList[0].fonte_ganho_outros : fontesGanhoList[0].fonte_ganho,
+          quantidade_corridas: totalQuantidadeCorridas,
+          valor_ganho: totalValorGanho,
+        })
+        .select()
+        .single();
+
+      if (turnoError) throw turnoError;
+
+      // Insert all income sources
+      const fontesGanhoData = fontesGanhoList.map(fonte => ({
+        turno_id: turnoData.id,
         user_id: user.id,
-        veiculo_id: formData.veiculo_id,
-        data: formData.data,
-        km_inicial: parseFloat(formData.km_inicial),
-        km_final: parseFloat(formData.km_final),
-        hora_inicio: formData.hora_inicio,
-        hora_fim: formData.hora_fim,
-        tipo_combustivel: formData.tipo_combustivel,
-        preco_combustivel: parseFloat(formData.preco_combustivel),
-        consumo_combustivel: parseFloat(formData.consumo_combustivel),
-        fonte_ganho: fonteGanhoFinal,
-        categoria_ganho: fonteGanhoFinal,
-        quantidade_corridas: parseInt(formData.quantidade_corridas),
-        valor_ganho: parseFloat(formData.valor_ganho),
-      });
+        fonte_ganho: fonte.fonte_ganho === "outros" ? fonte.fonte_ganho_outros : fonte.fonte_ganho,
+        quantidade_corridas: parseInt(fonte.quantidade_corridas) || 0,
+        valor_ganho: parseFloat(fonte.valor_ganho) || 0,
+      }));
 
-      if (error) throw error;
+      const { error: fontesError } = await supabase
+        .from("turno_fontes_ganho")
+        .insert(fontesGanhoData);
+
+      if (fontesError) throw fontesError;
 
       toast({
         title: "Turno registrado!",
@@ -160,11 +200,8 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
         tipo_combustivel: "",
         preco_combustivel: "",
         consumo_combustivel: "",
-        fonte_ganho: "",
-        fonte_ganho_outros: "",
-        quantidade_corridas: "",
-        valor_ganho: "",
       });
+      setFontesGanhoList([{ fonte_ganho: "", fonte_ganho_outros: "", quantidade_corridas: "", valor_ganho: "" }]);
       onSuccess();
     } catch (error: any) {
       toast({
@@ -231,6 +268,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 value={formData.km_inicial}
                 onChange={(e) => setFormData({ ...formData, km_inicial: e.target.value })}
                 placeholder="KM"
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -244,6 +282,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 value={formData.km_final}
                 onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
                 placeholder="KM"
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -314,62 +353,91 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="fonte_ganho">Fonte de Ganho</Label>
-              <Select
-                value={formData.fonte_ganho}
-                onValueChange={(value) => setFormData({ ...formData, fonte_ganho: value })}
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontesGanho.map((fonte) => (
-                    <SelectItem key={fonte.value} value={fonte.value}>
-                      {fonte.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {formData.fonte_ganho === "outros" && (
-              <div className="space-y-2">
-                <Label htmlFor="fonte_ganho_outros">Nome da Fonte</Label>
-                <Input
-                  id="fonte_ganho_outros"
-                  value={formData.fonte_ganho_outros}
-                  onChange={(e) => setFormData({ ...formData, fonte_ganho_outros: e.target.value })}
-                  placeholder="Digite o nome da fonte"
-                  required
-                />
+            <div className="space-y-4 md:col-span-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-lg font-semibold">Fontes de Ganho</Label>
+                <Button type="button" variant="outline" size="sm" onClick={addFonteGanho}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Fonte
+                </Button>
               </div>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="quantidade_corridas">Quantidade de Corridas</Label>
-              <Input
-                id="quantidade_corridas"
-                type="number"
-                min="0"
-                value={formData.quantidade_corridas}
-                onChange={(e) => setFormData({ ...formData, quantidade_corridas: e.target.value })}
-                placeholder="Número de corridas"
-                required
-              />
-            </div>
+              {fontesGanhoList.map((fonte, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg relative">
+                  {fontesGanhoList.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={() => removeFonteGanho(index)}
+                    >
+                      ✕
+                    </Button>
+                  )}
 
-            <div className="space-y-2">
-              <Label htmlFor="valor_ganho">Valor Ganho</Label>
-              <Input
-                id="valor_ganho"
-                type="text"
-                value={formData.valor_ganho}
-                onChange={(e) => handleMoneyChange("valor_ganho", e.target.value)}
-                placeholder="R$"
-                required
-              />
+                  <div className="space-y-2">
+                    <Label htmlFor={`fonte_ganho_${index}`}>Fonte de Ganho</Label>
+                    <Select
+                      value={fonte.fonte_ganho}
+                      onValueChange={(value) => updateFonteGanho(index, "fonte_ganho", value)}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fontesGanho.map((f) => (
+                          <SelectItem key={f.value} value={f.value}>
+                            {f.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {fonte.fonte_ganho === "outros" && (
+                    <div className="space-y-2">
+                      <Label htmlFor={`fonte_ganho_outros_${index}`}>Nome da Fonte</Label>
+                      <Input
+                        id={`fonte_ganho_outros_${index}`}
+                        value={fonte.fonte_ganho_outros}
+                        onChange={(e) => updateFonteGanho(index, "fonte_ganho_outros", e.target.value)}
+                        placeholder="Digite o nome da fonte"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`quantidade_corridas_${index}`}>Quantidade de Corridas</Label>
+                    <Input
+                      id={`quantidade_corridas_${index}`}
+                      type="number"
+                      min="0"
+                      value={fonte.quantidade_corridas}
+                      onChange={(e) => updateFonteGanho(index, "quantidade_corridas", e.target.value)}
+                      placeholder="Número de corridas"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`valor_ganho_${index}`}>Valor Ganho</Label>
+                    <Input
+                      id={`valor_ganho_${index}`}
+                      type="text"
+                      value={fonte.valor_ganho}
+                      onChange={(e) => {
+                        const formatted = formatMoney(e.target.value);
+                        updateFonteGanho(index, "valor_ganho", formatted);
+                      }}
+                      placeholder="R$"
+                      required
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

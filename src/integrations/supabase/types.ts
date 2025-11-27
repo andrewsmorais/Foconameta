@@ -163,6 +163,44 @@ export type Database = {
         }
         Relationships: []
       }
+      turno_fontes_ganho: {
+        Row: {
+          created_at: string
+          fonte_ganho: string
+          id: string
+          quantidade_corridas: number
+          turno_id: string
+          user_id: string
+          valor_ganho: number
+        }
+        Insert: {
+          created_at?: string
+          fonte_ganho: string
+          id?: string
+          quantidade_corridas?: number
+          turno_id: string
+          user_id: string
+          valor_ganho?: number
+        }
+        Update: {
+          created_at?: string
+          fonte_ganho?: string
+          id?: string
+          quantidade_corridas?: number
+          turno_id?: string
+          user_id?: string
+          valor_ganho?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "turno_fontes_ganho_turno_id_fkey"
+            columns: ["turno_id"]
+            isOneToOne: false
+            referencedRelation: "turnos_km"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       turnos_km: {
         Row: {
           categoria_ganho: string

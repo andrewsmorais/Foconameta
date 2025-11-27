@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Plus } from "lucide-react";
 
 interface EditTurnoDialogProps {
   turno: any;
@@ -54,11 +55,11 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     tipo_combustivel: "",
     preco_combustivel: "",
     consumo_combustivel: "",
-    fonte_ganho: "",
-    fonte_ganho_outros: "",
-    quantidade_corridas: "",
-    valor_ganho: "",
   });
+
+  const [fontesGanhoList, setFontesGanhoList] = useState([
+    { id: "", fonte_ganho: "", fonte_ganho_outros: "", quantidade_corridas: "", valor_ganho: "" }
+  ]);
 
   const formatMoney = (value: string): string => {
     const numbers = value.replace(/\D/g, "");
@@ -87,9 +88,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
   useEffect(() => {
     if (open && turno) {
       loadVeiculos();
-      
-      // Check if fonte_ganho is in the predefined list
-      const isCustomSource = !fontesGanho.some(fonte => fonte.value === turno.fonte_ganho.toLowerCase());
+      loadFontesGanho();
       
       setFormData({
         veiculo_id: turno.veiculo_id,
@@ -101,13 +100,40 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
         tipo_combustivel: turno.tipo_combustivel,
         preco_combustivel: turno.preco_combustivel.toFixed(2),
         consumo_combustivel: turno.consumo_combustivel.toFixed(1),
-        fonte_ganho: isCustomSource ? "outros" : turno.fonte_ganho.toLowerCase(),
-        fonte_ganho_outros: isCustomSource ? turno.fonte_ganho : "",
-        quantidade_corridas: turno.quantidade_corridas?.toString() || "0",
-        valor_ganho: turno.valor_ganho.toFixed(2),
       });
     }
   }, [open, turno]);
+
+  const loadFontesGanho = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("turno_fontes_ganho")
+        .select("*")
+        .eq("turno_id", turno.id);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const loaded = data.map(fonte => {
+          const isCustomSource = !fontesGanho.some(f => f.value === fonte.fonte_ganho.toLowerCase());
+          return {
+            id: fonte.id,
+            fonte_ganho: isCustomSource ? "outros" : fonte.fonte_ganho.toLowerCase(),
+            fonte_ganho_outros: isCustomSource ? fonte.fonte_ganho : "",
+            quantidade_corridas: fonte.quantidade_corridas.toString(),
+            valor_ganho: fonte.valor_ganho.toFixed(2),
+          };
+        });
+        setFontesGanhoList(loaded);
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao carregar fontes de ganho",
+        description: error.message,
+      });
+    }
+  };
 
   const loadVeiculos = async () => {
     try {
@@ -131,16 +157,40 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     }
   };
 
+  const addFonteGanho = () => {
+    setFontesGanhoList([...fontesGanhoList, { id: "", fonte_ganho: "", fonte_ganho_outros: "", quantidade_corridas: "", valor_ganho: "" }]);
+  };
+
+  const removeFonteGanho = (index: number) => {
+    if (fontesGanhoList.length > 1) {
+      setFontesGanhoList(fontesGanhoList.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateFonteGanho = (index: number, field: string, value: string) => {
+    const updated = [...fontesGanhoList];
+    updated[index] = { ...updated[index], [field]: value };
+    setFontesGanhoList(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const fonteGanhoFinal = formData.fonte_ganho === "outros" 
-        ? formData.fonte_ganho_outros 
-        : formData.fonte_ganho;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
 
-      const { error } = await supabase
+      // Calculate totals from all income sources
+      const totalQuantidadeCorridas = fontesGanhoList.reduce((sum, fonte) => 
+        sum + (parseInt(fonte.quantidade_corridas) || 0), 0
+      );
+      const totalValorGanho = fontesGanhoList.reduce((sum, fonte) => 
+        sum + (parseFloat(fonte.valor_ganho) || 0), 0
+      );
+
+      // Update main shift record with aggregated values
+      const { error: turnoError } = await supabase
         .from("turnos_km")
         .update({
           veiculo_id: formData.veiculo_id,
@@ -152,14 +202,37 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
           tipo_combustivel: formData.tipo_combustivel,
           preco_combustivel: parseFloat(formData.preco_combustivel),
           consumo_combustivel: parseFloat(formData.consumo_combustivel),
-          fonte_ganho: fonteGanhoFinal,
-          categoria_ganho: fonteGanhoFinal,
-          quantidade_corridas: parseInt(formData.quantidade_corridas),
-          valor_ganho: parseFloat(formData.valor_ganho),
+          fonte_ganho: fontesGanhoList[0].fonte_ganho === "outros" ? fontesGanhoList[0].fonte_ganho_outros : fontesGanhoList[0].fonte_ganho,
+          categoria_ganho: fontesGanhoList[0].fonte_ganho === "outros" ? fontesGanhoList[0].fonte_ganho_outros : fontesGanhoList[0].fonte_ganho,
+          quantidade_corridas: totalQuantidadeCorridas,
+          valor_ganho: totalValorGanho,
         })
         .eq("id", turno.id);
 
-      if (error) throw error;
+      if (turnoError) throw turnoError;
+
+      // Delete existing income sources
+      const { error: deleteError } = await supabase
+        .from("turno_fontes_ganho")
+        .delete()
+        .eq("turno_id", turno.id);
+
+      if (deleteError) throw deleteError;
+
+      // Insert updated income sources
+      const fontesGanhoData = fontesGanhoList.map(fonte => ({
+        turno_id: turno.id,
+        user_id: user.id,
+        fonte_ganho: fonte.fonte_ganho === "outros" ? fonte.fonte_ganho_outros : fonte.fonte_ganho,
+        quantidade_corridas: parseInt(fonte.quantidade_corridas) || 0,
+        valor_ganho: parseFloat(fonte.valor_ganho) || 0,
+      }));
+
+      const { error: fontesError } = await supabase
+        .from("turno_fontes_ganho")
+        .insert(fontesGanhoData);
+
+      if (fontesError) throw fontesError;
 
       toast({
         title: "Turno atualizado!",
@@ -227,6 +300,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                 value={formData.km_inicial}
                 onChange={(e) => setFormData({ ...formData, km_inicial: e.target.value })}
                 placeholder="KM"
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -240,6 +314,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                 value={formData.km_final}
                 onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
                 placeholder="KM"
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -310,62 +385,91 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="fonte_ganho">Fonte de Ganho</Label>
-              <Select
-                value={formData.fonte_ganho}
-                onValueChange={(value) => setFormData({ ...formData, fonte_ganho: value })}
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontesGanho.map((fonte) => (
-                    <SelectItem key={fonte.value} value={fonte.value}>
-                      {fonte.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {formData.fonte_ganho === "outros" && (
-              <div className="space-y-2">
-                <Label htmlFor="fonte_ganho_outros">Nome da Fonte</Label>
-                <Input
-                  id="fonte_ganho_outros"
-                  value={formData.fonte_ganho_outros}
-                  onChange={(e) => setFormData({ ...formData, fonte_ganho_outros: e.target.value })}
-                  placeholder="Digite o nome da fonte"
-                  required
-                />
+            <div className="space-y-4 md:col-span-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-lg font-semibold">Fontes de Ganho</Label>
+                <Button type="button" variant="outline" size="sm" onClick={addFonteGanho}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Fonte
+                </Button>
               </div>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="quantidade_corridas">Quantidade de Corridas</Label>
-              <Input
-                id="quantidade_corridas"
-                type="number"
-                min="0"
-                value={formData.quantidade_corridas}
-                onChange={(e) => setFormData({ ...formData, quantidade_corridas: e.target.value })}
-                placeholder="Número de corridas"
-                required
-              />
-            </div>
+              {fontesGanhoList.map((fonte, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg relative">
+                  {fontesGanhoList.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={() => removeFonteGanho(index)}
+                    >
+                      ✕
+                    </Button>
+                  )}
 
-            <div className="space-y-2">
-              <Label htmlFor="valor_ganho">Valor Ganho</Label>
-              <Input
-                id="valor_ganho"
-                type="text"
-                value={formData.valor_ganho}
-                onChange={(e) => handleMoneyChange("valor_ganho", e.target.value)}
-                placeholder="R$"
-                required
-              />
+                  <div className="space-y-2">
+                    <Label htmlFor={`fonte_ganho_${index}`}>Fonte de Ganho</Label>
+                    <Select
+                      value={fonte.fonte_ganho}
+                      onValueChange={(value) => updateFonteGanho(index, "fonte_ganho", value)}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fontesGanho.map((f) => (
+                          <SelectItem key={f.value} value={f.value}>
+                            {f.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {fonte.fonte_ganho === "outros" && (
+                    <div className="space-y-2">
+                      <Label htmlFor={`fonte_ganho_outros_${index}`}>Nome da Fonte</Label>
+                      <Input
+                        id={`fonte_ganho_outros_${index}`}
+                        value={fonte.fonte_ganho_outros}
+                        onChange={(e) => updateFonteGanho(index, "fonte_ganho_outros", e.target.value)}
+                        placeholder="Digite o nome da fonte"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`quantidade_corridas_${index}`}>Quantidade de Corridas</Label>
+                    <Input
+                      id={`quantidade_corridas_${index}`}
+                      type="number"
+                      min="0"
+                      value={fonte.quantidade_corridas}
+                      onChange={(e) => updateFonteGanho(index, "quantidade_corridas", e.target.value)}
+                      placeholder="Número de corridas"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`valor_ganho_${index}`}>Valor Ganho</Label>
+                    <Input
+                      id={`valor_ganho_${index}`}
+                      type="text"
+                      value={fonte.valor_ganho}
+                      onChange={(e) => {
+                        const formatted = formatMoney(e.target.value);
+                        updateFonteGanho(index, "valor_ganho", formatted);
+                      }}
+                      placeholder="R$"
+                      required
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

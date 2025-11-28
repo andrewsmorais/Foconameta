@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { AddMetaDialog } from "@/components/dialogs/AddMetaDialog";
+import { EditMetaDialog } from "@/components/dialogs/EditMetaDialog";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format, isWithinInterval, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Edit, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Meta {
   id: string;
@@ -14,12 +27,15 @@ interface Meta {
   data_inicio: string;
   data_fim: string;
   ativa: boolean;
+  nome_personalizado: string | null;
 }
 
 const Metas = () => {
   const [metas, setMetas] = useState<Meta[]>([]);
   const [progressos, setProgressos] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [editingMeta, setEditingMeta] = useState<Meta | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const loadMetas = async () => {
@@ -86,13 +102,43 @@ const Metas = () => {
     loadMetas();
   }, []);
 
-  const getTipoLabel = (tipo: string) => {
+  const getTipoLabel = (meta: Meta) => {
+    if (meta.nome_personalizado) {
+      return meta.nome_personalizado;
+    }
+    
     const labels: Record<string, string> = {
       diaria: "Meta Diária",
       semanal: "Meta Semanal",
       mensal: "Meta Mensal",
+      personalizada: "Meta Personalizada",
     };
-    return labels[tipo] || tipo;
+    return labels[meta.tipo] || meta.tipo;
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("metas")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Meta excluída!",
+        description: "O registro foi removido com sucesso",
+      });
+
+      setDeletingId(null);
+      loadMetas();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao excluir meta",
+        description: error.message,
+      });
+    }
   };
 
   if (loading) {
@@ -123,11 +169,31 @@ const Metas = () => {
             return (
               <Card key={meta.id}>
                 <CardHeader>
-                  <CardTitle className="text-lg">{getTipoLabel(meta.tipo)}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {format(parseISO(meta.data_inicio), "dd/MM/yy")} -{" "}
-                    {format(parseISO(meta.data_fim), "dd/MM/yy")}
-                  </p>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{getTipoLabel(meta)}</CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {format(parseISO(meta.data_inicio), "dd/MM/yy")} -{" "}
+                        {format(parseISO(meta.data_fim), "dd/MM/yy")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditingMeta(meta)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingId(meta.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-3xl font-bold">
@@ -156,6 +222,32 @@ const Metas = () => {
           })}
         </div>
       )}
+
+      {editingMeta && (
+        <EditMetaDialog
+          meta={editingMeta}
+          open={!!editingMeta}
+          onOpenChange={(open) => !open && setEditingMeta(null)}
+          onSuccess={loadMetas}
+        />
+      )}
+
+      <AlertDialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deletingId && handleDelete(deletingId)}>
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

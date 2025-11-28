@@ -34,6 +34,7 @@ interface DashboardMetrics {
   metaDiaria: MetaProgress | null;
   metaSemanal: MetaProgress | null;
   metaMensal: MetaProgress | null;
+  metasPersonalizadas: MetaProgress[];
 }
 
 const Dashboard = () => {
@@ -55,6 +56,7 @@ const Dashboard = () => {
     metaDiaria: null,
     metaSemanal: null,
     metaMensal: null,
+    metasPersonalizadas: [],
   });
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,8 +137,11 @@ const Dashboard = () => {
         const percentual = total > 0 ? (alcancado / total) * 100 : 0;
         const atingida = alcancado >= total;
 
+        // Se tiver nome personalizado, usa ele, senão usa o tipo formatado
+        const nomeExibicao = meta.nome_personalizado || tipoDesejado;
+
         return {
-          tipo: tipoDesejado, // Retorna o tipo com formatação original
+          tipo: nomeExibicao,
           alcancado,
           total,
           percentual: Math.min(percentual, 100),
@@ -147,6 +152,31 @@ const Dashboard = () => {
       const metaDiaria = calcularProgressoMeta("diária");
       const metaSemanal = calcularProgressoMeta("semanal");
       const metaMensal = calcularProgressoMeta("mensal");
+
+      // Buscar metas personalizadas ativas
+      const metasPersonalizadas = metas?.filter(m => m.tipo === "personalizada") || [];
+      const metasPersonalizadasProcessadas = metasPersonalizadas.map(meta => {
+        const dataInicioMeta = parseISO(meta.data_inicio);
+        const dataFimMeta = parseISO(meta.data_fim);
+        
+        const turnosMeta = turnos?.filter(t => {
+          const dataTurno = parseISO(t.data);
+          return dataTurno >= dataInicioMeta && dataTurno <= dataFimMeta;
+        }) || [];
+
+        const alcancado = turnosMeta.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0);
+        const total = meta.valor_meta;
+        const percentual = total > 0 ? (alcancado / total) * 100 : 0;
+        const atingida = alcancado >= total;
+
+        return {
+          tipo: meta.nome_personalizado || "Meta Personalizada",
+          alcancado,
+          total,
+          percentual: Math.min(percentual, 100),
+          atingida,
+        };
+      });
 
       const meta = metas?.[0];
       const valorMeta = meta?.valor_meta || 0;
@@ -165,6 +195,7 @@ const Dashboard = () => {
         metaDiaria,
         metaSemanal,
         metaMensal,
+        metasPersonalizadas: metasPersonalizadasProcessadas,
       });
 
       // Preparar dados do gráfico
@@ -426,6 +457,31 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground italic">Nenhuma meta mensal ativa</p>
               )}
             </div>
+
+            {/* Metas Personalizadas */}
+            {metrics.metasPersonalizadas.map((metaPersonalizada, index) => (
+              <div key={`personalizada-${index}`} className="space-y-2 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">{metaPersonalizada.tipo}</p>
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metaPersonalizada.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metaPersonalizada.percentual.toFixed(0)}%
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  R$ {metaPersonalizada.alcancado.toFixed(2)} de R$ {metaPersonalizada.total.toFixed(2)}
+                </p>
+                <Progress 
+                  value={metaPersonalizada.percentual}
+                  className={cn(
+                    "h-3",
+                    metaPersonalizada.atingida && "[&>div]:bg-success"
+                  )}
+                />
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

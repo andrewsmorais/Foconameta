@@ -113,6 +113,7 @@ export type Database = {
           data_fim: string
           data_inicio: string
           id: string
+          nome_personalizado: string | null
           tipo: string
           user_id: string
           valor_meta: number
@@ -123,6 +124,7 @@ export type Database = {
           data_fim: string
           data_inicio: string
           id?: string
+          nome_personalizado?: string | null
           tipo: string
           user_id: string
           valor_meta: number
@@ -133,6 +135,7 @@ export type Database = {
           data_fim?: string
           data_inicio?: string
           id?: string
+          nome_personalizado?: string | null
           tipo?: string
           user_id?: string
           valor_meta?: number

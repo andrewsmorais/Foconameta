@@ -28,6 +28,7 @@ interface Meta {
   data_fim: string;
   ativa: boolean;
   nome_personalizado: string | null;
+  fixa?: boolean;
 }
 
 const Metas = () => {
@@ -111,10 +112,14 @@ const Metas = () => {
       diaria: "Meta Diária",
       semanal: "Meta Semanal",
       mensal: "Meta Mensal",
+      anual: "Meta Anual",
       personalizada: "Meta Personalizada",
     };
     return labels[meta.tipo] || meta.tipo;
   };
+
+  const metasFixas = metas.filter(m => m.fixa);
+  const metasPersonalizadas = metas.filter(m => !m.fixa);
 
   const handleDelete = async (id: string) => {
     try {
@@ -152,76 +157,150 @@ const Metas = () => {
         <AddMetaDialog onSuccess={loadMetas} />
       </div>
 
-      {metas.length === 0 ? (
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-center">
-              Nenhuma meta ativa. Clique em "Nova Meta" para criar uma.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-3">
-          {metas.map((meta) => {
-            const progresso = progressos[meta.id] || 0;
-            const percentual = Math.min((progresso / meta.valor_meta) * 100, 100);
+      <div className="space-y-6">
+        {/* Metas Fixas (Obrigatórias) */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Metas Padrão</h2>
+          {metasFixas.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground text-center">
+                  Carregando metas padrão...
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {metasFixas.map((meta) => {
+                const progresso = progressos[meta.id] || 0;
+                const percentual = Math.min((progresso / meta.valor_meta) * 100, 100);
 
-            return (
-              <Card key={meta.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{getTipoLabel(meta)}</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {format(parseISO(meta.data_inicio), "dd/MM/yy")} -{" "}
-                        {format(parseISO(meta.data_fim), "dd/MM/yy")}
+                return (
+                  <Card key={meta.id}>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{getTipoLabel(meta)}</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {format(parseISO(meta.data_inicio), "dd/MM/yy")} -{" "}
+                            {format(parseISO(meta.data_fim), "dd/MM/yy")}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingMeta(meta)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="text-3xl font-bold">
+                        R$ {meta.valor_meta.toFixed(2)}
+                      </div>
+                      <Progress value={percentual} className="h-2" />
+                      <p className="text-sm text-muted-foreground">
+                        R$ {progresso.toFixed(2)} de R$ {meta.valor_meta.toFixed(2)}
                       </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditingMeta(meta)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeletingId(meta.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-3xl font-bold">
-                    R$ {meta.valor_meta.toFixed(2)}
-                  </div>
-                  <Progress value={percentual} className="h-2" />
-                  <p className="text-sm text-muted-foreground">
-                    R$ {progresso.toFixed(2)} de R$ {meta.valor_meta.toFixed(2)}
-                  </p>
-                  <div className="text-sm">
-                    <span
-                      className={`font-medium ${
-                        percentual >= 100
-                          ? "text-success"
-                          : percentual >= 50
-                          ? "text-warning"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {percentual.toFixed(0)}% concluído
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                      <div className="text-sm">
+                        <span
+                          className={`font-medium ${
+                            percentual >= 100
+                              ? "text-success"
+                              : percentual >= 50
+                              ? "text-warning"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {percentual.toFixed(0)}% concluído
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Metas Personalizadas */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Metas Personalizadas</h2>
+          {metasPersonalizadas.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground text-center">
+                  Nenhuma meta personalizada criada. Clique em "Nova Meta Personalizada" para criar uma.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {metasPersonalizadas.map((meta) => {
+                const progresso = progressos[meta.id] || 0;
+                const percentual = Math.min((progresso / meta.valor_meta) * 100, 100);
+
+                return (
+                  <Card key={meta.id}>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{getTipoLabel(meta)}</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {format(parseISO(meta.data_inicio), "dd/MM/yy")} -{" "}
+                            {format(parseISO(meta.data_fim), "dd/MM/yy")}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingMeta(meta)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeletingId(meta.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="text-3xl font-bold">
+                        R$ {meta.valor_meta.toFixed(2)}
+                      </div>
+                      <Progress value={percentual} className="h-2" />
+                      <p className="text-sm text-muted-foreground">
+                        R$ {progresso.toFixed(2)} de R$ {meta.valor_meta.toFixed(2)}
+                      </p>
+                      <div className="text-sm">
+                        <span
+                          className={`font-medium ${
+                            percentual >= 100
+                              ? "text-success"
+                              : percentual >= 50
+                              ? "text-warning"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {percentual.toFixed(0)}% concluído
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
 
       {editingMeta && (
         <EditMetaDialog

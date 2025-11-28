@@ -112,6 +112,7 @@ export type Database = {
           created_at: string
           data_fim: string
           data_inicio: string
+          fixa: boolean | null
           id: string
           nome_personalizado: string | null
           tipo: string
@@ -123,6 +124,7 @@ export type Database = {
           created_at?: string
           data_fim: string
           data_inicio: string
+          fixa?: boolean | null
           id?: string
           nome_personalizado?: string | null
           tipo: string
@@ -134,6 +136,7 @@ export type Database = {
           created_at?: string
           data_fim?: string
           data_inicio?: string
+          fixa?: boolean | null
           id?: string
           nome_personalizado?: string | null
           tipo?: string

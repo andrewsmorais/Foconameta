@@ -12,6 +12,7 @@ import Metas from "./pages/Metas";
 import Relatorios from "./pages/Relatorios";
 import Veiculos from "./pages/Veiculos";
 import Configuracoes from "./pages/Configuracoes";
+import SuperAdmin from "./pages/SuperAdmin";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -103,6 +104,14 @@ const App = () => (
               <Layout>
                 <Configuracoes />
               </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/super-admin"
+          element={
+            <ProtectedRoute>
+              <SuperAdmin />
             </ProtectedRoute>
           }
         />

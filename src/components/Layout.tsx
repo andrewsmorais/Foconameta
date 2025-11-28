@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Navigation, TrendingUp, Wrench, Target, FileText, Menu, X, LogOut, User, Car, Settings, DollarSign, Route } from "lucide-react";
+import { LayoutDashboard, Navigation, TrendingUp, Wrench, Target, FileText, Menu, X, LogOut, User, Car, Settings, DollarSign, Route, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useSuperAdmin } from "@/hooks/useSuperAdmin";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
@@ -51,6 +52,7 @@ export const Layout = ({
     user,
     signOut
   } = useAuth();
+  const { isSuperAdmin } = useSuperAdmin();
   useEffect(() => {
     loadProfile();
   }, [user]);
@@ -140,6 +142,20 @@ export const Layout = ({
                 <span className="font-medium">{item.label}</span>
               </Link>;
         })}
+        {isSuperAdmin && (
+          <Link
+            to="/super-admin"
+            className={cn(
+              "flex items-center px-4 py-3 rounded-lg transition-colors",
+              location.pathname === "/super-admin"
+                ? "bg-sidebar-accent text-sidebar-primary"
+                : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+            )}
+          >
+            <Shield className="w-5 h-5 mr-3" />
+            <span className="font-medium">Super Admin</span>
+          </Link>
+        )}
         </nav>
       </aside>
 
@@ -163,6 +179,21 @@ export const Layout = ({
                 <span className="font-medium">{item.label}</span>
               </Link>;
         })}
+        {isSuperAdmin && (
+          <Link
+            to="/super-admin"
+            onClick={() => setSidebarOpen(false)}
+            className={cn(
+              "flex items-center px-4 py-3 rounded-lg transition-colors",
+              location.pathname === "/super-admin"
+                ? "bg-sidebar-accent text-sidebar-primary"
+                : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+            )}
+          >
+            <Shield className="w-5 h-5 mr-3" />
+            <span className="font-medium">Super Admin</span>
+          </Link>
+        )}
         </nav>
       </aside>
 

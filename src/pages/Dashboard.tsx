@@ -98,9 +98,28 @@ const Dashboard = () => {
         .eq("ativa", true);
 
       // Processar cada tipo de meta
-      const calcularProgressoMeta = (tipo: string): MetaProgress | null => {
-        const meta = metas?.find(m => m.tipo.toLowerCase() === tipo.toLowerCase());
-        if (!meta) return null;
+      const normalizarTipo = (tipo: string): string => {
+        return tipo
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+      };
+
+      const calcularProgressoMeta = (tipoDesejado: string): MetaProgress | null => {
+        // Normalizar o tipo desejado
+        const tipoNormalizado = normalizarTipo(tipoDesejado);
+        
+        // Buscar todas as metas do tipo desejado
+        const metasCandidatas = metas?.filter(m => 
+          normalizarTipo(m.tipo) === tipoNormalizado
+        ) || [];
+
+        if (metasCandidatas.length === 0) return null;
+
+        // Se houver múltiplas metas do mesmo tipo, pegar a mais recente
+        const meta = metasCandidatas.sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )[0];
 
         // Filtrar turnos dentro do período da meta
         const dataInicioMeta = parseISO(meta.data_inicio);
@@ -117,7 +136,7 @@ const Dashboard = () => {
         const atingida = alcancado >= total;
 
         return {
-          tipo: meta.tipo,
+          tipo: tipoDesejado, // Retorna o tipo com formatação original
           alcancado,
           total,
           percentual: Math.min(percentual, 100),

@@ -57,6 +57,8 @@ export type Database = {
           data: string
           id: string
           km_atual: number
+          km_final: number | null
+          nome_oficina_produto: string | null
           observacoes: string | null
           proximo_km: number | null
           tipo_manutencao: string
@@ -70,6 +72,8 @@ export type Database = {
           data: string
           id?: string
           km_atual: number
+          km_final?: number | null
+          nome_oficina_produto?: string | null
           observacoes?: string | null
           proximo_km?: number | null
           tipo_manutencao: string
@@ -83,6 +87,8 @@ export type Database = {
           data?: string
           id?: string
           km_atual?: number
+          km_final?: number | null
+          nome_oficina_produto?: string | null
           observacoes?: string | null
           proximo_km?: number | null
           tipo_manutencao?: string

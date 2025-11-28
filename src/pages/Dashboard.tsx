@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, TrendingDown, DollarSign, CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 
+interface MetaProgress {
+  tipo: string;
+  alcancado: number;
+  total: number;
+  percentual: number;
+  atingida: boolean;
+}
+
 interface DashboardMetrics {
   totalGanhos: number;
   totalDespesas: number;
@@ -22,6 +31,9 @@ interface DashboardMetrics {
   horasTrabalhadas: number;
   lucroPorKm: number;
   ganhosPorHora: number;
+  metaDiaria: MetaProgress | null;
+  metaSemanal: MetaProgress | null;
+  metaMensal: MetaProgress | null;
 }
 
 const Dashboard = () => {
@@ -40,6 +52,9 @@ const Dashboard = () => {
     horasTrabalhadas: 0,
     lucroPorKm: 0,
     ganhosPorHora: 0,
+    metaDiaria: null,
+    metaSemanal: null,
+    metaMensal: null,
   });
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,13 +90,44 @@ const Dashboard = () => {
       const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
       const ganhosPorHora = horasTrabalhadas > 0 ? totalGanhos / horasTrabalhadas : 0;
 
-      // Buscar meta ativa (não filtrar por tipo específico)
+      // Buscar todas as metas ativas
       const { data: metas } = await supabase
         .from("metas")
         .select("*")
         .eq("user_id", user.id)
-        .eq("ativa", true)
-        .limit(1);
+        .eq("ativa", true);
+
+      // Processar cada tipo de meta
+      const calcularProgressoMeta = (tipo: string): MetaProgress | null => {
+        const meta = metas?.find(m => m.tipo.toLowerCase() === tipo.toLowerCase());
+        if (!meta) return null;
+
+        // Filtrar turnos dentro do período da meta
+        const dataInicioMeta = parseISO(meta.data_inicio);
+        const dataFimMeta = parseISO(meta.data_fim);
+        
+        const turnosMeta = turnos?.filter(t => {
+          const dataTurno = parseISO(t.data);
+          return dataTurno >= dataInicioMeta && dataTurno <= dataFimMeta;
+        }) || [];
+
+        const alcancado = turnosMeta.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0);
+        const total = meta.valor_meta;
+        const percentual = total > 0 ? (alcancado / total) * 100 : 0;
+        const atingida = alcancado >= total;
+
+        return {
+          tipo: meta.tipo,
+          alcancado,
+          total,
+          percentual: Math.min(percentual, 100),
+          atingida,
+        };
+      };
+
+      const metaDiaria = calcularProgressoMeta("diária");
+      const metaSemanal = calcularProgressoMeta("semanal");
+      const metaMensal = calcularProgressoMeta("mensal");
 
       const meta = metas?.[0];
       const valorMeta = meta?.valor_meta || 0;
@@ -97,6 +143,9 @@ const Dashboard = () => {
         horasTrabalhadas,
         lucroPorKm,
         ganhosPorHora,
+        metaDiaria,
+        metaSemanal,
+        metaMensal,
       });
 
       // Preparar dados do gráfico
@@ -260,29 +309,103 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Metas */}
+        {/* Progresso de Metas */}
         <Card>
           <CardHeader>
-            <CardTitle>Metas</CardTitle>
+            <CardTitle>Progresso de Metas</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <p className="text-sm font-bold text-foreground mb-1">Meta Diária</p>
-                <p className="text-lg font-bold text-success">-</p>
+          <CardContent className="space-y-6">
+            {/* Meta Diária */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-foreground">Meta Diária</p>
+                {metrics.metaDiaria && (
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metrics.metaDiaria.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metrics.metaDiaria.percentual.toFixed(0)}%
+                  </span>
+                )}
               </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-foreground mb-1">Meta Semanal</p>
-                <p className="text-lg font-bold text-success">
-                  R$ {metrics.valorMeta.toFixed(2)}
-                </p>
+              {metrics.metaDiaria ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    R$ {metrics.metaDiaria.alcancado.toFixed(2)} de R$ {metrics.metaDiaria.total.toFixed(2)}
+                  </p>
+                  <Progress 
+                    value={metrics.metaDiaria.percentual}
+                    className={cn(
+                      "h-3",
+                      metrics.metaDiaria.atingida && "[&>div]:bg-success"
+                    )}
+                  />
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Nenhuma meta diária ativa</p>
+              )}
+            </div>
+
+            {/* Meta Semanal */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-foreground">Meta Semanal</p>
+                {metrics.metaSemanal && (
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metrics.metaSemanal.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metrics.metaSemanal.percentual.toFixed(0)}%
+                  </span>
+                )}
               </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-foreground mb-1">Meta Mensal</p>
-                <p className="text-lg font-bold text-success">
-                  R$ {metrics.valorMeta.toFixed(2)}
-                </p>
+              {metrics.metaSemanal ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    R$ {metrics.metaSemanal.alcancado.toFixed(2)} de R$ {metrics.metaSemanal.total.toFixed(2)}
+                  </p>
+                  <Progress 
+                    value={metrics.metaSemanal.percentual}
+                    className={cn(
+                      "h-3",
+                      metrics.metaSemanal.atingida && "[&>div]:bg-success"
+                    )}
+                  />
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Nenhuma meta semanal ativa</p>
+              )}
+            </div>
+
+            {/* Meta Mensal */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-foreground">Meta Mensal</p>
+                {metrics.metaMensal && (
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metrics.metaMensal.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metrics.metaMensal.percentual.toFixed(0)}%
+                  </span>
+                )}
               </div>
+              {metrics.metaMensal ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    R$ {metrics.metaMensal.alcancado.toFixed(2)} de R$ {metrics.metaMensal.total.toFixed(2)}
+                  </p>
+                  <Progress 
+                    value={metrics.metaMensal.percentual}
+                    className={cn(
+                      "h-3",
+                      metrics.metaMensal.atingida && "[&>div]:bg-success"
+                    )}
+                  />
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Nenhuma meta mensal ativa</p>
+              )}
             </div>
           </CardContent>
         </Card>

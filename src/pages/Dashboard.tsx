@@ -34,6 +34,7 @@ interface DashboardMetrics {
   metaDiaria: MetaProgress | null;
   metaSemanal: MetaProgress | null;
   metaMensal: MetaProgress | null;
+  metaAnual: MetaProgress | null;
   metasPersonalizadas: MetaProgress[];
 }
 
@@ -56,6 +57,7 @@ const Dashboard = () => {
     metaDiaria: null,
     metaSemanal: null,
     metaMensal: null,
+    metaAnual: null,
     metasPersonalizadas: [],
   });
   const [chartData, setChartData] = useState<any[]>([]);
@@ -152,6 +154,7 @@ const Dashboard = () => {
       const metaDiaria = calcularProgressoMeta("diária");
       const metaSemanal = calcularProgressoMeta("semanal");
       const metaMensal = calcularProgressoMeta("mensal");
+      const metaAnual = calcularProgressoMeta("anual");
 
       // Buscar metas personalizadas ativas
       const metasPersonalizadas = metas?.filter(m => m.tipo === "personalizada") || [];
@@ -195,6 +198,7 @@ const Dashboard = () => {
         metaDiaria,
         metaSemanal,
         metaMensal,
+        metaAnual,
         metasPersonalizadas: metasPersonalizadasProcessadas,
       });
 
@@ -455,6 +459,37 @@ const Dashboard = () => {
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground italic">Nenhuma meta mensal ativa</p>
+              )}
+            </div>
+
+            {/* Meta Anual */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-foreground">Meta Anual</p>
+                {metrics.metaAnual && (
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metrics.metaAnual.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metrics.metaAnual.percentual.toFixed(0)}%
+                  </span>
+                )}
+              </div>
+              {metrics.metaAnual ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    R$ {metrics.metaAnual.alcancado.toFixed(2)} de R$ {metrics.metaAnual.total.toFixed(2)}
+                  </p>
+                  <Progress 
+                    value={metrics.metaAnual.percentual}
+                    className={cn(
+                      "h-3",
+                      metrics.metaAnual.atingida && "[&>div]:bg-success"
+                    )}
+                  />
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Nenhuma meta anual ativa</p>
               )}
             </div>
 

@@ -1,38 +1,11 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSuperAdmin } from "@/hooks/useSuperAdmin";
-import { Users, DollarSign, TrendingUp, Shield, Webhook, Settings } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Shield, Users, Webhook } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { StatsCards } from "@/components/superadmin/StatsCards";
 import { UsersManagement } from "@/components/superadmin/UsersManagement";
 import { WebhookConfig } from "@/components/superadmin/WebhookConfig";
-import { StatsCards } from "@/components/superadmin/StatsCards";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SuperAdmin() {
-  const navigate = useNavigate();
-  const { isSuperAdmin, loading } = useSuperAdmin();
-
-  useEffect(() => {
-    if (!loading && !isSuperAdmin) {
-      navigate("/");
-    }
-  }, [isSuperAdmin, loading, navigate]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isSuperAdmin) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto p-6 space-y-8">

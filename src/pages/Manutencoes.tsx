@@ -79,12 +79,8 @@ const Manutencoes = () => {
       troca_oleo: "Troca de Óleo",
       balanceamento_alinhamento: "Balanceamento e Alinhamento",
       revisao: "Revisão",
-      pneus: "Pneus",
-      freios: "Freios",
-      suspensao: "Suspensão",
-      bateria: "Bateria",
-      outros: "Outros",
     };
+    // Se não for um tipo pré-definido, retorna o próprio tipo (personalizado)
     return labels[tipo] || tipo;
   };
 

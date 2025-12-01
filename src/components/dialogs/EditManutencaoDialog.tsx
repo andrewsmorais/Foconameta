@@ -46,6 +46,8 @@ const tiposManutencao = [
 export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess }: EditManutencaoDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [showCustomType, setShowCustomType] = useState(false);
+  const [customTypeName, setCustomTypeName] = useState("");
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -63,6 +65,11 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
   useEffect(() => {
     if (open) {
       loadVeiculos();
+      const isPreBuiltType = ["troca_oleo", "balanceamento_alinhamento", "revisao"].includes(manutencao.tipo_manutencao);
+      setShowCustomType(!isPreBuiltType);
+      if (!isPreBuiltType) {
+        setCustomTypeName(manutencao.tipo_manutencao);
+      }
       setFormData({
         veiculo_id: manutencao.veiculo_id,
         tipo_manutencao: manutencao.tipo_manutencao,
@@ -166,24 +173,90 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="tipo_manutencao">Tipo de Manutenção</Label>
-            <Select
-              value={formData.tipo_manutencao}
-              onValueChange={(value) => setFormData({ ...formData, tipo_manutencao: value })}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {tiposManutencao.map((tipo) => (
-                  <SelectItem key={tipo.value} value={tipo.value}>
-                    {tipo.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="space-y-3">
+            <Label>Tipo de Manutenção</Label>
+            <div className="grid grid-cols-1 gap-3">
+              {/* Cards pré-prontos */}
+              <Button
+                type="button"
+                variant={formData.tipo_manutencao === "troca_oleo" ? "default" : "outline"}
+                className="h-auto py-4 justify-start"
+                onClick={() => {
+                  setFormData({ ...formData, tipo_manutencao: "troca_oleo" });
+                  setShowCustomType(false);
+                }}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">Troca de Óleo</div>
+                  <div className="text-xs opacity-80">Manutenção preventiva do motor</div>
+                </div>
+              </Button>
+              
+              <Button
+                type="button"
+                variant={formData.tipo_manutencao === "balanceamento_alinhamento" ? "default" : "outline"}
+                className="h-auto py-4 justify-start"
+                onClick={() => {
+                  setFormData({ ...formData, tipo_manutencao: "balanceamento_alinhamento" });
+                  setShowCustomType(false);
+                }}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">Balanceamento e Alinhamento</div>
+                  <div className="text-xs opacity-80">Ajuste de pneus e direção</div>
+                </div>
+              </Button>
+              
+              <Button
+                type="button"
+                variant={formData.tipo_manutencao === "revisao" ? "default" : "outline"}
+                className="h-auto py-4 justify-start"
+                onClick={() => {
+                  setFormData({ ...formData, tipo_manutencao: "revisao" });
+                  setShowCustomType(false);
+                }}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">Revisão</div>
+                  <div className="text-xs opacity-80">Revisão completa do veículo</div>
+                </div>
+              </Button>
+
+              {/* Opção de adicionar personalizado */}
+              <Button
+                type="button"
+                variant={showCustomType ? "default" : "outline"}
+                className="h-auto py-4 justify-start"
+                onClick={() => {
+                  setShowCustomType(!showCustomType);
+                  if (!showCustomType) {
+                    setFormData({ ...formData, tipo_manutencao: "" });
+                  }
+                }}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">+ Adicionar Outro Tipo</div>
+                  <div className="text-xs opacity-80">Criar manutenção personalizada</div>
+                </div>
+              </Button>
+            </div>
+
+            {showCustomType && (
+              <div className="space-y-2 mt-3">
+                <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
+                <Input
+                  id="custom_type"
+                  type="text"
+                  value={customTypeName}
+                  onChange={(e) => {
+                    setCustomTypeName(e.target.value);
+                    setFormData({ ...formData, tipo_manutencao: e.target.value });
+                  }}
+                  placeholder="Ex: Troca de Pneus, Revisão de Freios"
+                  required={showCustomType}
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -193,6 +266,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               type="date"
               value={formData.data}
               onChange={(e) => setFormData({ ...formData, data: e.target.value })}
+              className="dark:[color-scheme:dark]"
               required
             />
           </div>
@@ -211,7 +285,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="km_final">KM Final</Label>
+            <Label htmlFor="km_final">KM Final (opcional)</Label>
             <Input
               id="km_final"
               type="number"
@@ -223,7 +297,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor (R$)</Label>
+            <Label htmlFor="valor">Valor</Label>
             <Input
               id="valor"
               type="number"
@@ -236,7 +310,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto</Label>
+            <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto (opcional)</Label>
             <Input
               id="nome_oficina_produto"
               type="text"
@@ -247,19 +321,19 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="proximo_km">Próximo KM</Label>
+            <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>
             <Input
               id="proximo_km"
               type="number"
               step="0.01"
               value={formData.proximo_km}
               onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-              placeholder="0.00"
+              placeholder="Deixe em branco se não souber"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
+            <Label htmlFor="observacoes">Observações (opcional)</Label>
             <Textarea
               id="observacoes"
               value={formData.observacoes}

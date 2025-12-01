@@ -114,6 +114,34 @@ const Metas = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from("metas")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Todas as metas foram excluídas",
+        description: "Tela limpa e pronta para configuração",
+      });
+
+      loadMetas();
+    } catch (error) {
+      console.error("Erro ao excluir todas as metas:", error);
+      toast({
+        title: "Erro ao excluir metas",
+        description: "Não foi possível excluir todas as metas",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getMetaLabel = (meta: Meta) => {
     return meta.nome_personalizado || "Meta";
   };
@@ -148,10 +176,21 @@ const Metas = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Metas</h1>
-        <Button onClick={() => setShowAddDialog(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Criar Meta
-        </Button>
+        <div className="flex gap-2">
+          {metas.length > 0 && (
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteAll}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Limpar Todas
+            </Button>
+          )}
+          <Button onClick={() => setShowAddDialog(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Criar Meta
+          </Button>
+        </div>
       </div>
 
       {metas.length > 0 && (

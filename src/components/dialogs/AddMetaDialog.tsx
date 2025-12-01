@@ -21,6 +21,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
   const [dataInicio, setDataInicio] = useState(format(new Date(), "yyyy-MM-dd"));
   const [dataFim, setDataFim] = useState(format(new Date(), "yyyy-MM-dd"));
   const [metricaRastreamento, setMetricaRastreamento] = useState("lucro_liquido");
+  const [mostrarNoDashboard, setMostrarNoDashboard] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +40,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
         data_inicio: dataInicio,
         data_fim: dataFim,
         metrica_rastreamento: metricaRastreamento,
+        mostrar_no_dashboard: mostrarNoDashboard,
         ativa: true,
         fixa: false,
       });
@@ -55,6 +57,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
       setDataInicio(format(new Date(), "yyyy-MM-dd"));
       setDataFim(format(new Date(), "yyyy-MM-dd"));
       setMetricaRastreamento("lucro_liquido");
+      setMostrarNoDashboard(false);
       onOpenChange(false);
       onSuccess();
     } catch (error) {
@@ -73,7 +76,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nova Meta Personalizada</DialogTitle>
+          <DialogTitle>Criar Meta</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -135,6 +138,19 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
                 <SelectItem value="ganhos_brutos">Ganhos Brutos</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="dashboard"
+              checked={mostrarNoDashboard}
+              onChange={(e) => setMostrarNoDashboard(e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            <Label htmlFor="dashboard" className="cursor-pointer">
+              Mostrar no Dashboard
+            </Label>
           </div>
 
           <div className="flex justify-end gap-2">

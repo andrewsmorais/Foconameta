@@ -115,6 +115,7 @@ export type Database = {
           fixa: boolean | null
           id: string
           metrica_rastreamento: string
+          mostrar_no_dashboard: boolean | null
           nome_personalizado: string | null
           tipo: string
           user_id: string
@@ -128,6 +129,7 @@ export type Database = {
           fixa?: boolean | null
           id?: string
           metrica_rastreamento?: string
+          mostrar_no_dashboard?: boolean | null
           nome_personalizado?: string | null
           tipo: string
           user_id: string
@@ -141,6 +143,7 @@ export type Database = {
           fixa?: boolean | null
           id?: string
           metrica_rastreamento?: string
+          mostrar_no_dashboard?: boolean | null
           nome_personalizado?: string | null
           tipo?: string
           user_id?: string

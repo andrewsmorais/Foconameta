@@ -107,16 +107,20 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor da Meta (R$)</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              value={valor}
-              onChange={(e) => setValor(e.target.value)}
-              placeholder="0,00"
-              required
-            />
+            <Label htmlFor="valor">Valor da Meta</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+              <Input
+                id="valor"
+                type="number"
+                step="0.01"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                placeholder="0,00"
+                className="pl-10"
+                required
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -127,6 +131,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
                 type="date"
                 value={dataInicio}
                 onChange={(e) => setDataInicio(e.target.value)}
+                className="dark:[color-scheme:dark]"
                 required
               />
             </div>
@@ -138,6 +143,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
                 type="date"
                 value={dataFim}
                 onChange={(e) => setDataFim(e.target.value)}
+                className="dark:[color-scheme:dark]"
                 required
               />
             </div>

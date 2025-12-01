@@ -213,6 +213,10 @@ const Metas = () => {
                       {format(new Date(meta.data_inicio), "dd/MM/yyyy", { locale: ptBR })} -{" "}
                       {format(new Date(meta.data_fim), "dd/MM/yyyy", { locale: ptBR })}
                     </p>
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-semibold">Métrica de Rastreamento:</span>{" "}
+                      {meta.metrica_rastreamento === "lucro_liquido" ? "Lucro Líquido" : "Ganhos Brutos"}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <Button

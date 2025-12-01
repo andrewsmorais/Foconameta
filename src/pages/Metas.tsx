@@ -44,6 +44,9 @@ const Metas = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Garantir que as metas padrão existem
+      await ensureDefaultGoals(user.id);
+
       const { data, error } = await supabase
         .from("metas")
         .select("*")
@@ -96,6 +99,67 @@ const Metas = () => {
       return totalLucro;
     } catch (error) {
       return 0;
+    }
+  };
+
+  const ensureDefaultGoals = async (userId: string) => {
+    try {
+      // Verificar quais metas fixas existem
+      const { data: existingMetas } = await supabase
+        .from("metas")
+        .select("tipo")
+        .eq("user_id", userId)
+        .eq("fixa", true);
+
+      const existingTypes = new Set(existingMetas?.map(m => m.tipo) || []);
+      const today = new Date();
+      
+      // Definir as 4 metas padrão
+      const defaultGoals = [
+        {
+          tipo: 'diaria',
+          data_inicio: today.toISOString().split('T')[0],
+          data_fim: today.toISOString().split('T')[0],
+        },
+        {
+          tipo: 'semanal',
+          data_inicio: new Date(today.setDate(today.getDate() - today.getDay())).toISOString().split('T')[0],
+          data_fim: new Date(today.setDate(today.getDate() - today.getDay() + 6)).toISOString().split('T')[0],
+        },
+        {
+          tipo: 'mensal',
+          data_inicio: new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0],
+          data_fim: new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0],
+        },
+        {
+          tipo: 'anual',
+          data_inicio: new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0],
+          data_fim: new Date(today.getFullYear(), 11, 31).toISOString().split('T')[0],
+        },
+      ];
+
+      // Criar as metas que não existem
+      const metasToCreate = defaultGoals
+        .filter(goal => !existingTypes.has(goal.tipo))
+        .map(goal => ({
+          user_id: userId,
+          tipo: goal.tipo,
+          valor_meta: 0,
+          data_inicio: goal.data_inicio,
+          data_fim: goal.data_fim,
+          ativa: true,
+          fixa: true,
+        }));
+
+      if (metasToCreate.length > 0) {
+        const { error } = await supabase
+          .from("metas")
+          .insert(metasToCreate);
+
+        if (error) throw error;
+      }
+    } catch (error) {
+      console.error("Erro ao garantir metas padrão:", error);
     }
   };
 

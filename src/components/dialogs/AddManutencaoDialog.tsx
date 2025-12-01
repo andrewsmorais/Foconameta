@@ -51,6 +51,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     observacoes: "",
     nome_oficina_produto: "",
     comprovante_url: "",
+    proxima_data_manutencao: "",
   });
 
   useEffect(() => {
@@ -105,15 +106,29 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      // Validate required fields
-      if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.valor) {
-        toast({
-          variant: "destructive",
-          title: "Campos obrigatórios faltando",
-          description: "Preencha todos os campos obrigatórios",
-        });
-        setLoading(false);
-        return;
+      // Validate required fields based on type
+      const isFixedType = ["troca_oleo", "balanceamento_alinhamento", "revisao"].includes(formData.tipo_manutencao);
+      
+      if (isFixedType) {
+        if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.nome_oficina_produto) {
+          toast({
+            variant: "destructive",
+            title: "Campos obrigatórios faltando",
+            description: "Preencha todos os campos obrigatórios",
+          });
+          setLoading(false);
+          return;
+        }
+      } else {
+        if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.valor) {
+          toast({
+            variant: "destructive",
+            title: "Campos obrigatórios faltando",
+            description: "Preencha todos os campos obrigatórios",
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       const { error } = await supabase.from("manutencoes").insert({
@@ -123,10 +138,11 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         data: formData.data,
         km_atual: parseFloat(formData.km_atual),
         km_final: formData.km_final ? parseFloat(formData.km_final) : null,
-        valor: parseFloat(formData.valor),
+        valor: formData.valor ? parseFloat(formData.valor) : null,
         proximo_km: formData.proximo_km ? parseFloat(formData.proximo_km) : null,
         observacoes: formData.observacoes || null,
         nome_oficina_produto: formData.nome_oficina_produto || null,
+        comprovante_url: formData.comprovante_url || null,
       });
 
       if (error) throw error;
@@ -148,6 +164,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         observacoes: "",
         nome_oficina_produto: "",
         comprovante_url: "",
+        proxima_data_manutencao: "",
       });
       setShowCustomType(false);
       setCustomTypeName("");
@@ -182,12 +199,18 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           <DialogTitle>
             {preSelectedType === "custom" 
               ? "Nova Manutenção Personalizada" 
+              : preSelectedType === "troca_oleo"
+              ? "Troca de Óleo"
+              : preSelectedType === "balanceamento_alinhamento"
+              ? "Balanceamento e Alinhamento"
+              : preSelectedType === "revisao"
+              ? "Revisão"
               : "Registrar Manutenção"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="veiculo">Veículo</Label>
+            <Label htmlFor="veiculo">Selecionar Veículo</Label>
             <Select
               value={formData.veiculo_id}
               onValueChange={(value) => setFormData({ ...formData, veiculo_id: value })}
@@ -311,109 +334,221 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="data">Data</Label>
-            <Input
-              id="data"
-              type="date"
-              value={formData.data}
-              onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-              className="dark:[color-scheme:dark]"
-              required
-            />
-          </div>
+          {/* Formulário para tipos fixos (troca_oleo, balanceamento_alinhamento, revisao) */}
+          {(preSelectedType === "troca_oleo" || preSelectedType === "balanceamento_alinhamento" || preSelectedType === "revisao") && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="nome_oficina_produto">Nome da Oficina</Label>
+                <Input
+                  id="nome_oficina_produto"
+                  type="text"
+                  value={formData.nome_oficina_produto}
+                  onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
+                  placeholder="Ex: Oficina do João"
+                  required
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="km_atual">KM Inicial</Label>
-            <Input
-              id="km_atual"
-              type="number"
-              step="0.01"
-              value={formData.km_atual}
-              onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
-              placeholder="0.00"
-              required
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="observacoes">Descrição do Produto</Label>
+                <Textarea
+                  id="observacoes"
+                  value={formData.observacoes}
+                  onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+                  placeholder="Ex: Castrol 5W30, Pneus Michelin..."
+                  rows={3}
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="km_final">KM Final (opcional)</Label>
-            <Input
-              id="km_final"
-              type="number"
-              step="0.01"
-              value={formData.km_final}
-              onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
-              placeholder="0.00"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="data">Data Atual</Label>
+                <Input
+                  id="data"
+                  type="date"
+                  value={formData.data}
+                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
+                  className="dark:[color-scheme:dark]"
+                  required
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="valor">Valor</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              value={formData.valor}
-              onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-              placeholder="0.00"
-              required
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção</Label>
+                <Input
+                  id="proxima_data_manutencao"
+                  type="date"
+                  value={formData.proxima_data_manutencao}
+                  onChange={(e) => setFormData({ ...formData, proxima_data_manutencao: e.target.value })}
+                  className="dark:[color-scheme:dark]"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto (opcional)</Label>
-            <Input
-              id="nome_oficina_produto"
-              type="text"
-              value={formData.nome_oficina_produto}
-              onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
-              placeholder="Ex: Oficina do João, Castrol 5W30"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="km_atual">KM Atual</Label>
+                <Input
+                  id="km_atual"
+                  type="number"
+                  step="0.01"
+                  value={formData.km_atual}
+                  onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>
-            <Input
-              id="proximo_km"
-              type="number"
-              step="0.01"
-              value={formData.proximo_km}
-              onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-              placeholder="Deixe em branco se não souber"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="proximo_km">Próximo KM para Manutenção</Label>
+                <Input
+                  id="proximo_km"
+                  type="number"
+                  step="0.01"
+                  value={formData.proximo_km}
+                  onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
+                  placeholder="Ex: 10000"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
-            <Textarea
-              id="observacoes"
-              value={formData.observacoes}
-              onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              placeholder="Observações adicionais..."
-              rows={3}
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="comprovante">Anexar Comprovante</Label>
+                <Input
+                  id="comprovante"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setFormData({ ...formData, comprovante_url: file.name });
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Você pode anexar uma foto ou PDF do comprovante
+                </p>
+              </div>
+            </>
+          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="comprovante">Anexar Comprovante (opcional)</Label>
-            <Input
-              id="comprovante"
-              type="file"
-              accept="image/*,.pdf"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // Aqui você pode implementar upload para Supabase Storage
-                  // Por enquanto, apenas armazenamos o nome do arquivo
-                  setFormData({ ...formData, comprovante_url: file.name });
-                }
-              }}
-            />
-            <p className="text-xs text-muted-foreground">
-              Você pode anexar uma foto ou PDF do comprovante
-            </p>
-          </div>
+          {/* Formulário para manutenção personalizada (custom) */}
+          {preSelectedType === "custom" && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
+                <Input
+                  id="custom_type"
+                  type="text"
+                  value={customTypeName}
+                  onChange={(e) => {
+                    setCustomTypeName(e.target.value);
+                    setFormData({ ...formData, tipo_manutencao: e.target.value });
+                  }}
+                  placeholder="Ex: Troca de Pneus, Revisão de Freios"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="data">Data</Label>
+                <Input
+                  id="data"
+                  type="date"
+                  value={formData.data}
+                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
+                  className="dark:[color-scheme:dark]"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="km_atual">KM Inicial</Label>
+                <Input
+                  id="km_atual"
+                  type="number"
+                  step="0.01"
+                  value={formData.km_atual}
+                  onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="km_final">KM Final (opcional)</Label>
+                <Input
+                  id="km_final"
+                  type="number"
+                  step="0.01"
+                  value={formData.km_final}
+                  onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
+                  placeholder="0.00"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="valor">Valor</Label>
+                <Input
+                  id="valor"
+                  type="number"
+                  step="0.01"
+                  value={formData.valor}
+                  onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto (opcional)</Label>
+                <Input
+                  id="nome_oficina_produto"
+                  type="text"
+                  value={formData.nome_oficina_produto}
+                  onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
+                  placeholder="Ex: Oficina do João, Castrol 5W30"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>
+                <Input
+                  id="proximo_km"
+                  type="number"
+                  step="0.01"
+                  value={formData.proximo_km}
+                  onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
+                  placeholder="Deixe em branco se não souber"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="observacoes">Observações (opcional)</Label>
+                <Textarea
+                  id="observacoes"
+                  value={formData.observacoes}
+                  onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+                  placeholder="Observações adicionais..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="comprovante">Anexar Comprovante (opcional)</Label>
+                <Input
+                  id="comprovante"
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setFormData({ ...formData, comprovante_url: file.name });
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Você pode anexar uma foto ou PDF do comprovante
+                </p>
+              </div>
+            </>
+          )}
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

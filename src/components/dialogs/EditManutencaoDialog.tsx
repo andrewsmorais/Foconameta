@@ -56,11 +56,23 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     data: manutencao.data,
     km_atual: manutencao.km_atual.toString(),
     km_final: manutencao.km_final?.toString() || "",
-    valor: manutencao.valor.toString(),
+    valor: manutencao.valor.toFixed(2).replace(".", ","),
     proximo_km: manutencao.proximo_km?.toString() || "",
     observacoes: manutencao.observacoes || "",
     nome_oficina_produto: manutencao.nome_oficina_produto || "",
   });
+
+  const formatCurrency = (value: string) => {
+    const numbers = value.replace(/\D/g, "");
+    if (!numbers) return "";
+    const floatValue = parseFloat(numbers) / 100;
+    return floatValue.toFixed(2).replace(".", ",");
+  };
+
+  const handleCurrencyChange = (value: string) => {
+    const formatted = formatCurrency(value);
+    setFormData({ ...formData, valor: formatted });
+  };
 
   useEffect(() => {
     if (open) {
@@ -76,7 +88,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
         data: manutencao.data,
         km_atual: manutencao.km_atual.toString(),
         km_final: manutencao.km_final?.toString() || "",
-        valor: manutencao.valor.toString(),
+        valor: manutencao.valor.toFixed(2).replace(".", ","),
         proximo_km: manutencao.proximo_km?.toString() || "",
         observacoes: manutencao.observacoes || "",
         nome_oficina_produto: manutencao.nome_oficina_produto || "",
@@ -111,6 +123,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     setLoading(true);
 
     try {
+      const valorNumerico = parseFloat(formData.valor.replace(",", "."));
+
       const { error } = await supabase
         .from("manutencoes")
         .update({
@@ -119,7 +133,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           data: formData.data,
           km_atual: parseFloat(formData.km_atual),
           km_final: formData.km_final ? parseFloat(formData.km_final) : null,
-          valor: parseFloat(formData.valor),
+          valor: valorNumerico,
           proximo_km: formData.proximo_km ? parseFloat(formData.proximo_km) : null,
           observacoes: formData.observacoes || null,
           nome_oficina_produto: formData.nome_oficina_produto || null,
@@ -241,21 +255,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               </Button>
             </div>
 
-            {showCustomType && (
-              <div className="space-y-2 mt-3">
-                <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
-                <Input
-                  id="custom_type"
-                  type="text"
-                  value={customTypeName}
-                  onChange={(e) => {
-                    setCustomTypeName(e.target.value);
-                    setFormData({ ...formData, tipo_manutencao: e.target.value });
-                  }}
-                  required={showCustomType}
-                />
-              </div>
-            )}
           </div>
 
           <div className="space-y-2">
@@ -295,14 +294,17 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
 
           <div className="space-y-2">
             <Label htmlFor="valor">Valor</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              value={formData.valor}
-              onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-              required
-            />
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+              <Input
+                id="valor"
+                type="text"
+                value={formData.valor}
+                onChange={(e) => handleCurrencyChange(e.target.value)}
+                className="pl-10"
+                required
+              />
+            </div>
           </div>
 
           <div className="space-y-2">

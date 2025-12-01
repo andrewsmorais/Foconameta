@@ -58,20 +58,22 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
       loadVeiculos();
       // Reset form when opening
       if (preSelectedType && preSelectedType !== "custom") {
-        setFormData({
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           tipo_manutencao: preSelectedType,
-        });
+        }));
         setShowCustomType(false);
+        setCustomTypeName("");
       } else if (preSelectedType === "custom") {
         setShowCustomType(true);
-        setFormData({
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           tipo_manutencao: "",
-        });
+        }));
+        setCustomTypeName("");
       }
     }
-  }, [open]);
+  }, [open, preSelectedType]);
 
   const loadVeiculos = async () => {
     try {
@@ -102,6 +104,17 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
+
+      // Validate required fields
+      if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.valor) {
+        toast({
+          variant: "destructive",
+          title: "Campos obrigatórios faltando",
+          description: "Preencha todos os campos obrigatórios",
+        });
+        setLoading(false);
+        return;
+      }
 
       const { error } = await supabase.from("manutencoes").insert({
         user_id: user.id,
@@ -166,7 +179,11 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
       )}
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Registrar Manutenção</DialogTitle>
+          <DialogTitle>
+            {preSelectedType === "custom" 
+              ? "Nova Manutenção Personalizada" 
+              : "Registrar Manutenção"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -189,91 +206,110 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
             </Select>
           </div>
 
-          <div className="space-y-3">
-            <Label>Tipo de Manutenção</Label>
-            <div className="grid grid-cols-1 gap-3">
-              {/* Cards pré-prontos */}
-              <Button
-                type="button"
-                variant={formData.tipo_manutencao === "troca_oleo" ? "default" : "outline"}
-                className="h-auto py-4 justify-start"
-                onClick={() => {
-                  setFormData({ ...formData, tipo_manutencao: "troca_oleo" });
-                  setShowCustomType(false);
-                }}
-              >
-                <div className="text-left">
-                  <div className="font-semibold">Troca de Óleo</div>
-                  <div className="text-xs opacity-80">Manutenção preventiva do motor</div>
-                </div>
-              </Button>
-              
-              <Button
-                type="button"
-                variant={formData.tipo_manutencao === "balanceamento_alinhamento" ? "default" : "outline"}
-                className="h-auto py-4 justify-start"
-                onClick={() => {
-                  setFormData({ ...formData, tipo_manutencao: "balanceamento_alinhamento" });
-                  setShowCustomType(false);
-                }}
-              >
-                <div className="text-left">
-                  <div className="font-semibold">Balanceamento e Alinhamento</div>
-                  <div className="text-xs opacity-80">Ajuste de pneus e direção</div>
-                </div>
-              </Button>
-              
-              <Button
-                type="button"
-                variant={formData.tipo_manutencao === "revisao" ? "default" : "outline"}
-                className="h-auto py-4 justify-start"
-                onClick={() => {
-                  setFormData({ ...formData, tipo_manutencao: "revisao" });
-                  setShowCustomType(false);
-                }}
-              >
-                <div className="text-left">
-                  <div className="font-semibold">Revisão</div>
-                  <div className="text-xs opacity-80">Revisão completa do veículo</div>
-                </div>
-              </Button>
-
-              {/* Opção de adicionar personalizado */}
-              <Button
-                type="button"
-                variant={showCustomType ? "default" : "outline"}
-                className="h-auto py-4 justify-start"
-                onClick={() => {
-                  setShowCustomType(!showCustomType);
-                  if (!showCustomType) {
-                    setFormData({ ...formData, tipo_manutencao: "" });
-                  }
-                }}
-              >
-                <div className="text-left">
-                  <div className="font-semibold">+ Adicionar Outro Tipo</div>
-                  <div className="text-xs opacity-80">Criar manutenção personalizada</div>
-                </div>
-              </Button>
-            </div>
-
-            {showCustomType && (
-              <div className="space-y-2 mt-3">
-                <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
-                <Input
-                  id="custom_type"
-                  type="text"
-                  value={customTypeName}
-                  onChange={(e) => {
-                    setCustomTypeName(e.target.value);
-                    setFormData({ ...formData, tipo_manutencao: e.target.value });
+          {!preSelectedType && (
+            <div className="space-y-3">
+              <Label>Tipo de Manutenção</Label>
+              <div className="grid grid-cols-1 gap-3">
+                {/* Cards pré-prontos */}
+                <Button
+                  type="button"
+                  variant={formData.tipo_manutencao === "troca_oleo" ? "default" : "outline"}
+                  className="h-auto py-4 justify-start"
+                  onClick={() => {
+                    setFormData({ ...formData, tipo_manutencao: "troca_oleo" });
+                    setShowCustomType(false);
                   }}
-                  placeholder="Ex: Troca de Pneus, Revisão de Freios"
-                  required={showCustomType}
-                />
+                >
+                  <div className="text-left">
+                    <div className="font-semibold">Troca de Óleo</div>
+                    <div className="text-xs opacity-80">Manutenção preventiva do motor</div>
+                  </div>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={formData.tipo_manutencao === "balanceamento_alinhamento" ? "default" : "outline"}
+                  className="h-auto py-4 justify-start"
+                  onClick={() => {
+                    setFormData({ ...formData, tipo_manutencao: "balanceamento_alinhamento" });
+                    setShowCustomType(false);
+                  }}
+                >
+                  <div className="text-left">
+                    <div className="font-semibold">Balanceamento e Alinhamento</div>
+                    <div className="text-xs opacity-80">Ajuste de pneus e direção</div>
+                  </div>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={formData.tipo_manutencao === "revisao" ? "default" : "outline"}
+                  className="h-auto py-4 justify-start"
+                  onClick={() => {
+                    setFormData({ ...formData, tipo_manutencao: "revisao" });
+                    setShowCustomType(false);
+                  }}
+                >
+                  <div className="text-left">
+                    <div className="font-semibold">Revisão</div>
+                    <div className="text-xs opacity-80">Revisão completa do veículo</div>
+                  </div>
+                </Button>
+
+                {/* Opção de adicionar personalizado */}
+                <Button
+                  type="button"
+                  variant={showCustomType ? "default" : "outline"}
+                  className="h-auto py-4 justify-start"
+                  onClick={() => {
+                    setShowCustomType(!showCustomType);
+                    if (!showCustomType) {
+                      setFormData({ ...formData, tipo_manutencao: "" });
+                    }
+                  }}
+                >
+                  <div className="text-left">
+                    <div className="font-semibold">+ Adicionar Outro Tipo</div>
+                    <div className="text-xs opacity-80">Criar manutenção personalizada</div>
+                  </div>
+                </Button>
               </div>
-            )}
-          </div>
+
+              {showCustomType && (
+                <div className="space-y-2 mt-3">
+                  <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
+                  <Input
+                    id="custom_type"
+                    type="text"
+                    value={customTypeName}
+                    onChange={(e) => {
+                      setCustomTypeName(e.target.value);
+                      setFormData({ ...formData, tipo_manutencao: e.target.value });
+                    }}
+                    placeholder="Ex: Troca de Pneus, Revisão de Freios"
+                    required={showCustomType}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {preSelectedType === "custom" && (
+            <div className="space-y-2">
+              <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
+              <Input
+                id="custom_type"
+                type="text"
+                value={customTypeName}
+                onChange={(e) => {
+                  setCustomTypeName(e.target.value);
+                  setFormData({ ...formData, tipo_manutencao: e.target.value });
+                }}
+                placeholder="Ex: Troca de Pneus, Revisão de Freios"
+                required
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="data">Data</Label>

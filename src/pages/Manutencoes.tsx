@@ -113,13 +113,30 @@ const Manutencoes = () => {
     return <div className="text-center py-8">Carregando...</div>;
   }
 
+  const isFixedType = (tipo: string) => {
+    return ['troca_oleo', 'balanceamento_alinhamento', 'revisao'].includes(tipo);
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold text-center">Manutenções</h1>
         
-        {/* Cards de Atalho Rápido */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Botão Nova Manutenção */}
+        <div className="flex justify-center">
+          <AddManutencaoDialog 
+            onSuccess={loadManutencoes} 
+            preSelectedType="custom"
+            triggerButton={
+              <Button className="w-full md:w-auto">
+                Nova Manutenção
+              </Button>
+            }
+          />
+        </div>
+
+        {/* Cards de Tipos Fixos */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <AddManutencaoDialog 
             onSuccess={loadManutencoes} 
             preSelectedType="troca_oleo"
@@ -154,19 +171,6 @@ const Manutencoes = () => {
                 <div className="text-left w-full">
                   <div className="font-semibold text-lg">Revisão</div>
                   <div className="text-sm opacity-70">Revisão completa do veículo</div>
-                </div>
-              </Button>
-            }
-          />
-          
-          <AddManutencaoDialog 
-            onSuccess={loadManutencoes} 
-            preSelectedType="custom"
-            triggerButton={
-              <Button variant="outline" className="h-auto py-6 w-full">
-                <div className="text-left w-full">
-                  <div className="font-semibold text-lg">+ Adicionar Outro Tipo</div>
-                  <div className="text-sm opacity-70">Criar manutenção personalizada</div>
                 </div>
               </Button>
             }
@@ -211,13 +215,15 @@ const Manutencoes = () => {
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setDeletingId(manutencao.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    {!isFixedType(manutencao.tipo_manutencao) && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingId(manutencao.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardHeader>

@@ -90,21 +90,7 @@ const Metas = () => {
         .eq('user_id', userId)
         .eq('tipo', goal.tipo)
         .eq('fixa', true)
-        .single();
-
-      if (!existing) {
-        await supabase.from('metas').insert(goal);
-      }
-    }
-
-    for (const goal of defaultGoals) {
-      const { data: existing } = await supabase
-        .from('metas')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('tipo', goal.tipo)
-        .eq('fixa', true)
-        .single();
+        .maybeSingle();
 
       if (!existing) {
         await supabase.from('metas').insert(goal);

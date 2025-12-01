@@ -54,6 +54,18 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     proxima_data_manutencao: "",
   });
 
+  const formatCurrency = (value: string) => {
+    const numbers = value.replace(/\D/g, "");
+    if (!numbers) return "";
+    const floatValue = parseFloat(numbers) / 100;
+    return floatValue.toFixed(2).replace(".", ",");
+  };
+
+  const handleCurrencyChange = (value: string) => {
+    const formatted = formatCurrency(value);
+    setFormData({ ...formData, valor: formatted });
+  };
+
   useEffect(() => {
     if (open) {
       loadVeiculos();
@@ -131,14 +143,17 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         }
       }
 
+      const valorNumerico = formData.valor ? parseFloat(formData.valor.replace(",", ".")) : null;
+      const tipoManutencao = preSelectedType === "custom" ? (formData.nome_oficina_produto || "Manutenção Personalizada") : formData.tipo_manutencao;
+
       const { error } = await supabase.from("manutencoes").insert({
         user_id: user.id,
         veiculo_id: formData.veiculo_id,
-        tipo_manutencao: formData.tipo_manutencao,
+        tipo_manutencao: tipoManutencao,
         data: formData.data,
         km_atual: parseFloat(formData.km_atual),
         km_final: formData.km_final ? parseFloat(formData.km_final) : null,
-        valor: formData.valor ? parseFloat(formData.valor) : null,
+        valor: valorNumerico,
         proximo_km: formData.proximo_km ? parseFloat(formData.proximo_km) : null,
         observacoes: formData.observacoes || null,
         nome_oficina_produto: formData.nome_oficina_produto || null,
@@ -298,40 +313,9 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                 </Button>
               </div>
 
-              {showCustomType && (
-                <div className="space-y-2 mt-3">
-                  <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
-                  <Input
-                    id="custom_type"
-                    type="text"
-                    value={customTypeName}
-                    onChange={(e) => {
-                      setCustomTypeName(e.target.value);
-                      setFormData({ ...formData, tipo_manutencao: e.target.value });
-                    }}
-                    placeholder="Ex: Troca de Pneus, Revisão de Freios"
-                    required={showCustomType}
-                  />
-                </div>
-              )}
             </div>
           )}
 
-          {preSelectedType === "custom" && (
-            <div className="space-y-2">
-              <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
-              <Input
-                id="custom_type"
-                type="text"
-                    value={customTypeName}
-                    onChange={(e) => {
-                      setCustomTypeName(e.target.value);
-                      setFormData({ ...formData, tipo_manutencao: e.target.value });
-                    }}
-                    required
-                  />
-            </div>
-          )}
 
           {/* Formulário para tipos fixos (troca_oleo, balanceamento_alinhamento, revisao) */}
           {(preSelectedType === "troca_oleo" || preSelectedType === "balanceamento_alinhamento" || preSelectedType === "revisao") && (
@@ -358,17 +342,20 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="valor">Custo da Manutenção</Label>
-                <Input
-                  id="valor"
-                  type="number"
-                  step="0.01"
-                  value={formData.valor}
-                  onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  required
-                />
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="valor">Custo da Manutenção</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+              <Input
+                id="valor"
+                type="text"
+                value={formData.valor}
+                onChange={(e) => handleCurrencyChange(e.target.value)}
+                className="pl-10"
+                required
+              />
+            </div>
+          </div>
 
               <div className="space-y-2">
                 <Label htmlFor="data">Data Atual</Label>
@@ -401,7 +388,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.km_atual}
                   onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
-                  placeholder="0.00"
                   required
                 />
               </div>
@@ -452,20 +438,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="custom_type">Nome do Produto</Label>
-                <Input
-                  id="custom_type"
-                  type="text"
-                  value={customTypeName}
-                  onChange={(e) => {
-                    setCustomTypeName(e.target.value);
-                    setFormData({ ...formData, tipo_manutencao: e.target.value });
-                  }}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="observacoes">Descrição do Produto</Label>
                 <Textarea
                   id="observacoes"
@@ -488,14 +460,17 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
 
               <div className="space-y-2">
                 <Label htmlFor="valor">Custo da Manutenção</Label>
-                <Input
-                  id="valor"
-                  type="number"
-                  step="0.01"
-                  value={formData.valor}
-                  onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  required
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+                  <Input
+                    id="valor"
+                    type="text"
+                    value={formData.valor}
+                    onChange={(e) => handleCurrencyChange(e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">

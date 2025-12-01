@@ -206,6 +206,14 @@ const Metas = () => {
     }).format(value);
   };
 
+  const getStatusConclusao = (progresso: number, valorMeta: number) => {
+    if (progresso >= valorMeta) {
+      return { tipo: "batida", texto: "Meta Batida! 🎉" };
+    }
+    const faltante = valorMeta - progresso;
+    return { tipo: "faltante", texto: `Faltam ${formatCurrency(faltante)}` };
+  };
+
   const metasFixas = metas.filter(m => m.fixa);
   const metasPersonalizadas = metas.filter(m => !m.fixa);
 
@@ -264,6 +272,13 @@ const Metas = () => {
                     <p className="text-xs text-right text-muted-foreground">
                       {percentual.toFixed(1)}%
                     </p>
+                    <p className={`text-sm font-semibold text-center mt-2 ${
+                      getStatusConclusao(meta.progresso, meta.valor_meta).tipo === "batida" 
+                        ? "text-green-600 dark:text-green-500" 
+                        : "text-muted-foreground"
+                    }`}>
+                      {getStatusConclusao(meta.progresso, meta.valor_meta).texto}
+                    </p>
                   </div>
                 </Card>
               );
@@ -315,6 +330,13 @@ const Metas = () => {
                     <Progress value={Math.min(percentual, 100)} />
                     <p className="text-xs text-right text-muted-foreground">
                       {percentual.toFixed(1)}%
+                    </p>
+                    <p className={`text-sm font-semibold text-center mt-2 ${
+                      getStatusConclusao(meta.progresso, meta.valor_meta).tipo === "batida" 
+                        ? "text-green-600 dark:text-green-500" 
+                        : "text-muted-foreground"
+                    }`}>
+                      {getStatusConclusao(meta.progresso, meta.valor_meta).texto}
                     </p>
                   </div>
                 </Card>

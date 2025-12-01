@@ -102,7 +102,6 @@ export const AddVeiculoDialog = ({ onSuccess }: AddVeiculoDialogProps) => {
               id="modelo"
               value={modelo}
               onChange={handleModeloChange}
-              placeholder="Ex: Honda Civic"
               required
             />
           </div>
@@ -112,7 +111,6 @@ export const AddVeiculoDialog = ({ onSuccess }: AddVeiculoDialogProps) => {
               id="placa"
               value={placa}
               onChange={handlePlacaChange}
-              placeholder="Ex: ABC-1234"
               maxLength={8}
               required
             />
@@ -124,7 +122,6 @@ export const AddVeiculoDialog = ({ onSuccess }: AddVeiculoDialogProps) => {
               type="number"
               value={ano}
               onChange={(e) => setAno(e.target.value)}
-              placeholder="Ex: 2020"
               min="1900"
               max={new Date().getFullYear() + 1}
             />

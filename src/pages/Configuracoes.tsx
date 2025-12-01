@@ -164,7 +164,6 @@ const Configuracoes = () => {
               id="nome"
               value={profile.nome_completo}
               onChange={(e) => setProfile({ ...profile, nome_completo: e.target.value })}
-              placeholder="Seu nome completo"
             />
           </div>
 
@@ -174,7 +173,6 @@ const Configuracoes = () => {
               id="cpf"
               value={profile.cpf}
               onChange={(e) => setProfile({ ...profile, cpf: e.target.value })}
-              placeholder="000.000.000-00"
               maxLength={14}
             />
           </div>
@@ -185,7 +183,6 @@ const Configuracoes = () => {
               id="telefone"
               value={profile.telefone}
               onChange={(e) => setProfile({ ...profile, telefone: e.target.value })}
-              placeholder="(00) 00000-0000"
               maxLength={15}
             />
           </div>

@@ -252,7 +252,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
                     setCustomTypeName(e.target.value);
                     setFormData({ ...formData, tipo_manutencao: e.target.value });
                   }}
-                  placeholder="Ex: Troca de Pneus, Revisão de Freios"
                   required={showCustomType}
                 />
               </div>
@@ -279,7 +278,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               step="0.01"
               value={formData.km_atual}
               onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
-              placeholder="0.00"
               required
             />
           </div>
@@ -292,7 +290,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               step="0.01"
               value={formData.km_final}
               onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
-              placeholder="0.00"
             />
           </div>
 
@@ -304,7 +301,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               step="0.01"
               value={formData.valor}
               onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-              placeholder="0.00"
               required
             />
           </div>
@@ -316,7 +312,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               type="text"
               value={formData.nome_oficina_produto}
               onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
-              placeholder="Ex: Oficina do João, Castrol 5W30"
             />
           </div>
 
@@ -328,7 +323,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               step="0.01"
               value={formData.proximo_km}
               onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-              placeholder="Deixe em branco se não souber"
             />
           </div>
 
@@ -338,7 +332,6 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               id="observacoes"
               value={formData.observacoes}
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              placeholder="Observações adicionais..."
               rows={3}
             />
           </div>

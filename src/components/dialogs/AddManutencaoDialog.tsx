@@ -323,14 +323,13 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               <Input
                 id="custom_type"
                 type="text"
-                value={customTypeName}
-                onChange={(e) => {
-                  setCustomTypeName(e.target.value);
-                  setFormData({ ...formData, tipo_manutencao: e.target.value });
-                }}
-                placeholder="Ex: Troca de Pneus, Revisão de Freios"
-                required
-              />
+                    value={customTypeName}
+                    onChange={(e) => {
+                      setCustomTypeName(e.target.value);
+                      setFormData({ ...formData, tipo_manutencao: e.target.value });
+                    }}
+                    required
+                  />
             </div>
           )}
 
@@ -344,7 +343,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   type="text"
                   value={formData.nome_oficina_produto}
                   onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
-                  placeholder="Ex: Oficina do João"
                   required
                 />
               </div>
@@ -368,7 +366,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.valor}
                   onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  placeholder="0.00"
                   required
                 />
               </div>
@@ -417,7 +414,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.proximo_km}
                   onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-                  placeholder="Ex: 10000"
                 />
               </div>
 
@@ -451,7 +447,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   type="text"
                   value={formData.nome_oficina_produto}
                   onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
-                  placeholder="Ex: Oficina do João"
                   required
                 />
               </div>
@@ -466,7 +461,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                     setCustomTypeName(e.target.value);
                     setFormData({ ...formData, tipo_manutencao: e.target.value });
                   }}
-                  placeholder="Ex: Pneus Michelin, Óleo Castrol"
                   required
                 />
               </div>
@@ -489,7 +483,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   type="text"
                   value={formData.km_final}
                   onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
-                  placeholder="Ex: Desgaste, Preventiva, Quebra"
                 />
               </div>
 
@@ -501,7 +494,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.valor}
                   onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  placeholder="0.00"
                   required
                 />
               </div>
@@ -537,7 +529,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.km_atual}
                   onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
-                  placeholder="0.00"
                   required
                 />
               </div>
@@ -550,7 +541,6 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   step="0.01"
                   value={formData.proximo_km}
                   onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-                  placeholder="Ex: 10000"
                 />
               </div>
 

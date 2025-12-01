@@ -172,7 +172,6 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
               step="0.01"
               value={formData.valor}
               onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-              placeholder="0.00"
               required
             />
           </div>
@@ -194,7 +193,6 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
               id="observacoes"
               value={formData.observacoes}
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              placeholder="Observações adicionais..."
               rows={3}
             />
           </div>

@@ -267,8 +267,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 step="0.01"
                 value={formData.km_inicial}
                 onChange={(e) => setFormData({ ...formData, km_inicial: e.target.value })}
-                placeholder="KM"
-                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -281,8 +279,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 step="0.01"
                 value={formData.km_final}
                 onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
-                placeholder="KM"
-                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
               />
             </div>
@@ -336,7 +332,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 type="text"
                 value={formData.preco_combustivel}
                 onChange={(e) => handleMoneyChange("preco_combustivel", e.target.value)}
-                placeholder="R$"
                 required
               />
             </div>
@@ -348,7 +343,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 type="text"
                 value={formData.consumo_combustivel}
                 onChange={(e) => handleConsumptionChange(e.target.value)}
-                placeholder="Litros"
                 required
               />
             </div>
@@ -403,7 +397,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                         id={`fonte_ganho_outros_${index}`}
                         value={fonte.fonte_ganho_outros}
                         onChange={(e) => updateFonteGanho(index, "fonte_ganho_outros", e.target.value)}
-                        placeholder="Digite o nome da fonte"
                         required
                       />
                     </div>
@@ -417,7 +410,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                       min="0"
                       value={fonte.quantidade_corridas}
                       onChange={(e) => updateFonteGanho(index, "quantidade_corridas", e.target.value)}
-                      placeholder="Número de corridas"
                       required
                     />
                   </div>
@@ -432,7 +424,6 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                         const formatted = formatMoney(e.target.value);
                         updateFonteGanho(index, "valor_ganho", formatted);
                       }}
-                      placeholder="R$"
                       required
                     />
                   </div>

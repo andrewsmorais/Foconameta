@@ -99,7 +99,6 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
                 step="0.01"
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
-                placeholder="0,00"
                 className="pl-10"
                 required
               />

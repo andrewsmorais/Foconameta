@@ -115,25 +115,80 @@ const Manutencoes = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Manutenções</h1>
-        <AddManutencaoDialog onSuccess={loadManutencoes} />
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold text-center">Manutenções</h1>
+        
+        {/* Cards de Atalho Rápido */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AddManutencaoDialog 
+            onSuccess={loadManutencoes} 
+            preSelectedType="troca_oleo"
+            triggerButton={
+              <Button variant="outline" className="h-auto py-6 w-full">
+                <div className="text-left w-full">
+                  <div className="font-semibold text-lg">Troca de Óleo</div>
+                  <div className="text-sm opacity-70">Manutenção preventiva do motor</div>
+                </div>
+              </Button>
+            }
+          />
+          
+          <AddManutencaoDialog 
+            onSuccess={loadManutencoes} 
+            preSelectedType="balanceamento_alinhamento"
+            triggerButton={
+              <Button variant="outline" className="h-auto py-6 w-full">
+                <div className="text-left w-full">
+                  <div className="font-semibold text-lg">Balanceamento e Alinhamento</div>
+                  <div className="text-sm opacity-70">Ajuste de pneus e direção</div>
+                </div>
+              </Button>
+            }
+          />
+          
+          <AddManutencaoDialog 
+            onSuccess={loadManutencoes} 
+            preSelectedType="revisao"
+            triggerButton={
+              <Button variant="outline" className="h-auto py-6 w-full">
+                <div className="text-left w-full">
+                  <div className="font-semibold text-lg">Revisão</div>
+                  <div className="text-sm opacity-70">Revisão completa do veículo</div>
+                </div>
+              </Button>
+            }
+          />
+          
+          <AddManutencaoDialog 
+            onSuccess={loadManutencoes} 
+            preSelectedType="custom"
+            triggerButton={
+              <Button variant="outline" className="h-auto py-6 w-full">
+                <div className="text-left w-full">
+                  <div className="font-semibold text-lg">+ Adicionar Outro Tipo</div>
+                  <div className="text-sm opacity-70">Criar manutenção personalizada</div>
+                </div>
+              </Button>
+            }
+          />
+        </div>
       </div>
 
-      {manutencoes.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Histórico de Manutenções</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Nenhuma manutenção registrada ainda. Clique em "Nova Manutenção" para começar.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4">
-          {manutencoes.map((manutencao) => (
+      {/* Histórico de Manutenções */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Histórico de Manutenções</h2>
+        
+        {manutencoes.length === 0 ? (
+          <Card>
+            <CardContent className="py-8">
+              <p className="text-muted-foreground text-center">
+                Nenhuma manutenção registrada ainda. Clique em um dos cards acima para começar.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4">
+            {manutencoes.map((manutencao) => (
             <Card key={manutencao.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -217,9 +272,10 @@ const Manutencoes = () => {
                 )}
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
       {editingManutencao && (
         <EditManutencaoDialog

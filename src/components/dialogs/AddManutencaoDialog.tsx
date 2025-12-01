@@ -11,6 +11,8 @@ import { Plus } from "lucide-react";
 
 interface AddManutencaoDialogProps {
   onSuccess: () => void;
+  preSelectedType?: string;
+  triggerButton?: React.ReactNode;
 }
 
 interface Veiculo {
@@ -30,17 +32,17 @@ const tiposManutencao = [
   { value: "outros", label: "Outros" },
 ];
 
-export const AddManutencaoDialog = ({ onSuccess }: AddManutencaoDialogProps) => {
+export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton }: AddManutencaoDialogProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  const [showCustomType, setShowCustomType] = useState(false);
+  const [showCustomType, setShowCustomType] = useState(preSelectedType === "custom");
   const [customTypeName, setCustomTypeName] = useState("");
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     veiculo_id: "",
-    tipo_manutencao: "",
+    tipo_manutencao: preSelectedType && preSelectedType !== "custom" ? preSelectedType : "",
     data: new Date().toISOString().split("T")[0],
     km_atual: "",
     km_final: "",
@@ -54,6 +56,20 @@ export const AddManutencaoDialog = ({ onSuccess }: AddManutencaoDialogProps) => 
   useEffect(() => {
     if (open) {
       loadVeiculos();
+      // Reset form when opening
+      if (preSelectedType && preSelectedType !== "custom") {
+        setFormData({
+          ...formData,
+          tipo_manutencao: preSelectedType,
+        });
+        setShowCustomType(false);
+      } else if (preSelectedType === "custom") {
+        setShowCustomType(true);
+        setFormData({
+          ...formData,
+          tipo_manutencao: "",
+        });
+      }
     }
   }, [open]);
 
@@ -136,12 +152,18 @@ export const AddManutencaoDialog = ({ onSuccess }: AddManutencaoDialogProps) => 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Nova Manutenção
-        </Button>
-      </DialogTrigger>
+      {triggerButton ? (
+        <DialogTrigger asChild>
+          {triggerButton}
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            Nova Manutenção
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Registrar Manutenção</DialogTitle>

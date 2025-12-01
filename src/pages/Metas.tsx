@@ -20,6 +20,7 @@ interface Meta {
   ativa: boolean;
   fixa: boolean;
   nome_personalizado: string | null;
+  metrica_rastreamento: string;
   progresso: number;
 }
 
@@ -51,6 +52,7 @@ const Metas = () => {
         valor_meta: 0,
         data_inicio: format(today, 'yyyy-MM-dd'),
         data_fim: format(today, 'yyyy-MM-dd'),
+        metrica_rastreamento: 'lucro_liquido',
         ativa: true,
         fixa: true
       },
@@ -60,6 +62,7 @@ const Metas = () => {
         valor_meta: 0,
         data_inicio: format(startOfWeek, 'yyyy-MM-dd'),
         data_fim: format(endOfWeek, 'yyyy-MM-dd'),
+        metrica_rastreamento: 'lucro_liquido',
         ativa: true,
         fixa: true
       },
@@ -69,6 +72,7 @@ const Metas = () => {
         valor_meta: 0,
         data_inicio: format(startOfMonth, 'yyyy-MM-dd'),
         data_fim: format(endOfMonth, 'yyyy-MM-dd'),
+        metrica_rastreamento: 'lucro_liquido',
         ativa: true,
         fixa: true
       },
@@ -78,6 +82,7 @@ const Metas = () => {
         valor_meta: 0,
         data_inicio: format(startOfYear, 'yyyy-MM-dd'),
         data_fim: format(endOfYear, 'yyyy-MM-dd'),
+        metrica_rastreamento: 'lucro_liquido',
         ativa: true,
         fixa: true
       }
@@ -117,14 +122,16 @@ const Metas = () => {
 
       const metasWithProgress = await Promise.all(
         (metasData || []).map(async (meta) => {
+          const metricaField = meta.metrica_rastreamento === 'ganhos_brutos' ? 'valor_ganho' : 'lucro_liquido';
+          
           const { data: turnosData } = await supabase
             .from("turnos_km")
-            .select("lucro_liquido")
+            .select(metricaField)
             .eq("user_id", user.id)
             .gte("data", meta.data_inicio)
             .lte("data", meta.data_fim);
 
-          const progresso = turnosData?.reduce((sum, turno) => sum + Number(turno.lucro_liquido || 0), 0) || 0;
+          const progresso = turnosData?.reduce((sum, turno) => sum + Number(turno[metricaField as keyof typeof turno] || 0), 0) || 0;
 
           return {
             ...meta,

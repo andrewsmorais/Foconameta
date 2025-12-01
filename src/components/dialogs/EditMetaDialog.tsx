@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -16,6 +17,7 @@ interface Meta {
   ativa: boolean;
   fixa: boolean;
   nome_personalizado: string | null;
+  metrica_rastreamento: string;
   progresso: number;
 }
 
@@ -32,6 +34,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
   const [valor, setValor] = useState("");
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
+  const [metricaRastreamento, setMetricaRastreamento] = useState("lucro_liquido");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -51,6 +54,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
       setValor(meta.valor_meta.toString());
       setDataInicio(format(new Date(meta.data_inicio), "yyyy-MM-dd"));
       setDataFim(format(new Date(meta.data_fim), "yyyy-MM-dd"));
+      setMetricaRastreamento(meta.metrica_rastreamento || "lucro_liquido");
     }
   }, [meta]);
 
@@ -63,6 +67,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
         valor_meta: parseFloat(valor),
         data_inicio: dataInicio,
         data_fim: dataFim,
+        metrica_rastreamento: metricaRastreamento,
       };
 
       // Apenas metas personalizadas podem alterar o nome
@@ -163,6 +168,19 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
                 required
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="metrica">Métrica de Rastreamento</Label>
+            <Select value={metricaRastreamento} onValueChange={setMetricaRastreamento}>
+              <SelectTrigger id="metrica">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="lucro_liquido">Lucro Líquido</SelectItem>
+                <SelectItem value="ganhos_brutos">Ganhos Brutos</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-end gap-2">

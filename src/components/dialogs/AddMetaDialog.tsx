@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -19,6 +20,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
   const [valor, setValor] = useState("");
   const [dataInicio, setDataInicio] = useState(format(new Date(), "yyyy-MM-dd"));
   const [dataFim, setDataFim] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [metricaRastreamento, setMetricaRastreamento] = useState("lucro_liquido");
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,6 +38,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
         valor_meta: parseFloat(valor),
         data_inicio: dataInicio,
         data_fim: dataFim,
+        metrica_rastreamento: metricaRastreamento,
         ativa: true,
         fixa: false,
       });
@@ -51,6 +54,7 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
       setValor("");
       setDataInicio(format(new Date(), "yyyy-MM-dd"));
       setDataFim(format(new Date(), "yyyy-MM-dd"));
+      setMetricaRastreamento("lucro_liquido");
       onOpenChange(false);
       onSuccess();
     } catch (error) {
@@ -118,6 +122,19 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
                 required
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="metrica">Métrica de Rastreamento</Label>
+            <Select value={metricaRastreamento} onValueChange={setMetricaRastreamento}>
+              <SelectTrigger id="metrica">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="lucro_liquido">Lucro Líquido</SelectItem>
+                <SelectItem value="ganhos_brutos">Ganhos Brutos</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-end gap-2">

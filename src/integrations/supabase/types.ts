@@ -114,6 +114,7 @@ export type Database = {
           data_inicio: string
           fixa: boolean | null
           id: string
+          metrica_rastreamento: string
           nome_personalizado: string | null
           tipo: string
           user_id: string
@@ -126,6 +127,7 @@ export type Database = {
           data_inicio: string
           fixa?: boolean | null
           id?: string
+          metrica_rastreamento?: string
           nome_personalizado?: string | null
           tipo: string
           user_id: string
@@ -138,6 +140,7 @@ export type Database = {
           data_inicio?: string
           fixa?: boolean | null
           id?: string
+          metrica_rastreamento?: string
           nome_personalizado?: string | null
           tipo?: string
           user_id?: string

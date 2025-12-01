@@ -361,6 +361,19 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="valor">Custo da Manutenção</Label>
+                <Input
+                  id="valor"
+                  type="number"
+                  step="0.01"
+                  value={formData.valor}
+                  onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="data">Data Atual</Label>
                 <Input
                   id="data"
@@ -432,7 +445,19 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           {preSelectedType === "custom" && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="custom_type">Nome da Manutenção Personalizada</Label>
+                <Label htmlFor="nome_oficina_produto">Nome da Oficina</Label>
+                <Input
+                  id="nome_oficina_produto"
+                  type="text"
+                  value={formData.nome_oficina_produto}
+                  onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
+                  placeholder="Ex: Oficina do João"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="custom_type">Nome do Produto</Label>
                 <Input
                   id="custom_type"
                   type="text"
@@ -441,50 +466,35 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                     setCustomTypeName(e.target.value);
                     setFormData({ ...formData, tipo_manutencao: e.target.value });
                   }}
-                  placeholder="Ex: Troca de Pneus, Revisão de Freios"
+                  placeholder="Ex: Pneus Michelin, Óleo Castrol"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="data">Data</Label>
-                <Input
-                  id="data"
-                  type="date"
-                  value={formData.data}
-                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-                  className="dark:[color-scheme:dark]"
-                  required
+                <Label htmlFor="observacoes">Descrição do Produto</Label>
+                <Textarea
+                  id="observacoes"
+                  value={formData.observacoes}
+                  onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+                  placeholder=""
+                  rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="km_atual">KM Inicial</Label>
-                <Input
-                  id="km_atual"
-                  type="number"
-                  step="0.01"
-                  value={formData.km_atual}
-                  onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="km_final">KM Final (opcional)</Label>
+                <Label htmlFor="km_final">Motivo da Troca</Label>
                 <Input
                   id="km_final"
-                  type="number"
-                  step="0.01"
+                  type="text"
                   value={formData.km_final}
                   onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
-                  placeholder="0.00"
+                  placeholder="Ex: Desgaste, Preventiva, Quebra"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="valor">Valor</Label>
+                <Label htmlFor="valor">Custo da Manutenção</Label>
                 <Input
                   id="valor"
                   type="number"
@@ -497,41 +507,55 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto (opcional)</Label>
+                <Label htmlFor="data">Data Atual</Label>
                 <Input
-                  id="nome_oficina_produto"
-                  type="text"
-                  value={formData.nome_oficina_produto}
-                  onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
-                  placeholder="Ex: Oficina do João, Castrol 5W30"
+                  id="data"
+                  type="date"
+                  value={formData.data}
+                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
+                  className="dark:[color-scheme:dark]"
+                  required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>
+                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção</Label>
+                <Input
+                  id="proxima_data_manutencao"
+                  type="date"
+                  value={formData.proxima_data_manutencao}
+                  onChange={(e) => setFormData({ ...formData, proxima_data_manutencao: e.target.value })}
+                  className="dark:[color-scheme:dark]"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="km_atual">KM Atual</Label>
+                <Input
+                  id="km_atual"
+                  type="number"
+                  step="0.01"
+                  value={formData.km_atual}
+                  onChange={(e) => setFormData({ ...formData, km_atual: e.target.value })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="proximo_km">Próximo KM para Manutenção (Opcional)</Label>
                 <Input
                   id="proximo_km"
                   type="number"
                   step="0.01"
                   value={formData.proximo_km}
                   onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-                  placeholder="Deixe em branco se não souber"
+                  placeholder="Ex: 10000"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="observacoes">Observações (opcional)</Label>
-                <Textarea
-                  id="observacoes"
-                  value={formData.observacoes}
-                  onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-                  placeholder="Observações adicionais..."
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="comprovante">Anexar Comprovante (opcional)</Label>
+                <Label htmlFor="comprovante">Anexar Comprovante</Label>
                 <Input
                   id="comprovante"
                   type="file"

@@ -21,6 +21,7 @@ interface Meta {
   fixa: boolean;
   nome_personalizado: string | null;
   metrica_rastreamento: string;
+  mostrar_no_dashboard?: boolean;
   progresso: number;
 }
 
@@ -32,90 +33,17 @@ const Metas = () => {
   const [deletingMetaId, setDeletingMetaId] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const ensureDefaultGoals = async (userId: string) => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
-    const startOfYear = new Date(today.getFullYear(), 0, 1);
-    const endOfYear = new Date(today.getFullYear(), 11, 31);
-
-    const defaultGoals = [
-      {
-        user_id: userId,
-        tipo: 'diaria',
-        valor_meta: 0,
-        data_inicio: format(today, 'yyyy-MM-dd'),
-        data_fim: format(today, 'yyyy-MM-dd'),
-        metrica_rastreamento: 'lucro_liquido',
-        ativa: true,
-        fixa: true
-      },
-      {
-        user_id: userId,
-        tipo: 'semanal',
-        valor_meta: 0,
-        data_inicio: format(startOfWeek, 'yyyy-MM-dd'),
-        data_fim: format(endOfWeek, 'yyyy-MM-dd'),
-        metrica_rastreamento: 'lucro_liquido',
-        ativa: true,
-        fixa: true
-      },
-      {
-        user_id: userId,
-        tipo: 'mensal',
-        valor_meta: 0,
-        data_inicio: format(startOfMonth, 'yyyy-MM-dd'),
-        data_fim: format(endOfMonth, 'yyyy-MM-dd'),
-        metrica_rastreamento: 'lucro_liquido',
-        ativa: true,
-        fixa: true
-      },
-      {
-        user_id: userId,
-        tipo: 'anual',
-        valor_meta: 0,
-        data_inicio: format(startOfYear, 'yyyy-MM-dd'),
-        data_fim: format(endOfYear, 'yyyy-MM-dd'),
-        metrica_rastreamento: 'lucro_liquido',
-        ativa: true,
-        fixa: true
-      }
-    ];
-
-    for (const goal of defaultGoals) {
-      const { data: existing } = await supabase
-        .from('metas')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('tipo', goal.tipo)
-        .eq('fixa', true)
-        .maybeSingle();
-
-      if (!existing) {
-        await supabase.from('metas').insert(goal);
-      }
-    }
-  };
 
   const loadMetas = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      await ensureDefaultGoals(user.id);
-
       const { data: metasData, error } = await supabase
         .from("metas")
         .select("*")
         .eq("user_id", user.id)
         .eq("ativa", true)
-        .order("fixa", { ascending: false })
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -187,16 +115,7 @@ const Metas = () => {
   };
 
   const getMetaLabel = (meta: Meta) => {
-    if (meta.fixa) {
-      const labels: Record<string, string> = {
-        diaria: "Meta Diária",
-        semanal: "Meta Semanal",
-        mensal: "Meta Mensal",
-        anual: "Meta Anual"
-      };
-      return labels[meta.tipo] || meta.tipo;
-    }
-    return meta.nome_personalizado || "Meta Personalizada";
+    return meta.nome_personalizado || "Meta";
   };
 
   const formatCurrency = (value: number) => {
@@ -214,8 +133,6 @@ const Metas = () => {
     return { tipo: "faltante", texto: `Faltam ${formatCurrency(faltante)}` };
   };
 
-  const metasFixas = metas.filter(m => m.fixa);
-  const metasPersonalizadas = metas.filter(m => !m.fixa);
 
   if (loading) {
     return (
@@ -233,26 +150,25 @@ const Metas = () => {
         <h1 className="text-3xl font-bold">Metas</h1>
         <Button onClick={() => setShowAddDialog(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          Nova Meta Personalizada
+          Criar Meta
         </Button>
       </div>
 
-      {metasFixas.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Metas Padrão</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {metasFixas.map((meta) => {
-              const percentual = meta.valor_meta > 0 ? (meta.progresso / meta.valor_meta) * 100 : 0;
-              return (
-                <Card key={meta.id} className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-lg">{getMetaLabel(meta)}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {format(new Date(meta.data_inicio), "dd/MM/yyyy", { locale: ptBR })} -{" "}
-                        {format(new Date(meta.data_fim), "dd/MM/yyyy", { locale: ptBR })}
-                      </p>
-                    </div>
+      {metas.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {metas.map((meta) => {
+            const percentual = meta.valor_meta > 0 ? (meta.progresso / meta.valor_meta) * 100 : 0;
+            return (
+              <Card key={meta.id} className="p-6 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-lg">{getMetaLabel(meta)}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {format(new Date(meta.data_inicio), "dd/MM/yyyy", { locale: ptBR })} -{" "}
+                      {format(new Date(meta.data_fim), "dd/MM/yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -260,96 +176,44 @@ const Metas = () => {
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeletingMetaId(meta.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progresso</span>
-                      <span className="font-semibold">
-                        {formatCurrency(meta.progresso)} / {formatCurrency(meta.valor_meta)}
-                      </span>
-                    </div>
-                    <Progress value={Math.min(percentual, 100)} />
-                    <p className="text-xs text-right text-muted-foreground">
-                      {percentual.toFixed(1)}%
-                    </p>
-                    <p className={`text-sm font-semibold text-center mt-2 ${
-                      getStatusConclusao(meta.progresso, meta.valor_meta).tipo === "batida" 
-                        ? "text-green-600 dark:text-green-500" 
-                        : "text-muted-foreground"
-                    }`}>
-                      {getStatusConclusao(meta.progresso, meta.valor_meta).texto}
-                    </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progresso</span>
+                    <span className="font-semibold">
+                      {formatCurrency(meta.progresso)} / {formatCurrency(meta.valor_meta)}
+                    </span>
                   </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {metasPersonalizadas.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Metas Personalizadas</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {metasPersonalizadas.map((meta) => {
-              const percentual = meta.valor_meta > 0 ? (meta.progresso / meta.valor_meta) * 100 : 0;
-              return (
-                <Card key={meta.id} className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-lg">{getMetaLabel(meta)}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {format(new Date(meta.data_inicio), "dd/MM/yyyy", { locale: ptBR })} -{" "}
-                        {format(new Date(meta.data_fim), "dd/MM/yyyy", { locale: ptBR })}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditingMeta(meta)}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeletingMetaId(meta.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progresso</span>
-                      <span className="font-semibold">
-                        {formatCurrency(meta.progresso)} / {formatCurrency(meta.valor_meta)}
-                      </span>
-                    </div>
-                    <Progress value={Math.min(percentual, 100)} />
-                    <p className="text-xs text-right text-muted-foreground">
-                      {percentual.toFixed(1)}%
-                    </p>
-                    <p className={`text-sm font-semibold text-center mt-2 ${
-                      getStatusConclusao(meta.progresso, meta.valor_meta).tipo === "batida" 
-                        ? "text-green-600 dark:text-green-500" 
-                        : "text-muted-foreground"
-                    }`}>
-                      {getStatusConclusao(meta.progresso, meta.valor_meta).texto}
-                    </p>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+                  <Progress value={Math.min(percentual, 100)} />
+                  <p className="text-xs text-right text-muted-foreground">
+                    {percentual.toFixed(1)}%
+                  </p>
+                  <p className={`text-sm font-semibold text-center mt-2 ${
+                    getStatusConclusao(meta.progresso, meta.valor_meta).tipo === "batida" 
+                      ? "text-green-600 dark:text-green-500" 
+                      : "text-muted-foreground"
+                  }`}>
+                    {getStatusConclusao(meta.progresso, meta.valor_meta).texto}
+                  </p>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
 
       {metas.length === 0 && (
         <Card className="p-12 text-center">
           <p className="text-muted-foreground">
-            Nenhuma meta cadastrada. Clique em "Nova Meta Personalizada" para começar.
+            Nenhuma meta cadastrada. Clique em "Criar Meta" para começar.
           </p>
         </Card>
       )}

@@ -18,6 +18,7 @@ interface Meta {
   fixa: boolean;
   nome_personalizado: string | null;
   metrica_rastreamento: string;
+  mostrar_no_dashboard?: boolean;
   progresso: number;
 }
 
@@ -35,26 +36,17 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [metricaRastreamento, setMetricaRastreamento] = useState("lucro_liquido");
+  const [mostrarNoDashboard, setMostrarNoDashboard] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     if (meta) {
-      // Para metas fixas, usar o label apropriado
-      if (meta.fixa) {
-        const labels: Record<string, string> = {
-          diaria: "Meta Diária",
-          semanal: "Meta Semanal",
-          mensal: "Meta Mensal",
-          anual: "Meta Anual"
-        };
-        setNome(labels[meta.tipo] || meta.tipo);
-      } else {
-        setNome(meta.nome_personalizado || "");
-      }
+      setNome(meta.nome_personalizado || "");
       setValor(meta.valor_meta.toString());
       setDataInicio(format(new Date(meta.data_inicio), "yyyy-MM-dd"));
       setDataFim(format(new Date(meta.data_fim), "yyyy-MM-dd"));
       setMetricaRastreamento(meta.metrica_rastreamento || "lucro_liquido");
+      setMostrarNoDashboard(meta.mostrar_no_dashboard || false);
     }
   }, [meta]);
 
@@ -63,21 +55,16 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
     setLoading(true);
 
     try {
-      const updateData: any = {
-        valor_meta: parseFloat(valor),
-        data_inicio: dataInicio,
-        data_fim: dataFim,
-        metrica_rastreamento: metricaRastreamento,
-      };
-
-      // Apenas metas personalizadas podem alterar o nome
-      if (!meta.fixa) {
-        updateData.nome_personalizado = nome;
-      }
-
       const { error } = await supabase
         .from("metas")
-        .update(updateData)
+        .update({
+          nome_personalizado: nome,
+          valor_meta: parseFloat(valor),
+          data_inicio: dataInicio,
+          data_fim: dataFim,
+          metrica_rastreamento: metricaRastreamento,
+          mostrar_no_dashboard: mostrarNoDashboard,
+        })
         .eq("id", meta.id);
 
       if (error) throw error;
@@ -101,24 +88,12 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
     }
   };
 
-  const getMetaLabel = () => {
-    if (meta.fixa) {
-      const labels: Record<string, string> = {
-        diaria: "Meta Diária",
-        semanal: "Meta Semanal",
-        mensal: "Meta Mensal",
-        anual: "Meta Anual"
-      };
-      return labels[meta.tipo] || meta.tipo;
-    }
-    return "Meta Personalizada";
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar {getMetaLabel()}</DialogTitle>
+          <DialogTitle>Editar Meta</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -128,7 +103,6 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               placeholder="Ex: Férias, Compra de Carro..."
-              disabled={meta.fixa}
               required
             />
           </div>
@@ -181,6 +155,19 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
                 <SelectItem value="ganhos_brutos">Ganhos Brutos</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="dashboard"
+              checked={mostrarNoDashboard}
+              onChange={(e) => setMostrarNoDashboard(e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            <Label htmlFor="dashboard" className="cursor-pointer">
+              Mostrar no Dashboard
+            </Label>
           </div>
 
           <div className="flex justify-end gap-2">

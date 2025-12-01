@@ -34,6 +34,7 @@ interface DashboardMetrics {
   metaDiaria: MetaProgress | null;
   metaSemanal: MetaProgress | null;
   metaMensal: MetaProgress | null;
+  metaAnual: MetaProgress | null;
   metasPersonalizadas: MetaProgress[];
 }
 
@@ -56,6 +57,7 @@ const Dashboard = () => {
     metaDiaria: null,
     metaSemanal: null,
     metaMensal: null,
+    metaAnual: null,
     metasPersonalizadas: [],
   });
   const [chartData, setChartData] = useState<any[]>([]);
@@ -152,6 +154,7 @@ const Dashboard = () => {
       const metaDiaria = calcularProgressoMeta("diária");
       const metaSemanal = calcularProgressoMeta("semanal");
       const metaMensal = calcularProgressoMeta("mensal");
+      const metaAnual = calcularProgressoMeta("anual");
 
       // Buscar metas personalizadas ativas
       const metasPersonalizadas = metas?.filter(m => m.tipo === "personalizada") || [];
@@ -195,6 +198,7 @@ const Dashboard = () => {
         metaDiaria,
         metaSemanal,
         metaMensal,
+        metaAnual,
         metasPersonalizadas: metasPersonalizadasProcessadas,
       });
 
@@ -366,97 +370,104 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Meta Diária */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-foreground">Meta Diária</p>
-                {metrics.metaDiaria && (
+            {metrics.metaDiaria && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">Meta Diária</p>
                   <span className={cn(
                     "text-xs font-medium",
                     metrics.metaDiaria.atingida ? "text-success" : "text-muted-foreground"
                   )}>
                     {metrics.metaDiaria.percentual.toFixed(0)}%
                   </span>
-                )}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  R$ {metrics.metaDiaria.alcancado.toFixed(2)} de R$ {metrics.metaDiaria.total.toFixed(2)}
+                </p>
+                <Progress 
+                  value={metrics.metaDiaria.percentual}
+                  className={cn(
+                    "h-3",
+                    metrics.metaDiaria.atingida && "[&>div]:bg-success"
+                  )}
+                />
               </div>
-              {metrics.metaDiaria ? (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    R$ {metrics.metaDiaria.alcancado.toFixed(2)} de R$ {metrics.metaDiaria.total.toFixed(2)}
-                  </p>
-                  <Progress 
-                    value={metrics.metaDiaria.percentual}
-                    className={cn(
-                      "h-3",
-                      metrics.metaDiaria.atingida && "[&>div]:bg-success"
-                    )}
-                  />
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Nenhuma meta diária ativa</p>
-              )}
-            </div>
+            )}
 
             {/* Meta Semanal */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-foreground">Meta Semanal</p>
-                {metrics.metaSemanal && (
+            {metrics.metaSemanal && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">Meta Semanal</p>
                   <span className={cn(
                     "text-xs font-medium",
                     metrics.metaSemanal.atingida ? "text-success" : "text-muted-foreground"
                   )}>
                     {metrics.metaSemanal.percentual.toFixed(0)}%
                   </span>
-                )}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  R$ {metrics.metaSemanal.alcancado.toFixed(2)} de R$ {metrics.metaSemanal.total.toFixed(2)}
+                </p>
+                <Progress 
+                  value={metrics.metaSemanal.percentual}
+                  className={cn(
+                    "h-3",
+                    metrics.metaSemanal.atingida && "[&>div]:bg-success"
+                  )}
+                />
               </div>
-              {metrics.metaSemanal ? (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    R$ {metrics.metaSemanal.alcancado.toFixed(2)} de R$ {metrics.metaSemanal.total.toFixed(2)}
-                  </p>
-                  <Progress 
-                    value={metrics.metaSemanal.percentual}
-                    className={cn(
-                      "h-3",
-                      metrics.metaSemanal.atingida && "[&>div]:bg-success"
-                    )}
-                  />
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Nenhuma meta semanal ativa</p>
-              )}
-            </div>
+            )}
 
             {/* Meta Mensal */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-foreground">Meta Mensal</p>
-                {metrics.metaMensal && (
+            {metrics.metaMensal && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">Meta Mensal</p>
                   <span className={cn(
                     "text-xs font-medium",
                     metrics.metaMensal.atingida ? "text-success" : "text-muted-foreground"
                   )}>
                     {metrics.metaMensal.percentual.toFixed(0)}%
                   </span>
-                )}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  R$ {metrics.metaMensal.alcancado.toFixed(2)} de R$ {metrics.metaMensal.total.toFixed(2)}
+                </p>
+                <Progress 
+                  value={metrics.metaMensal.percentual}
+                  className={cn(
+                    "h-3",
+                    metrics.metaMensal.atingida && "[&>div]:bg-success"
+                  )}
+                />
               </div>
-              {metrics.metaMensal ? (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    R$ {metrics.metaMensal.alcancado.toFixed(2)} de R$ {metrics.metaMensal.total.toFixed(2)}
-                  </p>
-                  <Progress 
-                    value={metrics.metaMensal.percentual}
-                    className={cn(
-                      "h-3",
-                      metrics.metaMensal.atingida && "[&>div]:bg-success"
-                    )}
-                  />
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Nenhuma meta mensal ativa</p>
-              )}
-            </div>
+            )}
+
+            {/* Meta Anual */}
+            {metrics.metaAnual && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">Meta Anual</p>
+                  <span className={cn(
+                    "text-xs font-medium",
+                    metrics.metaAnual.atingida ? "text-success" : "text-muted-foreground"
+                  )}>
+                    {metrics.metaAnual.percentual.toFixed(0)}%
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  R$ {metrics.metaAnual.alcancado.toFixed(2)} de R$ {metrics.metaAnual.total.toFixed(2)}
+                </p>
+                <Progress 
+                  value={metrics.metaAnual.percentual}
+                  className={cn(
+                    "h-3",
+                    metrics.metaAnual.atingida && "[&>div]:bg-success"
+                  )}
+                />
+              </div>
+            )}
 
             {/* Metas Personalizadas */}
             {metrics.metasPersonalizadas.map((metaPersonalizada, index) => (

@@ -161,7 +161,7 @@ const Metas = () => {
         {/* Metas Fixas (Obrigatórias) */}
         <div>
           <h2 className="text-xl font-semibold mb-4">Metas Padrão</h2>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {metasFixas.map((meta) => {
                 const progresso = progressos[meta.id] || 0;
                 const percentual = Math.min((progresso / meta.valor_meta) * 100, 100);

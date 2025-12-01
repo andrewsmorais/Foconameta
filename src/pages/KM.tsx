@@ -271,7 +271,7 @@ const KM = () => {
               <p className="text-xl font-bold text-success">
                 {(() => {
                   const totalKm = turnos.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0);
-                  const totalLitros = turnos.reduce((sum, t) => sum + (t.consumo_combustivel || 0), 0);
+                  const totalLitros = turnos.reduce((sum, t) => sum + (((t.km_final - t.km_inicial) / t.consumo_combustivel) || 0), 0);
                   return totalLitros > 0 ? (totalKm / totalLitros).toFixed(2) : "0.00";
                 })()} km/L
               </p>
@@ -291,7 +291,7 @@ const KM = () => {
             <div>
               <p className="text-sm font-bold text-foreground mb-1">Despesa Combustível Total</p>
               <p className="text-xl font-bold text-success">
-                R$ {turnos.reduce((sum, t) => sum + (t.consumo_combustivel * t.preco_combustivel), 0).toFixed(2)}
+                R$ {turnos.reduce((sum, t) => sum + (((t.km_final - t.km_inicial) / t.consumo_combustivel) * t.preco_combustivel), 0).toFixed(2)}
               </p>
             </div>
             <div>

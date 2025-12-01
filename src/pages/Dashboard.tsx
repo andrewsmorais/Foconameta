@@ -113,9 +113,9 @@ const Dashboard = () => {
         // Normalizar o tipo desejado
         const tipoNormalizado = normalizarTipo(tipoDesejado);
         
-        // Buscar todas as metas do tipo desejado
+        // Buscar todas as metas do tipo desejado que devem ser exibidas no dashboard
         const metasCandidatas = metas?.filter(m => 
-          normalizarTipo(m.tipo) === tipoNormalizado
+          normalizarTipo(m.tipo) === tipoNormalizado && m.mostrar_no_dashboard === true
         ) || [];
 
         if (metasCandidatas.length === 0) return null;
@@ -134,7 +134,9 @@ const Dashboard = () => {
           return dataTurno >= dataInicioMeta && dataTurno <= dataFimMeta;
         }) || [];
 
-        const alcancado = turnosMeta.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0);
+        // Usar a métrica de rastreamento definida pelo usuário
+        const metricaField = meta.metrica_rastreamento === 'ganhos_brutos' ? 'valor_ganho' : 'lucro_liquido';
+        const alcancado = turnosMeta.reduce((sum, t) => sum + (t[metricaField] || 0), 0);
         const total = meta.valor_meta;
         const percentual = total > 0 ? (alcancado / total) * 100 : 0;
         const atingida = alcancado >= total;
@@ -156,8 +158,8 @@ const Dashboard = () => {
       const metaMensal = calcularProgressoMeta("mensal");
       const metaAnual = calcularProgressoMeta("anual");
 
-      // Buscar metas personalizadas ativas
-      const metasPersonalizadas = metas?.filter(m => m.tipo === "personalizada") || [];
+      // Buscar metas personalizadas ativas que devem ser exibidas no dashboard
+      const metasPersonalizadas = metas?.filter(m => m.tipo === "personalizada" && m.mostrar_no_dashboard === true) || [];
       const metasPersonalizadasProcessadas = metasPersonalizadas.map(meta => {
         const dataInicioMeta = parseISO(meta.data_inicio);
         const dataFimMeta = parseISO(meta.data_fim);
@@ -167,7 +169,9 @@ const Dashboard = () => {
           return dataTurno >= dataInicioMeta && dataTurno <= dataFimMeta;
         }) || [];
 
-        const alcancado = turnosMeta.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0);
+        // Usar a métrica de rastreamento definida pelo usuário
+        const metricaField = meta.metrica_rastreamento === 'ganhos_brutos' ? 'valor_ganho' : 'lucro_liquido';
+        const alcancado = turnosMeta.reduce((sum, t) => sum + (t[metricaField] || 0), 0);
         const total = meta.valor_meta;
         const percentual = total > 0 ? (alcancado / total) * 100 : 0;
         const atingida = alcancado >= total;

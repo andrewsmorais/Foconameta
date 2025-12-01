@@ -36,7 +36,18 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
 
   useEffect(() => {
     if (meta) {
-      setNome(meta.nome_personalizado || "");
+      // Para metas fixas, usar o label apropriado
+      if (meta.fixa) {
+        const labels: Record<string, string> = {
+          diaria: "Meta Diária",
+          semanal: "Meta Semanal",
+          mensal: "Meta Mensal",
+          anual: "Meta Anual"
+        };
+        setNome(labels[meta.tipo] || meta.tipo);
+      } else {
+        setNome(meta.nome_personalizado || "");
+      }
       setValor(meta.valor_meta.toString());
       setDataInicio(format(new Date(meta.data_inicio), "yyyy-MM-dd"));
       setDataFim(format(new Date(meta.data_fim), "yyyy-MM-dd"));
@@ -50,12 +61,13 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
     try {
       const updateData: any = {
         valor_meta: parseFloat(valor),
+        data_inicio: dataInicio,
+        data_fim: dataFim,
       };
 
+      // Apenas metas personalizadas podem alterar o nome
       if (!meta.fixa) {
         updateData.nome_personalizado = nome;
-        updateData.data_inicio = dataInicio;
-        updateData.data_fim = dataFim;
       }
 
       const { error } = await supabase
@@ -104,18 +116,17 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
           <DialogTitle>Editar {getMetaLabel()}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!meta.fixa && (
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome da Meta</Label>
-              <Input
-                id="nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Ex: Férias, Compra de Carro..."
-                required
-              />
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="nome">Nome da Meta</Label>
+            <Input
+              id="nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Ex: Férias, Compra de Carro..."
+              disabled={meta.fixa}
+              required
+            />
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="valor">Valor da Meta (R$)</Label>
@@ -130,31 +141,29 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
             />
           </div>
 
-          {!meta.fixa && (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="dataInicio">Data Início</Label>
-                <Input
-                  id="dataInicio"
-                  type="date"
-                  value={dataInicio}
-                  onChange={(e) => setDataInicio(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dataFim">Data Fim</Label>
-                <Input
-                  id="dataFim"
-                  type="date"
-                  value={dataFim}
-                  onChange={(e) => setDataFim(e.target.value)}
-                  required
-                />
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="dataInicio">Data Início</Label>
+              <Input
+                id="dataInicio"
+                type="date"
+                value={dataInicio}
+                onChange={(e) => setDataInicio(e.target.value)}
+                required
+              />
             </div>
-          )}
+
+            <div className="space-y-2">
+              <Label htmlFor="dataFim">Data Fim</Label>
+              <Input
+                id="dataFim"
+                type="date"
+                value={dataFim}
+                onChange={(e) => setDataFim(e.target.value)}
+                required
+              />
+            </div>
+          </div>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

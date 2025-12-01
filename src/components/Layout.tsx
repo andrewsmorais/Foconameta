@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Navigation, TrendingUp, Wrench, FileText, Menu, X, LogOut, User, Car, Settings, DollarSign, Route, Shield } from "lucide-react";
+import { LayoutDashboard, Navigation, TrendingUp, Wrench, Target, FileText, Menu, X, LogOut, User, Car, Settings, DollarSign, Route, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useSuperAdmin } from "@/hooks/useSuperAdmin";
@@ -28,6 +28,10 @@ const menuItems = [{
   icon: Wrench,
   label: "Manutenções",
   path: "/manutencoes"
+}, {
+  icon: Target,
+  label: "Metas",
+  path: "/metas"
 }, {
   icon: FileText,
   label: "Relatórios",

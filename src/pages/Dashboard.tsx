@@ -368,131 +368,70 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle>Progresso de Metas</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Meta Diária */}
-            {metrics.metaDiaria && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Meta Diária</p>
-                  <span className={cn(
-                    "text-xs font-medium",
-                    metrics.metaDiaria.atingida ? "text-success" : "text-muted-foreground"
-                  )}>
-                    {metrics.metaDiaria.percentual.toFixed(0)}%
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  R$ {metrics.metaDiaria.alcancado.toFixed(2)} de R$ {metrics.metaDiaria.total.toFixed(2)}
-                </p>
-                <Progress 
-                  value={metrics.metaDiaria.percentual}
-                  className={cn(
-                    "h-3",
-                    metrics.metaDiaria.atingida && "[&>div]:bg-success"
-                  )}
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={[
+                  ...(metrics.metaDiaria ? [{
+                    name: "Meta Diária",
+                    alcancado: metrics.metaDiaria.alcancado,
+                    meta: metrics.metaDiaria.total,
+                    percentual: metrics.metaDiaria.percentual
+                  }] : []),
+                  ...(metrics.metaSemanal ? [{
+                    name: "Meta Semanal",
+                    alcancado: metrics.metaSemanal.alcancado,
+                    meta: metrics.metaSemanal.total,
+                    percentual: metrics.metaSemanal.percentual
+                  }] : []),
+                  ...(metrics.metaMensal ? [{
+                    name: "Meta Mensal",
+                    alcancado: metrics.metaMensal.alcancado,
+                    meta: metrics.metaMensal.total,
+                    percentual: metrics.metaMensal.percentual
+                  }] : []),
+                  ...(metrics.metaAnual ? [{
+                    name: "Meta Anual",
+                    alcancado: metrics.metaAnual.alcancado,
+                    meta: metrics.metaAnual.total,
+                    percentual: metrics.metaAnual.percentual
+                  }] : []),
+                  ...metrics.metasPersonalizadas.map(mp => ({
+                    name: mp.tipo,
+                    alcancado: mp.alcancado,
+                    meta: mp.total,
+                    percentual: mp.percentual
+                  }))
+                ]}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: "hsl(var(--foreground))" }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
                 />
-              </div>
-            )}
-
-            {/* Meta Semanal */}
-            {metrics.metaSemanal && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Meta Semanal</p>
-                  <span className={cn(
-                    "text-xs font-medium",
-                    metrics.metaSemanal.atingida ? "text-success" : "text-muted-foreground"
-                  )}>
-                    {metrics.metaSemanal.percentual.toFixed(0)}%
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  R$ {metrics.metaSemanal.alcancado.toFixed(2)} de R$ {metrics.metaSemanal.total.toFixed(2)}
-                </p>
-                <Progress 
-                  value={metrics.metaSemanal.percentual}
-                  className={cn(
-                    "h-3",
-                    metrics.metaSemanal.atingida && "[&>div]:bg-success"
-                  )}
+                <YAxis 
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: "hsl(var(--foreground))" }}
                 />
-              </div>
-            )}
-
-            {/* Meta Mensal */}
-            {metrics.metaMensal && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Meta Mensal</p>
-                  <span className={cn(
-                    "text-xs font-medium",
-                    metrics.metaMensal.atingida ? "text-success" : "text-muted-foreground"
-                  )}>
-                    {metrics.metaMensal.percentual.toFixed(0)}%
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  R$ {metrics.metaMensal.alcancado.toFixed(2)} de R$ {metrics.metaMensal.total.toFixed(2)}
-                </p>
-                <Progress 
-                  value={metrics.metaMensal.percentual}
-                  className={cn(
-                    "h-3",
-                    metrics.metaMensal.atingida && "[&>div]:bg-success"
-                  )}
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                  }}
+                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                  labelFormatter={(label) => `${label}`}
                 />
-              </div>
-            )}
-
-            {/* Meta Anual */}
-            {metrics.metaAnual && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Meta Anual</p>
-                  <span className={cn(
-                    "text-xs font-medium",
-                    metrics.metaAnual.atingida ? "text-success" : "text-muted-foreground"
-                  )}>
-                    {metrics.metaAnual.percentual.toFixed(0)}%
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  R$ {metrics.metaAnual.alcancado.toFixed(2)} de R$ {metrics.metaAnual.total.toFixed(2)}
-                </p>
-                <Progress 
-                  value={metrics.metaAnual.percentual}
-                  className={cn(
-                    "h-3",
-                    metrics.metaAnual.atingida && "[&>div]:bg-success"
-                  )}
-                />
-              </div>
-            )}
-
-            {/* Metas Personalizadas */}
-            {metrics.metasPersonalizadas.map((metaPersonalizada, index) => (
-              <div key={`personalizada-${index}`} className="space-y-2 pt-4 border-t">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">{metaPersonalizada.tipo}</p>
-                  <span className={cn(
-                    "text-xs font-medium",
-                    metaPersonalizada.atingida ? "text-success" : "text-muted-foreground"
-                  )}>
-                    {metaPersonalizada.percentual.toFixed(0)}%
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  R$ {metaPersonalizada.alcancado.toFixed(2)} de R$ {metaPersonalizada.total.toFixed(2)}
-                </p>
-                <Progress 
-                  value={metaPersonalizada.percentual}
-                  className={cn(
-                    "h-3",
-                    metaPersonalizada.atingida && "[&>div]:bg-success"
-                  )}
-                />
-              </div>
-            ))}
+                <Legend />
+                <Bar dataKey="alcancado" fill="hsl(var(--primary))" name="Alcançado" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="meta" fill="hsl(var(--muted))" name="Meta Total" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

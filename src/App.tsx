@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import KM from "./pages/KM";
 import GanhosDespesas from "./pages/GanhosDespesas";
 import Manutencoes from "./pages/Manutencoes";
+import Metas from "./pages/Metas";
 import Relatorios from "./pages/Relatorios";
 import Veiculos from "./pages/Veiculos";
 import Configuracoes from "./pages/Configuracoes";
@@ -62,6 +63,16 @@ const App = () => (
             <ProtectedRoute>
               <Layout>
                 <Manutencoes />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/metas"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Metas />
               </Layout>
             </ProtectedRoute>
           }

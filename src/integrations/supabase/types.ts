@@ -314,6 +314,7 @@ export type Database = {
           km_final: number
           km_inicial: number
           lucro_liquido: number | null
+          outras_despesas: number | null
           preco_combustivel: number
           quantidade_corridas: number
           tipo_combustivel: string
@@ -334,6 +335,7 @@ export type Database = {
           km_final: number
           km_inicial: number
           lucro_liquido?: number | null
+          outras_despesas?: number | null
           preco_combustivel: number
           quantidade_corridas?: number
           tipo_combustivel: string
@@ -354,6 +356,7 @@ export type Database = {
           km_final?: number
           km_inicial?: number
           lucro_liquido?: number | null
+          outras_despesas?: number | null
           preco_combustivel?: number
           quantidade_corridas?: number
           tipo_combustivel?: string

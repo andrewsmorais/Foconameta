@@ -48,6 +48,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
   const [formData, setFormData] = useState({
     veiculo_id: "",
     data: new Date().toISOString().split("T")[0],
+    outras_despesas: "",
     km_inicial: "",
     km_final: "",
     hora_inicio: "",
@@ -187,6 +188,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
           user_id: user.id,
           veiculo_id: formData.veiculo_id,
           data: formData.data,
+          outras_despesas: parseFloat(formData.outras_despesas) || 0,
           km_inicial: parseFloat(formData.km_inicial),
           km_final: parseFloat(formData.km_final),
           hora_inicio: formData.hora_inicio,
@@ -228,6 +230,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
       setFormData({
         veiculo_id: "",
         data: new Date().toISOString().split("T")[0],
+        outras_despesas: "",
         km_inicial: "",
         km_final: "",
         hora_inicio: "",
@@ -292,6 +295,20 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                 onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="outras_despesas">Outras Despesas</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+                <Input
+                  id="outras_despesas"
+                  type="text"
+                  className="pl-10"
+                  value={formData.outras_despesas}
+                  onChange={(e) => handleMoneyChange("outras_despesas", e.target.value)}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

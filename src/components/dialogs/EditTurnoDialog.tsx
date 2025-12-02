@@ -23,9 +23,11 @@ interface Veiculo {
 
 const fontesGanho = [
   { value: "uber", label: "Uber" },
+  { value: "uber_moto", label: "Uber Moto" },
   { value: "99", label: "99" },
-  { value: "cabify", label: "Cabify" },
+  { value: "99_moto", label: "99 Moto" },
   { value: "ifood", label: "Ifood" },
+  { value: "keeta", label: "Keeta" },
   { value: "indriver", label: "Indriver" },
   { value: "lalamove", label: "Lalamove" },
   { value: "blabacar", label: "Blabacar" },
@@ -48,6 +50,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
   const [formData, setFormData] = useState({
     veiculo_id: "",
     data: "",
+    outras_despesas: "",
     km_inicial: "",
     km_final: "",
     hora_inicio: "",
@@ -93,6 +96,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
       setFormData({
         veiculo_id: turno.veiculo_id,
         data: turno.data,
+        outras_despesas: (turno.outras_despesas || 0).toFixed(2),
         km_inicial: turno.km_inicial.toString(),
         km_final: turno.km_final.toString(),
         hora_inicio: turno.hora_inicio,
@@ -195,6 +199,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
         .update({
           veiculo_id: formData.veiculo_id,
           data: formData.data,
+          outras_despesas: parseFloat(formData.outras_despesas) || 0,
           km_inicial: parseFloat(formData.km_inicial),
           km_final: parseFloat(formData.km_final),
           hora_inicio: formData.hora_inicio,
@@ -289,6 +294,20 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                 onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="outras_despesas">Outras Despesas</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+                <Input
+                  id="outras_despesas"
+                  type="text"
+                  className="pl-10"
+                  value={formData.outras_despesas}
+                  onChange={(e) => handleMoneyChange("outras_despesas", e.target.value)}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

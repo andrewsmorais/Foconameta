@@ -30,6 +30,7 @@ interface FonteGanho {
 interface Turno {
   id: string;
   data: string;
+  outras_despesas: number;
   km_inicial: number;
   km_final: number;
   hora_inicio: string;
@@ -129,13 +130,17 @@ const KM = () => {
   const calcularMetricasTurno = (turno: Turno) => {
     const kmRodados = turno.km_final - turno.km_inicial;
     const despesaCombustivel = (kmRodados / turno.consumo_combustivel) * turno.preco_combustivel;
-    const lucroLiquido = turno.lucro_liquido || (turno.valor_ganho - despesaCombustivel);
+    const outrasDespesas = turno.outras_despesas || 0;
+    const despesaTotal = despesaCombustivel + outrasDespesas;
+    const lucroLiquido = turno.lucro_liquido || (turno.valor_ganho - despesaTotal);
     const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
     const ganhosPorHora = turno.total_horas > 0 ? turno.valor_ganho / turno.total_horas : 0;
     
     return {
       kmRodados,
       despesaCombustivel,
+      outrasDespesas,
+      despesaTotal,
       lucroLiquido,
       lucroPorKm,
       ganhosPorHora,
@@ -155,6 +160,8 @@ const KM = () => {
     const precoMedioCombustivel = dados.reduce((sum, t) => sum + t.preco_combustivel, 0) / dados.length;
     const ganhosBrutosTotal = dados.reduce((sum, t) => sum + t.valor_ganho, 0);
     const despesaCombustivelTotal = dados.reduce((sum, t) => sum + (((t.km_final - t.km_inicial) / t.consumo_combustivel) * t.preco_combustivel), 0);
+    const outrasDespesasTotal = dados.reduce((sum, t) => sum + (t.outras_despesas || 0), 0);
+    const despesaTotalGeral = despesaCombustivelTotal + outrasDespesasTotal;
     const lucroLiquidoTotal = dados.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0);
     const lucroPorKmMedio = kmRodadosTotal > 0 ? lucroLiquidoTotal / kmRodadosTotal : 0;
     const ganhosPorHoraMedio = horasTrabalhadasTotal > 0 ? ganhosBrutosTotal / horasTrabalhadasTotal : 0;
@@ -166,6 +173,8 @@ const KM = () => {
       precoMedioCombustivel,
       ganhosBrutosTotal,
       despesaCombustivelTotal,
+      outrasDespesasTotal,
+      despesaTotalGeral,
       lucroLiquidoTotal,
       lucroPorKmMedio,
       ganhosPorHoraMedio
@@ -252,8 +261,8 @@ const KM = () => {
                       <span className="text-[#15a249]">{format(new Date(turno.data), "dd/MM/yyyy", { locale: ptBR })}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Valor Ganho:</span>
-                      <span className="text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                      <span className="font-bold text-foreground text-base">Outras Despesas:</span>
+                      <span className="text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-foreground text-base">KM Inicial:</span>
@@ -283,6 +292,10 @@ const KM = () => {
                       <span className="font-bold text-foreground text-base">Consumo:</span>
                       <span className="text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</span>
                     </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-foreground text-base">Valor Ganho:</span>
+                      <span className="text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                    </div>
                     <div className="col-span-full mt-2">
                       <p className="font-bold text-foreground text-base mb-2">Fontes de Ganho:</p>
                       <div className="ml-4 space-y-2">
@@ -308,7 +321,7 @@ const KM = () => {
                   {/* Métricas Calculadas do Turno Individual */}
                   <div className="mt-4 pt-4 border-t border-border">
                     <p className="font-bold text-foreground text-base mb-3">Métricas do Turno:</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
                       <div>
                         <p className="text-xs font-medium text-muted-foreground">KM Rodados</p>
                         <p className="text-sm font-bold text-[#15a249]">{metricasTurno.kmRodados.toFixed(2)} km</p>
@@ -318,8 +331,16 @@ const KM = () => {
                         <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.ganhoBruto.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Despesa Combustível</p>
+                        <p className="text-xs font-medium text-muted-foreground">Desp. Combustível</p>
                         <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.despesaCombustivel.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Outras Despesas</p>
+                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.outrasDespesas.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Despesa Total</p>
+                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.despesaTotal.toFixed(2)}</p>
                       </div>
                       <div>
                         <p className="text-xs font-medium text-muted-foreground">Lucro Líquido</p>
@@ -387,6 +408,12 @@ const KM = () => {
                   </p>
                 </div>
                 <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Outras Despesas Total</p>
+                  <p className="text-xl font-bold text-[#15a249]">
+                    R$ {metricas.outrasDespesasTotal.toFixed(2)}
+                  </p>
+                </div>
+                <div>
                   <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido Total</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     R$ {metricas.lucroLiquidoTotal.toFixed(2)}
@@ -425,7 +452,7 @@ const KM = () => {
                 <div className="text-center">
                   <p className="text-sm font-bold text-red-600 dark:text-red-400 mb-2">Despesas Totais</p>
                   <p className="text-3xl font-bold text-red-600 dark:text-red-400">
-                    R$ {metricas.despesaCombustivelTotal.toFixed(2)}
+                    R$ {metricas.despesaTotalGeral.toFixed(2)}
                   </p>
                 </div>
               </CardContent>

@@ -153,3 +153,32 @@ All colors MUST be HSL.
 .dark .lucide-calendar-days {
   color: hsl(var(--foreground)) !important;
 }
+
+/* CRITICAL: Fix input background on focus in dark mode */
+.dark input:focus,
+.dark input:active,
+.dark textarea:focus,
+.dark textarea:active,
+.dark select:focus,
+.dark select:active {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Ensure input maintains dark background at all states */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Override autofill styles in dark mode */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  caret-color: hsl(var(--foreground)) !important;
+}

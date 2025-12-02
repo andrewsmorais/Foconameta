@@ -329,24 +329,61 @@ const Relatorios = () => {
 
     switch (filtros.tipoRelatorio) {
       case "turnos":
-        return resultados.map((resultado) => (
-          <div key={resultado.id} className="p-4 border rounded-lg space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-medium">
-                  {format(new Date(resultado.data), "dd/MM/yyyy")} - {resultado.veiculos?.modelo}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {resultado.hora_inicio} - {resultado.hora_fim} ({resultado.total_horas?.toFixed(2)}h)
-                </p>
+        return resultados.map((resultado) => {
+          const kmRodados = (resultado.km_final || 0) - (resultado.km_inicial || 0);
+          const despesaCombustivel = resultado.consumo_combustivel > 0 
+            ? (kmRodados / resultado.consumo_combustivel) * resultado.preco_combustivel 
+            : 0;
+          const ganhosBrutos = resultado.valor_ganho || 0;
+          const lucroLiquido = resultado.lucro_liquido || 0;
+          const lucroKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
+          const ganhosHora = resultado.total_horas > 0 ? ganhosBrutos / resultado.total_horas : 0;
+
+          return (
+            <div key={resultado.id} className="p-4 border rounded-lg space-y-3 bg-card">
+              {/* Info básica */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                <p><span className="font-bold text-base">Veículo:</span> <span className="text-[#15a249]">{resultado.veiculos?.modelo || "N/A"}</span></p>
+                <p><span className="font-bold text-base">Data:</span> <span className="text-[#15a249]">{format(new Date(resultado.data), "dd/MM/yyyy")}</span></p>
+                <p><span className="font-bold text-base">KM Inicial:</span> <span className="text-[#15a249]">{resultado.km_inicial?.toFixed(0)}</span></p>
+                <p><span className="font-bold text-base">KM Final:</span> <span className="text-[#15a249]">{resultado.km_final?.toFixed(0)}</span></p>
+                <p><span className="font-bold text-base">Hora Início:</span> <span className="text-[#15a249]">{resultado.hora_inicio}</span></p>
+                <p><span className="font-bold text-base">Hora Fim:</span> <span className="text-[#15a249]">{resultado.hora_fim}</span></p>
+                <p><span className="font-bold text-base">Tipo Combustível:</span> <span className="text-[#15a249]">{resultado.tipo_combustivel}</span></p>
+                <p><span className="font-bold text-base">Preço Combustível:</span> <span className="text-[#15a249]">R$ {resultado.preco_combustivel?.toFixed(2)}</span></p>
+                <p><span className="font-bold text-base">Consumo:</span> <span className="text-[#15a249]">{resultado.consumo_combustivel?.toFixed(1)} km/L</span></p>
               </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-success">R$ {resultado.lucro_liquido?.toFixed(2) || "0.00"}</p>
-                <p className="text-sm text-muted-foreground">{(resultado.km_final - resultado.km_inicial).toFixed(0)} km</p>
+
+              {/* Fontes de Ganho */}
+              <div className="pt-2 border-t">
+                <p className="font-bold text-base mb-2">Fontes de Ganho:</p>
+                <div className="ml-4 space-y-1 border-l-2 border-[#15a249] pl-3">
+                  {resultado.turno_fontes_ganho && resultado.turno_fontes_ganho.length > 0 ? (
+                    resultado.turno_fontes_ganho.map((fonte: any) => (
+                      <div key={fonte.id} className="flex justify-between items-center">
+                        <span className="text-[#15a249] capitalize font-medium">{fonte.fonte_ganho}:</span>
+                        <span className="text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
+                        <span className="text-[#15a249] font-medium">R$ {fonte.valor_ganho?.toFixed(2)}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">Nenhuma fonte registrada</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Métricas do turno */}
+              <div className="pt-2 border-t grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                <p><span className="font-bold">KM Rodados:</span> <span className="text-[#15a249]">{kmRodados.toFixed(0)} km</span></p>
+                <p><span className="font-bold">Horas:</span> <span className="text-[#15a249]">{resultado.total_horas?.toFixed(2)}h</span></p>
+                <p><span className="font-bold">Ganhos Brutos:</span> <span className="text-[#15a249]">R$ {ganhosBrutos.toFixed(2)}</span></p>
+                <p><span className="font-bold">Desp. Combustível:</span> <span className="text-[#15a249]">R$ {despesaCombustivel.toFixed(2)}</span></p>
+                <p><span className="font-bold">Lucro Líquido:</span> <span className="text-[#15a249]">R$ {lucroLiquido.toFixed(2)}</span></p>
+                <p><span className="font-bold">Lucro/KM:</span> <span className="text-[#15a249]">R$ {lucroKm.toFixed(2)}</span></p>
               </div>
             </div>
-          </div>
-        ));
+          );
+        });
 
       case "manutencoes":
         return resultados.map((resultado) => (
@@ -484,58 +521,123 @@ const Relatorios = () => {
 
       {resultados.length > 0 && (
         <>
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Total de Registros</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metricas.totalRegistros}</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {filtros.tipoRelatorio === "turnos" ? "Lucro Líquido" : "Valor Total"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-success">R$ {metricas.valorTotal.toFixed(2)}</div>
-              </CardContent>
-            </Card>
-
-            {filtros.tipoRelatorio === "turnos" && (
-              <>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Total de Horas</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{metricas.totalHoras.toFixed(2)}h</div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">KM Rodados</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{metricas.kmRodados.toFixed(0)} km</div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </div>
-
+          {/* Seção A: Listagem Detalhada */}
           <Card>
             <CardHeader>
-              <CardTitle>Resultados ({resultados.length} registros)</CardTitle>
+              <CardTitle>Listagem Detalhada ({resultados.length} registros)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">{renderResultados()}</div>
             </CardContent>
           </Card>
+
+          {/* Seção B: Métricas Calculadas */}
+          {filtros.tipoRelatorio === "turnos" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Métricas Calculadas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="p-3 bg-secondary rounded-lg">
+                    <p className="text-sm text-muted-foreground font-medium">Total de Registros</p>
+                    <p className="text-xl font-bold text-[#15a249]">{metricas.totalRegistros}</p>
+                  </div>
+                  <div className="p-3 bg-secondary rounded-lg">
+                    <p className="text-sm text-muted-foreground font-medium">KM Rodados Total</p>
+                    <p className="text-xl font-bold text-[#15a249]">{metricas.kmRodados.toFixed(0)} km</p>
+                  </div>
+                  <div className="p-3 bg-secondary rounded-lg">
+                    <p className="text-sm text-muted-foreground font-medium">Total de Horas</p>
+                    <p className="text-xl font-bold text-[#15a249]">{metricas.totalHoras.toFixed(2)}h</p>
+                  </div>
+                  <div className="p-3 bg-secondary rounded-lg">
+                    <p className="text-sm text-muted-foreground font-medium">Consumo Médio</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      {resultados.length > 0 
+                        ? (resultados.reduce((sum, r) => sum + (r.consumo_combustivel || 0), 0) / resultados.length).toFixed(1) 
+                        : "0.0"} km/L
+                    </p>
+                  </div>
+                  <div className="p-3 bg-secondary rounded-lg">
+                    <p className="text-sm text-muted-foreground font-medium">Preço Médio Combustível</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      R$ {resultados.length > 0 
+                        ? (resultados.reduce((sum, r) => sum + (r.preco_combustivel || 0), 0) / resultados.length).toFixed(2) 
+                        : "0.00"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Seção C: Destaque dos Totais (apenas para Turnos) */}
+          {filtros.tipoRelatorio === "turnos" && (
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="border-2 border-blue-500 bg-blue-500/10">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-bold text-blue-500">Ganhos Totais</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-blue-500">
+                    R$ {resultados.reduce((sum, r) => sum + (r.valor_ganho || 0), 0).toFixed(2)}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-red-500 bg-red-500/10">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-bold text-red-500">Despesas Totais</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-red-500">
+                    R$ {resultados.reduce((sum, r) => {
+                      const kmRodados = (r.km_final || 0) - (r.km_inicial || 0);
+                      const despesa = r.consumo_combustivel > 0 
+                        ? (kmRodados / r.consumo_combustivel) * r.preco_combustivel 
+                        : 0;
+                      return sum + despesa;
+                    }, 0).toFixed(2)}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-green-500 bg-green-500/10">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-bold text-green-500">Lucro Líquido</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-green-500">
+                    R$ {metricas.valorTotal.toFixed(2)}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Métricas para outros tipos de relatório */}
+          {filtros.tipoRelatorio !== "turnos" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Total de Registros</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metricas.totalRegistros}</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-[#15a249]">R$ {metricas.valorTotal.toFixed(2)}</div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -20,9 +20,11 @@ interface Veiculo {
 
 const fontesGanho = [
   { value: "uber", label: "Uber" },
+  { value: "uber_moto", label: "Uber Moto" },
   { value: "99", label: "99" },
-  { value: "cabify", label: "Cabify" },
+  { value: "99_moto", label: "99 Moto" },
   { value: "ifood", label: "Ifood" },
+  { value: "keeta", label: "Keeta" },
   { value: "indriver", label: "Indriver" },
   { value: "lalamove", label: "Lalamove" },
   { value: "blabacar", label: "Blabacar" },

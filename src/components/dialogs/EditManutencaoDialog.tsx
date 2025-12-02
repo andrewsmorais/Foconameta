@@ -297,7 +297,15 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor</Label>
+            <Label htmlFor="valor">
+              {formData.tipo_manutencao === "troca_oleo" 
+                ? "Custo da Troca do Óleo" 
+                : formData.tipo_manutencao === "balanceamento_alinhamento"
+                ? "Custo do Balanceamento e Alinhamento"
+                : formData.tipo_manutencao === "revisao"
+                ? "Custo da Revisão"
+                : "Valor"}
+            </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
               <Input
@@ -336,19 +344,36 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>
-            <Input
-              id="proximo_km"
-              type="number"
-              step="0.01"
-              value={formData.proximo_km}
-              onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-            />
-          </div>
+          {/* Próximo KM - não exibir para Balanceamento e Alinhamento */}
+          {formData.tipo_manutencao !== "balanceamento_alinhamento" && (
+            <div className="space-y-2">
+              <Label htmlFor="proximo_km">
+                {formData.tipo_manutencao === "troca_oleo" 
+                  ? "Próximo KM da Troca do Óleo (opcional)" 
+                  : formData.tipo_manutencao === "revisao"
+                  ? "Próximo KM para Revisão (opcional)"
+                  : "Próximo KM para Manutenção (opcional)"}
+              </Label>
+              <Input
+                id="proximo_km"
+                type="number"
+                step="0.01"
+                value={formData.proximo_km}
+                onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
+            <Label htmlFor="observacoes">
+              {formData.tipo_manutencao === "troca_oleo" 
+                ? "Descrição do Óleo Trocado (opcional)" 
+                : formData.tipo_manutencao === "balanceamento_alinhamento"
+                ? "Descrição do Balanceamento e Alinhamento (opcional)"
+                : formData.tipo_manutencao === "revisao"
+                ? "Descrição da Revisão (opcional)"
+                : "Observações (opcional)"}
+            </Label>
             <Textarea
               id="observacoes"
               value={formData.observacoes}

@@ -359,7 +359,13 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="observacoes">Descrição do Produto</Label>
+                <Label htmlFor="observacoes">
+                  {preSelectedType === "troca_oleo" 
+                    ? "Descrição do Óleo Trocado" 
+                    : preSelectedType === "balanceamento_alinhamento"
+                    ? "Descrição do Balanceamento e Alinhamento"
+                    : "Descrição da Revisão"}
+                </Label>
                 <Textarea
                   id="observacoes"
                   value={formData.observacoes}
@@ -370,7 +376,13 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Custo da Manutenção</Label>
+            <Label htmlFor="valor">
+              {preSelectedType === "troca_oleo" 
+                ? "Custo da Troca do Óleo" 
+                : preSelectedType === "balanceamento_alinhamento"
+                ? "Custo do Balanceamento e Alinhamento"
+                : "Custo da Revisão"}
+            </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
               <Input
@@ -397,7 +409,13 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção</Label>
+                <Label htmlFor="proxima_data_manutencao">
+                  {preSelectedType === "troca_oleo" 
+                    ? "Próxima Data da Troca do Óleo" 
+                    : preSelectedType === "balanceamento_alinhamento"
+                    ? "Próxima Data Balanceamento e Alinhamento"
+                    : "Próxima Data para Revisão"}
+                </Label>
                 <Input
                   id="proxima_data_manutencao"
                   type="date"
@@ -419,16 +437,23 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="proximo_km">Próximo KM para Manutenção</Label>
-                <Input
-                  id="proximo_km"
-                  type="number"
-                  step="0.01"
-                  value={formData.proximo_km}
-                  onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
-                />
-              </div>
+              {/* Próximo KM - não exibir para Balanceamento e Alinhamento */}
+              {preSelectedType !== "balanceamento_alinhamento" && (
+                <div className="space-y-2">
+                  <Label htmlFor="proximo_km">
+                    {preSelectedType === "troca_oleo" 
+                      ? "Próximo KM da Troca do Óleo" 
+                      : "Próximo KM para Revisão"}
+                  </Label>
+                  <Input
+                    id="proximo_km"
+                    type="number"
+                    step="0.01"
+                    value={formData.proximo_km}
+                    onChange={(e) => setFormData({ ...formData, proximo_km: e.target.value })}
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="comprovante">Anexar Comprovante</Label>

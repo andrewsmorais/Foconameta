@@ -19,6 +19,7 @@ interface EditManutencaoDialogProps {
     proximo_km: number | null;
     observacoes: string | null;
     nome_oficina_produto: string | null;
+    peca_trocada: string | null;
     veiculo_id: string;
   };
   open: boolean;
@@ -60,6 +61,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     proximo_km: manutencao.proximo_km?.toString() || "",
     observacoes: manutencao.observacoes || "",
     nome_oficina_produto: manutencao.nome_oficina_produto || "",
+    peca_trocada: manutencao.peca_trocada || "",
   });
 
   const formatCurrency = (value: string) => {
@@ -92,6 +94,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
         proximo_km: manutencao.proximo_km?.toString() || "",
         observacoes: manutencao.observacoes || "",
         nome_oficina_produto: manutencao.nome_oficina_produto || "",
+        peca_trocada: manutencao.peca_trocada || "",
       });
     }
   }, [open, manutencao]);
@@ -137,6 +140,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           proximo_km: formData.proximo_km ? parseFloat(formData.proximo_km) : null,
           observacoes: formData.observacoes || null,
           nome_oficina_produto: formData.nome_oficina_produto || null,
+          peca_trocada: formData.peca_trocada || null,
         })
         .eq("id", manutencao.id);
 
@@ -314,6 +318,16 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
               type="text"
               value={formData.nome_oficina_produto}
               onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="peca_trocada">Peça Trocada (opcional)</Label>
+            <Input
+              id="peca_trocada"
+              type="text"
+              value={formData.peca_trocada}
+              onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
             />
           </div>
 

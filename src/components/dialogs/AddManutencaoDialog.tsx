@@ -50,6 +50,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     proximo_km: "",
     observacoes: "",
     nome_oficina_produto: "",
+    peca_trocada: "",
     comprovante_url: "",
     proxima_data_manutencao: "",
   });
@@ -157,6 +158,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         proximo_km: formData.proximo_km ? parseFloat(formData.proximo_km) : null,
         observacoes: formData.observacoes || null,
         nome_oficina_produto: formData.nome_oficina_produto || null,
+        peca_trocada: formData.peca_trocada || null,
         comprovante_url: formData.comprovante_url || null,
       });
 
@@ -178,6 +180,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         proximo_km: "",
         observacoes: "",
         nome_oficina_produto: "",
+        peca_trocada: "",
         comprovante_url: "",
         proxima_data_manutencao: "",
       });
@@ -332,6 +335,16 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="peca_trocada">Peça Trocada</Label>
+                <Input
+                  id="peca_trocada"
+                  type="text"
+                  value={formData.peca_trocada}
+                  onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="observacoes">Descrição do Produto</Label>
                 <Textarea
                   id="observacoes"
@@ -434,6 +447,16 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   value={formData.nome_oficina_produto}
                   onChange={(e) => setFormData({ ...formData, nome_oficina_produto: e.target.value })}
                   required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="peca_trocada_custom">Peça Trocada</Label>
+                <Input
+                  id="peca_trocada_custom"
+                  type="text"
+                  value={formData.peca_trocada}
+                  onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
                 />
               </div>
 

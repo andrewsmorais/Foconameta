@@ -29,6 +29,7 @@ interface Manutencao {
   proximo_km: number | null;
   observacoes: string | null;
   nome_oficina_produto: string | null;
+  peca_trocada: string | null;
   veiculo_id: string;
   veiculos: {
     modelo: string;
@@ -257,6 +258,14 @@ const Manutencoes = () => {
                     <p className="text-sm">
                       <span className="font-bold text-muted-foreground">Oficina/Produto:</span>{" "}
                       <span className="font-medium">{manutencao.nome_oficina_produto}</span>
+                    </p>
+                  </div>
+                )}
+                {manutencao.peca_trocada && (
+                  <div className="mt-2">
+                    <p className="text-sm">
+                      <span className="font-bold text-muted-foreground">Peça Trocada:</span>{" "}
+                      <span className="font-medium">{manutencao.peca_trocada}</span>
                     </p>
                   </div>
                 )}

@@ -135,6 +135,7 @@ const KM = () => {
     const lucroLiquido = turno.lucro_liquido || (turno.valor_ganho - despesaTotal);
     const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
     const ganhosPorHora = turno.total_horas > 0 ? turno.valor_ganho / turno.total_horas : 0;
+    const totalHoras = turno.total_horas || 0;
     
     return {
       kmRodados,
@@ -144,6 +145,7 @@ const KM = () => {
       lucroLiquido,
       lucroPorKm,
       ganhosPorHora,
+      totalHoras,
       ganhoBruto: turno.valor_ganho
     };
   };
@@ -321,38 +323,42 @@ const KM = () => {
                   {/* Métricas Calculadas do Turno Individual */}
                   <div className="mt-4 pt-4 border-t border-border">
                     <p className="font-bold text-foreground text-base mb-3">Métricas do Turno:</p>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">KM Rodados</p>
-                        <p className="text-sm font-bold text-[#15a249]">{metricasTurno.kmRodados.toFixed(2)} km</p>
+                        <p className="text-sm font-bold text-foreground mb-1">KM Rodados</p>
+                        <p className="text-xl font-bold text-[#15a249]">{metricasTurno.kmRodados.toFixed(2)} km</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Ganho Bruto</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.ganhoBruto.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Total de Horas Trabalhadas</p>
+                        <p className="text-xl font-bold text-[#15a249]">{metricasTurno.totalHoras.toFixed(1)} h</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Desp. Combustível</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.despesaCombustivel.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Ganho Bruto</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.ganhoBruto.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Outras Despesas</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.outrasDespesas.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Desp. Combustível</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.despesaCombustivel.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Despesa Total</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.despesaTotal.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.outrasDespesas.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Lucro Líquido</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.lucroLiquido.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Despesa Total</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.despesaTotal.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Lucro/KM</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.lucroPorKm.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.lucroLiquido.toFixed(2)}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">Ganhos/Hora</p>
-                        <p className="text-sm font-bold text-[#15a249]">R$ {metricasTurno.ganhosPorHora.toFixed(2)}</p>
+                        <p className="text-sm font-bold text-foreground mb-1">Lucro/KM</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.lucroPorKm.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-foreground mb-1">Ganhos/Hora</p>
+                        <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.ganhosPorHora.toFixed(2)}</p>
                       </div>
                     </div>
                   </div>

@@ -574,79 +574,66 @@ const Relatorios = () => {
           <CardTitle>Filtros de Relatório</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Grupo 1: Tipo de Relatório */}
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-muted-foreground">TIPO DE RELATÓRIO</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="tipoRelatorio">Selecione o Tipo</Label>
-                <Select
-                  value={filtros.tipoRelatorio}
-                  onValueChange={(value) => setFiltros({ ...filtros, tipoRelatorio: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tiposRelatorio.map((tipo) => (
-                      <SelectItem key={tipo.value} value={tipo.value}>
-                        {tipo.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Grupo 1: Tipo de Relatório e Veículo */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="tipoRelatorio">Selecione o Tipo</Label>
+              <Select
+                value={filtros.tipoRelatorio}
+                onValueChange={(value) => setFiltros({ ...filtros, tipoRelatorio: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tiposRelatorio.map((tipo) => (
+                    <SelectItem key={tipo.value} value={tipo.value}>
+                      {tipo.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="veiculo">Selecione o Veículo</Label>
+              <Select
+                value={filtros.veiculo}
+                onValueChange={(value) => setFiltros({ ...filtros, veiculo: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os Veículos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os Veículos</SelectItem>
+                  {veiculos.map((v) => (
+                    <SelectItem key={v.id} value={v.id}>
+                      {v.modelo} - {v.placa}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           {/* Grupo 2: Período */}
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-muted-foreground">PERÍODO</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="dataInicio">Data Início</Label>
-                <Input
-                  id="dataInicio"
-                  type="date"
-                  value={filtros.dataInicio}
-                  onChange={(e) => setFiltros({ ...filtros, dataInicio: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dataFim">Data Fim</Label>
-                <Input
-                  id="dataFim"
-                  type="date"
-                  value={filtros.dataFim}
-                  onChange={(e) => setFiltros({ ...filtros, dataFim: e.target.value })}
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="dataInicio">Data Início</Label>
+              <Input
+                id="dataInicio"
+                type="date"
+                value={filtros.dataInicio}
+                onChange={(e) => setFiltros({ ...filtros, dataInicio: e.target.value })}
+              />
             </div>
-          </div>
-
-          {/* Grupo 3: Veículo */}
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-muted-foreground">VEÍCULO</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="veiculo">Selecione o Veículo</Label>
-                <Select
-                  value={filtros.veiculo}
-                  onValueChange={(value) => setFiltros({ ...filtros, veiculo: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todos os Veículos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todos os Veículos</SelectItem>
-                    {veiculos.map((v) => (
-                      <SelectItem key={v.id} value={v.id}>
-                        {v.modelo} - {v.placa}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="dataFim">Data Fim</Label>
+              <Input
+                id="dataFim"
+                type="date"
+                value={filtros.dataFim}
+                onChange={(e) => setFiltros({ ...filtros, dataFim: e.target.value })}
+              />
             </div>
           </div>
 

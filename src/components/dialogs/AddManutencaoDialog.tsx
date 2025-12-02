@@ -334,15 +334,29 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="peca_trocada">Peça Trocada</Label>
-                <Input
-                  id="peca_trocada"
-                  type="text"
-                  value={formData.peca_trocada}
-                  onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
-                />
-              </div>
+              {/* Óleo Trocado apenas para Troca de Óleo, Peça Trocada para Revisão */}
+              {preSelectedType === "troca_oleo" && (
+                <div className="space-y-2">
+                  <Label htmlFor="peca_trocada">Óleo Trocado</Label>
+                  <Input
+                    id="peca_trocada"
+                    type="text"
+                    value={formData.peca_trocada}
+                    onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
+                  />
+                </div>
+              )}
+              {preSelectedType === "revisao" && (
+                <div className="space-y-2">
+                  <Label htmlFor="peca_trocada">Peça Trocada</Label>
+                  <Input
+                    id="peca_trocada"
+                    type="text"
+                    value={formData.peca_trocada}
+                    onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="observacoes">Descrição do Produto</Label>

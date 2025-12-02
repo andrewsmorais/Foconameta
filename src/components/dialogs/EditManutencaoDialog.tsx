@@ -321,15 +321,20 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="peca_trocada">Peça Trocada (opcional)</Label>
-            <Input
-              id="peca_trocada"
-              type="text"
-              value={formData.peca_trocada}
-              onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
-            />
-          </div>
+          {/* Óleo Trocado para Troca de Óleo, Peça Trocada para Revisão e outros, oculto para Balanceamento */}
+          {formData.tipo_manutencao !== "balanceamento_alinhamento" && (
+            <div className="space-y-2">
+              <Label htmlFor="peca_trocada">
+                {formData.tipo_manutencao === "troca_oleo" ? "Óleo Trocado (opcional)" : "Peça Trocada (opcional)"}
+              </Label>
+              <Input
+                id="peca_trocada"
+                type="text"
+                value={formData.peca_trocada}
+                onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="proximo_km">Próximo KM para Manutenção (opcional)</Label>

@@ -114,5 +114,13 @@ All colors MUST be HSL.
   .dark input[type="time"]::-webkit-calendar-picker-indicator,
   .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
+    cursor: pointer;
+  }
+
+  /* Global rule for auxiliary icons in dark mode */
+  .dark [class*="lucide-calendar"],
+  .dark [class*="lucide-clock"],
+  .dark [class*="lucide-chevron"] {
+    color: hsl(var(--foreground));
   }
 }

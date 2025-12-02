@@ -85,12 +85,29 @@ const Dashboard = () => {
 
       if (turnosError) throw turnosError;
 
-      // Calcular métricas
+      // Calcular métricas - Consistente com KM e Relatórios
       const totalGanhos = turnos?.reduce((sum, t) => sum + (t.valor_ganho || 0), 0) || 0;
-      const lucroLiquido = turnos?.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0) || 0;
-      const totalDespesas = totalGanhos - lucroLiquido;
-      const kmRodados = turnos?.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0) || 0;
+      const kmRodados = turnos?.reduce((sum, t) => sum + ((t.km_final || 0) - (t.km_inicial || 0)), 0) || 0;
       const horasTrabalhadas = turnos?.reduce((sum, t) => sum + (t.total_horas || 0), 0) || 0;
+      
+      // Calcular despesa combustível: (KM Rodado / Consumo) * Preço Combustível
+      const despesaCombustivelTotal = turnos?.reduce((sum, t) => {
+        const kmRodado = (t.km_final || 0) - (t.km_inicial || 0);
+        const despesaComb = t.consumo_combustivel > 0 
+          ? (kmRodado / t.consumo_combustivel) * (t.preco_combustivel || 0) 
+          : 0;
+        return sum + despesaComb;
+      }, 0) || 0;
+      
+      // Outras despesas
+      const outrasDespesasTotal = turnos?.reduce((sum, t) => sum + (t.outras_despesas || 0), 0) || 0;
+      
+      // Despesas Totais = Combustível + Outras Despesas
+      const totalDespesas = despesaCombustivelTotal + outrasDespesasTotal;
+      
+      // Lucro Líquido = Ganhos Brutos - Despesas Totais
+      const lucroLiquido = totalGanhos - totalDespesas;
+      
       const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
       const ganhosPorHora = horasTrabalhadas > 0 ? totalGanhos / horasTrabalhadas : 0;
 
@@ -107,6 +124,16 @@ const Dashboard = () => {
           .toLowerCase()
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+      };
+
+      // Função auxiliar para calcular lucro líquido de um turno
+      const calcularLucroLiquidoTurno = (t: any) => {
+        const kmRodado = (t.km_final || 0) - (t.km_inicial || 0);
+        const despComb = t.consumo_combustivel > 0 
+          ? (kmRodado / t.consumo_combustivel) * (t.preco_combustivel || 0) 
+          : 0;
+        const outrasDespesas = t.outras_despesas || 0;
+        return (t.valor_ganho || 0) - despComb - outrasDespesas;
       };
 
       const calcularProgressoMeta = (tipoDesejado: string): MetaProgress | null => {
@@ -135,8 +162,14 @@ const Dashboard = () => {
         }) || [];
 
         // Usar a métrica de rastreamento definida pelo usuário
-        const metricaField = meta.metrica_rastreamento === 'ganhos_brutos' ? 'valor_ganho' : 'lucro_liquido';
-        const alcancado = turnosMeta.reduce((sum, t) => sum + (t[metricaField] || 0), 0);
+        let alcancado: number;
+        if (meta.metrica_rastreamento === 'ganhos_brutos') {
+          alcancado = turnosMeta.reduce((sum, t) => sum + (t.valor_ganho || 0), 0);
+        } else {
+          // Para lucro_liquido, calcular corretamente
+          alcancado = turnosMeta.reduce((sum, t) => sum + calcularLucroLiquidoTurno(t), 0);
+        }
+        
         const total = meta.valor_meta;
         const percentual = total > 0 ? (alcancado / total) * 100 : 0;
         const atingida = alcancado >= total;
@@ -170,8 +203,13 @@ const Dashboard = () => {
         }) || [];
 
         // Usar a métrica de rastreamento definida pelo usuário
-        const metricaField = meta.metrica_rastreamento === 'ganhos_brutos' ? 'valor_ganho' : 'lucro_liquido';
-        const alcancado = turnosMeta.reduce((sum, t) => sum + (t[metricaField] || 0), 0);
+        let alcancado: number;
+        if (meta.metrica_rastreamento === 'ganhos_brutos') {
+          alcancado = turnosMeta.reduce((sum, t) => sum + (t.valor_ganho || 0), 0);
+        } else {
+          // Para lucro_liquido, calcular corretamente
+          alcancado = turnosMeta.reduce((sum, t) => sum + calcularLucroLiquidoTurno(t), 0);
+        }
         const total = meta.valor_meta;
         const percentual = total > 0 ? (alcancado / total) * 100 : 0;
         const atingida = alcancado >= total;
@@ -214,8 +252,20 @@ const Dashboard = () => {
         );
 
         const ganhos = turnosDia?.reduce((sum, t) => sum + (t.valor_ganho || 0), 0) || 0;
-        const lucro = turnosDia?.reduce((sum, t) => sum + (t.lucro_liquido || 0), 0) || 0;
-        const despesas = ganhos - lucro;
+        
+        // Calcular despesas do dia corretamente
+        const despesasCombDia = turnosDia?.reduce((sum, t) => {
+          const kmRodado = (t.km_final || 0) - (t.km_inicial || 0);
+          const despComb = t.consumo_combustivel > 0 
+            ? (kmRodado / t.consumo_combustivel) * (t.preco_combustivel || 0) 
+            : 0;
+          return sum + despComb;
+        }, 0) || 0;
+        const outrasDespDia = turnosDia?.reduce((sum, t) => sum + (t.outras_despesas || 0), 0) || 0;
+        const despesas = despesasCombDia + outrasDespDia;
+        
+        // Lucro = Ganhos - Despesas
+        const lucro = ganhos - despesas;
 
         return {
           name: format(dia, "EEE", { locale: ptBR }),

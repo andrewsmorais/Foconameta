@@ -358,15 +358,23 @@ const Relatorios = () => {
     const totalLitros = resultados.reduce((sum, t) => sum + (((t.km_final || 0) - (t.km_inicial || 0)) / (t.consumo_combustivel || 1)), 0);
     const consumoMedio = totalLitros > 0 ? kmRodadosTotal / totalLitros : 0;
     const precoMedioCombustivel = resultados.length > 0 ? resultados.reduce((sum, t) => sum + (t.preco_combustivel || 0), 0) / resultados.length : 0;
-    const ganhosBrutosTotal = resultados.reduce((sum, t) => sum + (t.valor_ganho || 0), 0);
-    const despesaCombustivelTotal = resultados.reduce((sum, t) => {
+    
+    // Cálculos com precisão decimal para evitar erros de ponto flutuante
+    const ganhosBrutosTotal = Math.round(resultados.reduce((sum, t) => sum + (t.valor_ganho || 0), 0) * 100) / 100;
+    
+    const despesaCombustivelTotal = Math.round(resultados.reduce((sum, t) => {
       const kmRodados = (t.km_final || 0) - (t.km_inicial || 0);
       return sum + ((kmRodados / (t.consumo_combustivel || 1)) * (t.preco_combustivel || 0));
-    }, 0);
-    const outrasDespesasTotal = resultados.reduce((sum, t) => sum + (t.outras_despesas || 0), 0);
-    const despesaTotalGeral = despesaCombustivelTotal + outrasDespesasTotal;
-    // Lucro Líquido = Ganhos Brutos - Despesas Totais (combustível + outras despesas)
-    const lucroLiquidoTotal = ganhosBrutosTotal - despesaTotalGeral;
+    }, 0) * 100) / 100;
+    
+    const outrasDespesasTotal = Math.round(resultados.reduce((sum, t) => sum + (t.outras_despesas || 0), 0) * 100) / 100;
+    
+    // Despesa Total = Combustível + Outras Despesas (com precisão)
+    const despesaTotalGeral = Math.round((despesaCombustivelTotal + outrasDespesasTotal) * 100) / 100;
+    
+    // Lucro Líquido = Ganhos Brutos - Despesas Totais (fórmula exata)
+    const lucroLiquidoTotal = Math.round((ganhosBrutosTotal - despesaTotalGeral) * 100) / 100;
+    
     const lucroPorKmMedio = kmRodadosTotal > 0 ? lucroLiquidoTotal / kmRodadosTotal : 0;
     const ganhosPorHoraMedio = horasTrabalhadasTotal > 0 ? ganhosBrutosTotal / horasTrabalhadasTotal : 0;
 
@@ -652,10 +660,10 @@ const Relatorios = () => {
 
       {resultados.length > 0 && (
         <>
-          {/* Seção A: Listagem Detalhada */}
+          {/* Seção A: Relatórios de Turnos */}
           <Card>
             <CardHeader>
-              <CardTitle>Listagem Detalhada ({resultados.length} registros)</CardTitle>
+              <CardTitle>Relatórios de Turnos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">{renderResultados()}</div>

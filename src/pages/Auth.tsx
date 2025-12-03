@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import logoImage from "@/assets/bateu-a-meta-logo.png";
 
 const authSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -166,7 +167,14 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+      <div className="w-full max-w-md flex flex-col items-center">
+        <img 
+          src={logoImage} 
+          alt="Bateu a Meta" 
+          className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover mb-4"
+        />
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Bateu a Meta</h1>
+        <Card className="w-full">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             {isForgotPassword ? "Recuperar Senha" : isLogin ? "Entrar" : "Criar Conta"}
@@ -261,6 +269,7 @@ const Auth = () => {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

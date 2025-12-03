@@ -26,6 +26,8 @@ interface UserData {
   planPrice: number;
   subscription_id?: string | null;
   plan_id?: string | null;
+  renewal_status?: "active" | "expired" | "churned" | "free";
+  expires_at?: string | null;
 }
 
 export const UsersManagement = () => {
@@ -79,6 +81,8 @@ export const UsersManagement = () => {
             id,
             status,
             plan_id,
+            started_at,
+            expires_at,
             plans(name, price)
           )
         `);
@@ -88,18 +92,36 @@ export const UsersManagement = () => {
         .from("user_roles")
         .select("user_id, role");
 
-      // Get all users to fetch emails (via edge function or direct if admin)
-      // For now, we'll use the profile id as reference
-      // In production, you'd fetch from auth.users via admin API
+      const now = new Date();
       
-      const usersWithRoles = profiles?.map((profile) => ({
-        ...profile,
-        email: `user-${profile.id.slice(0, 8)}@app.com`, // Placeholder - will be updated
-        role: roles?.find((r) => r.user_id === profile.id)?.role || "free",
-        plan: profile.subscriptions?.plans?.name || "Free",
-        planPrice: profile.subscriptions?.plans?.price || 0,
-        plan_id: profile.subscriptions?.plan_id,
-      }));
+      const usersWithRoles = profiles?.map((profile) => {
+        const subscription = profile.subscriptions;
+        const planPrice = subscription?.plans?.price || 0;
+        const expiresAt = subscription?.expires_at ? new Date(subscription.expires_at) : null;
+        
+        // Calculate renewal status
+        let renewal_status: "active" | "expired" | "churned" | "free" = "free";
+        if (planPrice === 0 || !subscription) {
+          renewal_status = "free";
+        } else if (subscription.status === "active" && (!expiresAt || expiresAt > now)) {
+          renewal_status = "active";
+        } else if (expiresAt && expiresAt < now) {
+          renewal_status = "churned";
+        } else {
+          renewal_status = "expired";
+        }
+
+        return {
+          ...profile,
+          email: `user-${profile.id.slice(0, 8)}@app.com`,
+          role: roles?.find((r) => r.user_id === profile.id)?.role || "free",
+          plan: subscription?.plans?.name || "Free",
+          planPrice,
+          plan_id: subscription?.plan_id,
+          renewal_status,
+          expires_at: subscription?.expires_at,
+        };
+      });
 
       return usersWithRoles || [];
     },
@@ -421,13 +443,14 @@ export const UsersManagement = () => {
                   <TableHead>Função</TableHead>
                   <TableHead>Plano</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Renovação</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       Nenhum usuário encontrado
                     </TableCell>
                   </TableRow>
@@ -457,6 +480,24 @@ export const UsersManagement = () => {
                           variant={user.status === "active" ? "default" : "destructive"}
                         >
                           {user.status === "active" ? "Ativo" : "Bloqueado"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            user.renewal_status === "active" ? "default" :
+                            user.renewal_status === "churned" ? "destructive" :
+                            user.renewal_status === "expired" ? "secondary" : "outline"
+                          }
+                          className={
+                            user.renewal_status === "active" ? "bg-green-500/20 text-green-500 border-green-500/30" :
+                            user.renewal_status === "churned" ? "bg-red-500/20 text-red-500 border-red-500/30" :
+                            ""
+                          }
+                        >
+                          {user.renewal_status === "active" ? "Ativo" :
+                           user.renewal_status === "churned" ? "Não Renovou" :
+                           user.renewal_status === "expired" ? "Expirado" : "Free"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">

@@ -1,4 +1,6 @@
-import { Shield, Users, Webhook } from "lucide-react";
+import { Shield, Users, Webhook, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatsCards } from "@/components/superadmin/StatsCards";
 import { UsersManagement } from "@/components/superadmin/UsersManagement";
@@ -6,18 +8,30 @@ import { WebhookConfig } from "@/components/superadmin/WebhookConfig";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SuperAdmin() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Super Admin Dashboard
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Gerenciamento completo da plataforma Bateu a Meta
-            </p>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => navigate("/dashboard")}
+              className="hover:bg-muted"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                Super Admin Dashboard
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                Gerenciamento completo da plataforma Bateu a Meta
+              </p>
+            </div>
           </div>
           <Shield className="h-12 w-12 text-primary animate-pulse" />
         </div>

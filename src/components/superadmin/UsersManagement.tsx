@@ -40,6 +40,7 @@ export const UsersManagement = () => {
   
   // Form states
   const [editForm, setEditForm] = useState({
+    email: "",
     nome_completo: "",
     telefone: "",
     cpf: "",
@@ -266,10 +267,11 @@ export const UsersManagement = () => {
   const handleEditClick = (user: UserData) => {
     setSelectedUser(user);
     setEditForm({
+      email: user.email || "",
       nome_completo: user.nome_completo || "",
       telefone: user.telefone || "",
       cpf: user.cpf || "",
-      role: user.role,
+      role: user.role === "free" ? "free" : "pago",
       plan_id: user.plan_id || "",
     });
     setIsEditOpen(true);
@@ -381,7 +383,7 @@ export const UsersManagement = () => {
                       <SelectContent>
                         {plans?.map((plan) => (
                           <SelectItem key={plan.id} value={plan.id}>
-                            {plan.name} - R$ {plan.price.toFixed(2)}
+                            {plan.price > 0 ? `R$ ${plan.price.toFixed(2).replace('.', ',')} Anual` : plan.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -426,10 +428,11 @@ export const UsersManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nome</TableHead>
+                  <TableHead>Nome Completo</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Telefone</TableHead>
                   <TableHead>CPF</TableHead>
+                  <TableHead>Função</TableHead>
                   <TableHead>Plano</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -438,7 +441,7 @@ export const UsersManagement = () => {
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       Nenhum usuário encontrado
                     </TableCell>
                   </TableRow>
@@ -454,7 +457,14 @@ export const UsersManagement = () => {
                       <TableCell>{user.telefone || "-"}</TableCell>
                       <TableCell>{user.cpf || "-"}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">{user.plan}</Badge>
+                        <Badge variant={user.role === "free" ? "secondary" : "default"}>
+                          {user.role === "free" ? "Free" : "Pago"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {user.planPrice > 0 ? `R$ ${user.planPrice.toFixed(2).replace('.', ',')} Anual` : "Free"}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -528,6 +538,15 @@ export const UsersManagement = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="edit-email">Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="edit-nome">Nome Completo</Label>
               <Input
                 id="edit-nome"
@@ -564,10 +583,7 @@ export const UsersManagement = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="free">Free</SelectItem>
-                  <SelectItem value="basic">Basic</SelectItem>
-                  <SelectItem value="premium">Premium</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="super_admin">Super Admin</SelectItem>
+                  <SelectItem value="pago">Pago</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -583,7 +599,7 @@ export const UsersManagement = () => {
                 <SelectContent>
                   {plans?.map((plan) => (
                     <SelectItem key={plan.id} value={plan.id}>
-                      {plan.name} - R$ {plan.price.toFixed(2)}
+                      {plan.price > 0 ? `R$ ${plan.price.toFixed(2).replace('.', ',')} Anual` : plan.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

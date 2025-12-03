@@ -114,9 +114,9 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
           <DialogTitle>Adicionar Transação</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 1. Tipo */}
+          {/* 1. Categoria */}
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo</Label>
+            <Label htmlFor="tipo">Categoria</Label>
             <Select
               value={formData.tipo}
               onValueChange={(value: "ganho" | "despesa") => {

@@ -259,63 +259,63 @@ const KM = () => {
                 </CardHeader>
                 <CardContent>
                   {/* Dados de Entrada */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Data:</span>
-                      <span className="text-[#15a249]">{format(new Date(turno.data), "dd/MM/yyyy", { locale: ptBR })}</span>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Data</p>
+                      <p className="text-xl font-bold text-[#15a249]">{format(new Date(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Outras Despesas:</span>
-                      <span className="text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">KM Inicial:</span>
-                      <span className="text-[#15a249]">{turno.km_inicial.toFixed(2)} km</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.km_inicial.toFixed(2)} km</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">KM Final:</span>
-                      <span className="text-[#15a249]">{turno.km_final.toFixed(2)} km</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.km_final.toFixed(2)} km</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Hora Início:</span>
-                      <span className="text-[#15a249]">{turno.hora_inicio}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Hora Início</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.hora_inicio}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Hora Fim:</span>
-                      <span className="text-[#15a249]">{turno.hora_fim}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Hora Fim</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.hora_fim}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Tipo Combustível:</span>
-                      <span className="text-[#15a249]">{turno.tipo_combustivel}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Tipo Combustível</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.tipo_combustivel}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Preço Combustível:</span>
-                      <span className="text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Preço Combustível</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Consumo:</span>
-                      <span className="text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
+                      <p className="text-xl font-bold text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground text-base">Valor Ganho:</span>
-                      <span className="text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Valor Ganho</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</p>
                     </div>
                     <div className="col-span-full mt-2">
-                      <p className="font-bold text-foreground text-base mb-2">Fontes de Ganho:</p>
+                      <p className="text-sm font-bold text-foreground mb-2">Fontes de Ganho</p>
                       <div className="ml-4 space-y-2">
                         {turno.turno_fontes_ganho && turno.turno_fontes_ganho.length > 0 ? (
                           turno.turno_fontes_ganho.map((fonte) => (
                             <div key={fonte.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                              <span className="font-semibold text-primary capitalize">{fonte.fonte_ganho}</span>
-                              <span className="text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
-                              <span className="font-medium text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
+                              <span className="text-xl font-bold text-primary capitalize">{fonte.fonte_ganho}</span>
+                              <span className="text-xl font-bold text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
+                              <span className="text-xl font-bold text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
                             </div>
                           ))
                         ) : (
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                            <span className="font-semibold text-primary capitalize">{turno.fonte_ganho}</span>
-                            <span className="text-muted-foreground">{turno.quantidade_corridas} corridas</span>
-                            <span className="font-medium text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                            <span className="text-xl font-bold text-primary capitalize">{turno.fonte_ganho}</span>
+                            <span className="text-xl font-bold text-muted-foreground">{turno.quantidade_corridas} corridas</span>
+                            <span className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
                           </div>
                         )}
                       </div>

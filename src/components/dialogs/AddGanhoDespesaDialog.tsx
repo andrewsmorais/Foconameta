@@ -37,9 +37,13 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
   const [formData, setFormData] = useState({
     tipo: "ganho" as "ganho" | "despesa",
     categoria: "",
+    nome: "",
     valor: "",
     data: new Date().toISOString().split("T")[0],
     recorrente: false,
+    dataInicio: new Date().toISOString().split("T")[0],
+    dataFim: "",
+    incluirDashboard: false,
     observacoes: "",
   });
 
@@ -53,6 +57,17 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
     return formData.tipo === "ganho" ? categoriasGanho : categoriasDespesa;
   };
 
+  // Formatação automática de valor monetário
+  const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value) {
+      const numValue = parseInt(value) / 100;
+      setFormData({ ...formData, valor: numValue.toFixed(2) });
+    } else {
+      setFormData({ ...formData, valor: "" });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -61,15 +76,25 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      const { error } = await supabase.from("ganhos_despesas").insert({
+      const insertData: any = {
         user_id: user.id,
         tipo: formData.tipo,
         categoria: formData.categoria,
+        nome: formData.nome || null,
         valor: parseFloat(formData.valor),
         data: formData.data,
         recorrente: formData.recorrente,
+        incluir_dashboard: formData.incluirDashboard,
         observacoes: formData.observacoes || null,
-      });
+      };
+
+      // Se não for recorrente, adiciona datas de início e fim
+      if (!formData.recorrente && formData.dataFim) {
+        insertData.data_inicio = formData.dataInicio;
+        insertData.data_fim = formData.dataFim;
+      }
+
+      const { error } = await supabase.from("ganhos_despesas").insert(insertData);
 
       if (error) throw error;
 
@@ -82,9 +107,13 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
       setFormData({
         tipo: "ganho",
         categoria: "",
+        nome: "",
         valor: "",
         data: new Date().toISOString().split("T")[0],
         recorrente: false,
+        dataInicio: new Date().toISOString().split("T")[0],
+        dataFim: "",
+        incluirDashboard: false,
         observacoes: "",
       });
       onSuccess();
@@ -107,52 +136,21 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
           Nova Transação
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Adicionar Transação</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 1. Categoria */}
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo *</Label>
-            <Select
-              value={formData.tipo}
-              onValueChange={(value: "ganho" | "despesa") => {
-                setFormData({ ...formData, tipo: value, categoria: "" });
-              }}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ganho">Ganho</SelectItem>
-                <SelectItem value="despesa">Despesa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="recorrente"
-              checked={formData.recorrente}
-              onCheckedChange={(checked) => {
-                setFormData({ ...formData, recorrente: checked as boolean, categoria: "" });
-              }}
-            />
-            <Label htmlFor="recorrente" className="cursor-pointer">
-              Recorrente
-            </Label>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="categoria">Categoria *</Label>
+            <Label htmlFor="categoria">Categoria</Label>
             <Select
               value={formData.categoria}
               onValueChange={(value) => setFormData({ ...formData, categoria: value })}
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {getCategorias().map((cat) => (
@@ -164,20 +162,55 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             </Select>
           </div>
 
+          {/* 2. Tipo */}
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor (R$) *</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              value={formData.valor}
-              onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+            <Label htmlFor="tipo">Tipo</Label>
+            <Select
+              value={formData.tipo}
+              onValueChange={(value: "ganho" | "despesa") => {
+                setFormData({ ...formData, tipo: value, categoria: "" });
+              }}
               required
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ganho">Ganho</SelectItem>
+                <SelectItem value="despesa">Despesa</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 3. Nome da Despesa ou Ganho */}
+          <div className="space-y-2">
+            <Label htmlFor="nome">Nome da {formData.tipo === "ganho" ? "Ganho" : "Despesa"}</Label>
+            <Input
+              id="nome"
+              value={formData.nome}
+              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
             />
           </div>
 
+          {/* 4. Valor */}
           <div className="space-y-2">
-            <Label htmlFor="data">Data *</Label>
+            <Label htmlFor="valor">Valor</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
+              <Input
+                id="valor"
+                type="text"
+                className="pl-10"
+                value={formData.valor}
+                onChange={handleValorChange}
+                required
+              />
+            </div>
+          </div>
+
+          {/* 5. Data */}
+          <div className="space-y-2">
+            <Label htmlFor="data">Data</Label>
             <Input
               id="data"
               type="date"
@@ -187,14 +220,72 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             />
           </div>
 
+          {/* 6. Observação */}
           <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
+            <Label htmlFor="observacoes">Observação</Label>
             <Textarea
               id="observacoes"
               value={formData.observacoes}
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
               rows={3}
             />
+          </div>
+
+          {/* Recorrente */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="recorrente"
+              checked={formData.recorrente}
+              onCheckedChange={(checked) => {
+                setFormData({ ...formData, recorrente: checked as boolean, categoria: "" });
+              }}
+            />
+            <Label htmlFor="recorrente" className="cursor-pointer">
+              Recorrente (permanente)
+            </Label>
+          </div>
+
+          {/* Se NÃO for recorrente, mostra opção de prazo */}
+          {!formData.recorrente && (
+            <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+              <p className="text-sm text-muted-foreground">
+                Defina um prazo de validade para esta transação:
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dataInicio">Data Início</Label>
+                  <Input
+                    id="dataInicio"
+                    type="date"
+                    value={formData.dataInicio}
+                    onChange={(e) => setFormData({ ...formData, dataInicio: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dataFim">Data Final (Opcional)</Label>
+                  <Input
+                    id="dataFim"
+                    type="date"
+                    value={formData.dataFim}
+                    onChange={(e) => setFormData({ ...formData, dataFim: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Incluir no Dashboard */}
+          <div className="flex items-center space-x-2 p-3 border rounded-lg">
+            <Checkbox
+              id="incluirDashboard"
+              checked={formData.incluirDashboard}
+              onCheckedChange={(checked) => {
+                setFormData({ ...formData, incluirDashboard: checked as boolean });
+              }}
+            />
+            <Label htmlFor="incluirDashboard" className="cursor-pointer">
+              Incluir este item nos cálculos do Dashboard
+            </Label>
           </div>
 
           <div className="flex justify-end gap-2">

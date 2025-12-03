@@ -19,7 +19,11 @@ export type Database = {
           categoria: string
           created_at: string
           data: string
+          data_fim: string | null
+          data_inicio: string | null
           id: string
+          incluir_dashboard: boolean | null
+          nome: string | null
           observacoes: string | null
           recorrente: boolean
           tipo: string
@@ -30,7 +34,11 @@ export type Database = {
           categoria: string
           created_at?: string
           data: string
+          data_fim?: string | null
+          data_inicio?: string | null
           id?: string
+          incluir_dashboard?: boolean | null
+          nome?: string | null
           observacoes?: string | null
           recorrente?: boolean
           tipo: string
@@ -41,7 +49,11 @@ export type Database = {
           categoria?: string
           created_at?: string
           data?: string
+          data_fim?: string | null
+          data_inicio?: string | null
           id?: string
+          incluir_dashboard?: boolean | null
+          nome?: string | null
           observacoes?: string | null
           recorrente?: boolean
           tipo?: string

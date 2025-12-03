@@ -32,6 +32,21 @@ const tiposRelatorio = [
   { value: "metas", label: "Metas" },
 ];
 
+const getCategoriaLabel = (categoria: string) => {
+  const labels: Record<string, string> = {
+    uber: "Uber",
+    "99": "99",
+    cabify: "Cabify",
+    ganhos_extras: "Ganhos Extras",
+    combustivel: "Combustível",
+    manutencao: "Manutenção",
+    pedagio: "Pedágio",
+    estacionamento: "Estacionamento",
+    despesas_extras: "Despesas Extras",
+  };
+  return labels[categoria] || categoria;
+};
+
 const Relatorios = () => {
   const [filtros, setFiltros] = useState<Filtros>({
     dataInicio: "",
@@ -592,17 +607,57 @@ const Relatorios = () => {
       case "ganhos":
       case "despesas":
         return resultados.map((resultado) => (
-          <div key={resultado.id} className="p-4 border rounded-lg space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-medium">{resultado.categoria}</p>
-                <p className="text-sm text-muted-foreground">{format(new Date(resultado.data), "dd/MM/yyyy")}</p>
+          <Card key={resultado.id}>
+            <CardContent className="pt-6">
+              {/* Layout Horizontal para Desktop - Padronizado */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-4">
+                {resultado.nome && (
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Nome</p>
+                    <p className="text-xl font-bold text-[#15a249]">{resultado.nome}</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Categoria</p>
+                  <p className="text-xl font-bold text-[#15a249]">
+                    {getCategoriaLabel(resultado.categoria)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Data</p>
+                  <p className="text-xl font-bold text-[#15a249]">
+                    {format(new Date(resultado.data), "dd/MM/yyyy")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Valor</p>
+                  <p className={`text-xl font-bold ${filtros.tipoRelatorio === "ganhos" ? "text-[#15a249]" : "text-destructive"}`}>
+                    {filtros.tipoRelatorio === "ganhos" ? "+" : "-"}R$ {resultado.valor?.toFixed(2) || "0.00"}
+                  </p>
+                </div>
+                {resultado.recorrente && (
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Tipo</p>
+                    <p className="text-xl font-bold text-[#15a249]">Recorrente</p>
+                  </div>
+                )}
+                {resultado.data_fim && !resultado.recorrente && (
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Válido Até</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      {format(new Date(resultado.data_fim), "dd/MM/yyyy")}
+                    </p>
+                  </div>
+                )}
               </div>
-              <p className={`text-lg font-bold ${filtros.tipoRelatorio === "ganhos" ? "text-success" : "text-destructive"}`}>
-                R$ {resultado.valor?.toFixed(2) || "0.00"}
-              </p>
-            </div>
-          </div>
+              {resultado.observacoes && (
+                <div className="mt-4 p-3 bg-muted rounded-lg">
+                  <p className="text-sm font-bold text-foreground mb-1">Observações</p>
+                  <p className="text-muted-foreground">{resultado.observacoes}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         ));
 
       case "metas":

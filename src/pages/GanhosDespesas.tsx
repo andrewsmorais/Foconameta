@@ -123,8 +123,11 @@ const GanhosDespesas = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Ganhos & Despesas</h1>
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="text-3xl font-bold text-center">Ganhos & Despesas</h1>
+        <p className="text-sm text-muted-foreground text-center">
+          Exibindo os 4 Relatórios de Ganhos & Despesas mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+        </p>
         <AddGanhoDespesaDialog onSuccess={loadTransacoes} />
       </div>
 
@@ -142,7 +145,7 @@ const GanhosDespesas = () => {
       ) : (
         <div className="space-y-4">
           <div className="grid gap-4">
-            {transacoes.slice(0, 5).map((transacao) => (
+            {transacoes.slice(0, 4).map((transacao) => (
             <Card key={transacao.id}>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
@@ -259,9 +262,6 @@ const GanhosDespesas = () => {
             </Card>
           ))}
           </div>
-          <p className="text-sm text-muted-foreground text-center">
-            Exibindo os 5 lançamentos mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
-          </p>
         </div>
       )}
     </div>

@@ -189,9 +189,12 @@ const KM = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Relatórios dos Turnos</h1>
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="text-3xl font-bold text-center">Relatórios dos Turnos</h1>
         <AddTurnoDialog onSuccess={loadTurnos} />
+        <p className="text-sm text-muted-foreground text-center">
+          Exibindo os 5 turnos mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+        </p>
       </div>
 
       {turnos.length === 0 ? (
@@ -207,11 +210,6 @@ const KM = () => {
         </Card>
       ) : (
         <>
-        {turnos.length > 5 && (
-          <p className="text-sm text-muted-foreground">
-            Exibindo os 5 turnos mais recentes. Acesse o <span className="font-bold text-primary">Menu Relatórios</span> para ver o histórico completo.
-          </p>
-        )}
         <div className="grid gap-4">
           {turnosExibidos.map((turno) => {
             const metricasTurno = calcularMetricasTurno(turno);

@@ -176,6 +176,9 @@ const Metas = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="space-y-6">
         <h1 className="text-3xl font-bold text-center">Metas</h1>
+        <p className="text-sm text-muted-foreground text-center">
+          Exibindo os 4 Relatórios de Metas mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+        </p>
         
         <div className="flex flex-col items-center gap-4">
           <Button 
@@ -202,7 +205,7 @@ const Metas = () => {
 
       {metas.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2">
-          {metas.map((meta) => {
+          {metas.slice(0, 4).map((meta) => {
             const percentual = meta.valor_meta > 0 ? (meta.progresso / meta.valor_meta) * 100 : 0;
             return (
               <Card key={meta.id} className="p-6 space-y-4">

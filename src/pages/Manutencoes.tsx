@@ -122,6 +122,9 @@ const Manutencoes = () => {
     <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold text-center">Manutenções</h1>
+        <p className="text-sm text-muted-foreground text-center">
+          Exibindo as 5 manutenções mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+        </p>
         
         {/* Botão Nova Manutenção */}
         <div className="flex justify-center">
@@ -282,9 +285,6 @@ const Manutencoes = () => {
             </Card>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground text-center">
-              Exibindo as 5 manutenções mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
-            </p>
           </div>
         )}
       </div>

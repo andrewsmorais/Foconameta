@@ -14,21 +14,6 @@ interface AddGanhoDespesaDialogProps {
   onSuccess: () => void;
 }
 
-const categoriasGanho = [
-  { value: "uber", label: "Uber" },
-  { value: "99", label: "99" },
-  { value: "cabify", label: "Cabify" },
-  { value: "ganhos_extras", label: "Ganhos Extras" },
-];
-
-const categoriasDespesa = [
-  { value: "combustivel", label: "Combustível" },
-  { value: "manutencao", label: "Manutenção" },
-  { value: "pedagio", label: "Pedágio" },
-  { value: "estacionamento", label: "Estacionamento" },
-  { value: "despesas_extras", label: "Despesas Extras" },
-];
-
 export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,7 +21,6 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
 
   const [formData, setFormData] = useState({
     tipo: "ganho" as "ganho" | "despesa",
-    categoria: "",
     nome: "",
     valor: "",
     data: new Date().toISOString().split("T")[0],
@@ -46,16 +30,6 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
     incluirDashboard: false,
     observacoes: "",
   });
-
-  // Lógica condicional: Se não for recorrente, exibe apenas Ganhos Extras / Despesas Extras
-  const getCategorias = () => {
-    if (!formData.recorrente) {
-      return formData.tipo === "ganho"
-        ? [{ value: "ganhos_extras", label: "Ganhos Extras" }]
-        : [{ value: "despesas_extras", label: "Despesas Extras" }];
-    }
-    return formData.tipo === "ganho" ? categoriasGanho : categoriasDespesa;
-  };
 
   // Formatação automática de valor monetário
   const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +53,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
       const insertData: any = {
         user_id: user.id,
         tipo: formData.tipo,
-        categoria: formData.categoria,
+        categoria: formData.tipo === "ganho" ? "ganhos_extras" : "despesas_extras",
         nome: formData.nome || null,
         valor: parseFloat(formData.valor),
         data: formData.data,
@@ -106,7 +80,6 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
       setOpen(false);
       setFormData({
         tipo: "ganho",
-        categoria: "",
         nome: "",
         valor: "",
         data: new Date().toISOString().split("T")[0],
@@ -141,34 +114,13 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
           <DialogTitle>Adicionar Transação</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 1. Categoria */}
-          <div className="space-y-2">
-            <Label htmlFor="categoria">Categoria</Label>
-            <Select
-              value={formData.categoria}
-              onValueChange={(value) => setFormData({ ...formData, categoria: value })}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {getCategorias().map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* 2. Tipo */}
+          {/* 1. Tipo */}
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo</Label>
             <Select
               value={formData.tipo}
               onValueChange={(value: "ganho" | "despesa") => {
-                setFormData({ ...formData, tipo: value, categoria: "" });
+                setFormData({ ...formData, tipo: value });
               }}
               required
             >
@@ -182,7 +134,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             </Select>
           </div>
 
-          {/* 3. Nome da Despesa ou Ganho */}
+          {/* 2. Nome da Despesa ou Ganho */}
           <div className="space-y-2">
             <Label htmlFor="nome">Nome da {formData.tipo === "ganho" ? "Ganho" : "Despesa"}</Label>
             <Input
@@ -192,7 +144,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             />
           </div>
 
-          {/* 4. Valor */}
+          {/* 3. Valor */}
           <div className="space-y-2">
             <Label htmlFor="valor">Valor</Label>
             <div className="relative">
@@ -208,7 +160,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             </div>
           </div>
 
-          {/* 5. Data */}
+          {/* 4. Data */}
           <div className="space-y-2">
             <Label htmlFor="data">Data</Label>
             <Input
@@ -220,7 +172,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
             />
           </div>
 
-          {/* 6. Observação */}
+          {/* 5. Observação */}
           <div className="space-y-2">
             <Label htmlFor="observacoes">Observação</Label>
             <Textarea
@@ -237,7 +189,7 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
               id="recorrente"
               checked={formData.recorrente}
               onCheckedChange={(checked) => {
-                setFormData({ ...formData, recorrente: checked as boolean, categoria: "" });
+                setFormData({ ...formData, recorrente: checked as boolean });
               }}
             />
             <Label htmlFor="recorrente" className="cursor-pointer">

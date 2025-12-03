@@ -192,8 +192,9 @@ const Manutencoes = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4">
-            {manutencoes.map((manutencao) => (
+          <div className="space-y-4">
+            <div className="grid gap-4">
+              {manutencoes.slice(0, 5).map((manutencao) => (
             <Card key={manutencao.id}>
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -279,7 +280,11 @@ const Manutencoes = () => {
                 )}
               </CardContent>
             </Card>
-            ))}
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground text-center">
+              Exibindo as 5 manutenções mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+            </p>
           </div>
         )}
       </div>

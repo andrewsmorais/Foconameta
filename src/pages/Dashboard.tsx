@@ -417,42 +417,75 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Evolução Diária */}
+        {/* Metas */}
         <Card>
           <CardHeader>
-            <CardTitle>Evolução Diária</CardTitle>
+            <CardTitle>Metas</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="hsl(var(--foreground))"
-                  tick={{ fill: "hsl(var(--foreground))" }}
-                />
-                <YAxis 
-                  stroke="hsl(var(--foreground))"
-                  tick={{ fill: "hsl(var(--foreground))" }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
-                  labelFormatter={(label) => `${label}`}
-                />
-                <Legend />
-                <Bar dataKey="ganhos" fill="hsl(var(--primary))" name="Ganhos" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="despesas" fill="hsl(var(--destructive))" name="Despesas" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="lucro" fill="hsl(var(--success))" name="Lucro" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {(() => {
+              const metasParaDashboard = [
+                metrics.metaDiaria,
+                metrics.metaSemanal,
+                metrics.metaMensal,
+                metrics.metaAnual,
+                ...metrics.metasPersonalizadas
+              ].filter(Boolean).slice(0, 3);
+
+              if (metasParaDashboard.length === 0) {
+                return (
+                  <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                    Nenhuma meta configurada para exibição no Dashboard.
+                  </div>
+                );
+              }
+
+              const metasChartData = metasParaDashboard.map((meta: MetaProgress | null) => ({
+                name: meta!.tipo,
+                alcancado: meta!.alcancado,
+                meta: meta!.total,
+                percentual: meta!.percentual,
+              }));
+
+              return (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={metasChartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis 
+                      type="number"
+                      stroke="hsl(var(--foreground))"
+                      tick={{ fill: "hsl(var(--foreground))" }}
+                      tickFormatter={(value) => `R$ ${value.toFixed(0)}`}
+                    />
+                    <YAxis 
+                      type="category"
+                      dataKey="name"
+                      stroke="hsl(var(--foreground))"
+                      tick={{ fill: "hsl(var(--foreground))" }}
+                      width={100}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "var(--radius)",
+                      }}
+                      formatter={(value: number, name: string) => [
+                        `R$ ${value.toFixed(2)}`,
+                        name === 'alcancado' ? 'Alcançado' : 'Meta'
+                      ]}
+                    />
+                    <Legend formatter={(value) => value === 'alcancado' ? 'Alcançado' : 'Meta'} />
+                    <Bar dataKey="alcancado" fill="hsl(var(--success))" name="alcancado" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="meta" fill="hsl(var(--primary))" name="meta" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              );
+            })()}
           </CardContent>
         </Card>
       </div>

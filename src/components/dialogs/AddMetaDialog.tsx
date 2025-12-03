@@ -32,6 +32,28 @@ export function AddMetaDialog({ open, onOpenChange, onSuccess }: AddMetaDialogPr
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
+      // Verificar limite de 3 metas no dashboard
+      if (mostrarNoDashboard) {
+        const { data: metasDashboard, error: countError } = await supabase
+          .from("metas")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("mostrar_no_dashboard", true)
+          .eq("ativa", true);
+
+        if (countError) throw countError;
+
+        if (metasDashboard && metasDashboard.length >= 3) {
+          toast({
+            title: "Limite atingido",
+            description: "Você só pode exibir no máximo 3 metas no Dashboard. Desmarque uma meta existente antes de adicionar outra.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       const { error } = await supabase.from("metas").insert({
         user_id: user.id,
         tipo: "personalizada",

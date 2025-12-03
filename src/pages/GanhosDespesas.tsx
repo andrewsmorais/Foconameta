@@ -140,8 +140,9 @@ const GanhosDespesas = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
-          {transacoes.map((transacao) => (
+        <div className="space-y-4">
+          <div className="grid gap-4">
+            {transacoes.slice(0, 5).map((transacao) => (
             <Card key={transacao.id}>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
@@ -252,11 +253,15 @@ const GanhosDespesas = () => {
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
+                </AlertDialog>
                 </div>
               </CardContent>
             </Card>
           ))}
+          </div>
+          <p className="text-sm text-muted-foreground text-center">
+            Exibindo os 5 lançamentos mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+          </p>
         </div>
       )}
     </div>

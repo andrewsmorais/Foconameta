@@ -217,12 +217,14 @@ const Relatorios = () => {
         }
 
         case "metas": {
+          // Buscar metas que se sobrepõem ao período selecionado
+          // Uma meta se sobrepõe se: data_inicio <= filtros.dataFim E data_fim >= filtros.dataInicio
           const { data: metasData, error } = await supabase
             .from("metas")
             .select("*")
             .eq("user_id", user.id)
-            .gte("data_inicio", filtros.dataInicio)
-            .lte("data_fim", filtros.dataFim)
+            .lte("data_inicio", filtros.dataFim)
+            .gte("data_fim", filtros.dataInicio)
             .order("data_inicio", { ascending: false });
 
           if (error) throw error;

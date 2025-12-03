@@ -229,7 +229,7 @@ const Manutencoes = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-4">
                   <div>
                     <p className="text-sm font-bold text-foreground mb-1">Data</p>
                     <p className="text-xl font-bold text-[#15a249]">
@@ -252,25 +252,25 @@ const Manutencoes = () => {
                       <p className="text-xl font-bold text-[#15a249]">{manutencao.km_final.toFixed(0)} km</p>
                     </div>
                   )}
+                  {manutencao.nome_oficina_produto && (
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Oficina/Produto</p>
+                      <p className="text-xl font-bold text-[#15a249]">{manutencao.nome_oficina_produto}</p>
+                    </div>
+                  )}
+                  {manutencao.peca_trocada && (
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Peça Trocada</p>
+                      <p className="text-xl font-bold text-[#15a249]">{manutencao.peca_trocada}</p>
+                    </div>
+                  )}
+                  {manutencao.proximo_km && (
+                    <div>
+                      <p className="text-sm font-bold text-foreground mb-1">Próximo KM</p>
+                      <p className="text-xl font-bold text-[#15a249]">{manutencao.proximo_km.toFixed(0)} km</p>
+                    </div>
+                  )}
                 </div>
-                {manutencao.nome_oficina_produto && (
-                  <div className="mt-4">
-                    <p className="text-sm font-bold text-foreground mb-1">Oficina/Produto</p>
-                    <p className="text-xl font-bold text-[#15a249]">{manutencao.nome_oficina_produto}</p>
-                  </div>
-                )}
-                {manutencao.peca_trocada && (
-                  <div className="mt-4">
-                    <p className="text-sm font-bold text-foreground mb-1">Peça Trocada</p>
-                    <p className="text-xl font-bold text-[#15a249]">{manutencao.peca_trocada}</p>
-                  </div>
-                )}
-                {manutencao.proximo_km && (
-                  <div className="mt-4">
-                    <p className="text-sm font-bold text-foreground mb-1">Próximo KM</p>
-                    <p className="text-xl font-bold text-[#15a249]">{manutencao.proximo_km.toFixed(0)} km</p>
-                  </div>
-                )}
                 {manutencao.observacoes && (
                   <div className="mt-4 p-3 bg-muted rounded-lg">
                     <p className="text-sm font-bold text-foreground mb-1">Observações</p>

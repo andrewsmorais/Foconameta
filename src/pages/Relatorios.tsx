@@ -536,8 +536,8 @@ const Relatorios = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Layout Vertical - cada campo em linha separada */}
-              <div className="space-y-4">
+              {/* Layout Horizontal para Desktop */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-4">
                 <div>
                   <p className="text-sm font-bold text-foreground mb-1">Veículo</p>
                   <p className="text-xl font-bold text-[#15a249]">{resultado.veiculos?.modelo} - {resultado.veiculos?.placa}</p>
@@ -578,13 +578,13 @@ const Relatorios = () => {
                     <p className="text-xl font-bold text-[#15a249]">{resultado.proximo_km?.toFixed(0)} km</p>
                   </div>
                 )}
-                {resultado.observacoes && (
-                  <div className="p-3 bg-muted rounded-lg">
-                    <p className="text-sm font-bold text-foreground mb-1">Observações</p>
-                    <p className="text-xl font-bold text-[#15a249]">{resultado.observacoes}</p>
-                  </div>
-                )}
               </div>
+              {resultado.observacoes && (
+                <div className="mt-4 p-3 bg-muted rounded-lg">
+                  <p className="text-sm font-bold text-foreground mb-1">Observações</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.observacoes}</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         ));

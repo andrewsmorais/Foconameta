@@ -173,10 +173,10 @@ const Auth = () => {
           alt="Bateu a Meta" 
           className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover mb-4"
         />
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Bateu a Meta</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Bateu a Meta</h1>
         <Card className="w-full">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-3xl md:text-4xl font-bold text-center">
             {isForgotPassword ? "Recuperar Senha" : isLogin ? "Entrar" : "Criar Conta"}
           </CardTitle>
           <CardDescription className="text-center">

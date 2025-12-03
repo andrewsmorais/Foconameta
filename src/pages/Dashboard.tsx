@@ -417,46 +417,15 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Progresso de Metas */}
+        {/* Evolução Diária */}
         <Card>
           <CardHeader>
-            <CardTitle>Progresso de Metas</CardTitle>
+            <CardTitle>Evolução Diária</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
-                data={[
-                  ...(metrics.metaDiaria ? [{
-                    name: "Meta Diária",
-                    alcancado: metrics.metaDiaria.alcancado,
-                    meta: metrics.metaDiaria.total,
-                    percentual: metrics.metaDiaria.percentual
-                  }] : []),
-                  ...(metrics.metaSemanal ? [{
-                    name: "Meta Semanal",
-                    alcancado: metrics.metaSemanal.alcancado,
-                    meta: metrics.metaSemanal.total,
-                    percentual: metrics.metaSemanal.percentual
-                  }] : []),
-                  ...(metrics.metaMensal ? [{
-                    name: "Meta Mensal",
-                    alcancado: metrics.metaMensal.alcancado,
-                    meta: metrics.metaMensal.total,
-                    percentual: metrics.metaMensal.percentual
-                  }] : []),
-                  ...(metrics.metaAnual ? [{
-                    name: "Meta Anual",
-                    alcancado: metrics.metaAnual.alcancado,
-                    meta: metrics.metaAnual.total,
-                    percentual: metrics.metaAnual.percentual
-                  }] : []),
-                  ...metrics.metasPersonalizadas.map(mp => ({
-                    name: mp.tipo,
-                    alcancado: mp.alcancado,
-                    meta: mp.total,
-                    percentual: mp.percentual
-                  }))
-                ]}
+                data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -464,9 +433,6 @@ const Dashboard = () => {
                   dataKey="name" 
                   stroke="hsl(var(--foreground))"
                   tick={{ fill: "hsl(var(--foreground))" }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
                 />
                 <YAxis 
                   stroke="hsl(var(--foreground))"
@@ -482,8 +448,9 @@ const Dashboard = () => {
                   labelFormatter={(label) => `${label}`}
                 />
                 <Legend />
-                <Bar dataKey="alcancado" fill="hsl(var(--primary))" name="Alcançado" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="meta" fill="hsl(var(--muted))" name="Meta Total" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="ganhos" fill="hsl(var(--primary))" name="Ganhos" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="despesas" fill="hsl(var(--destructive))" name="Despesas" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="lucro" fill="hsl(var(--success))" name="Lucro" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

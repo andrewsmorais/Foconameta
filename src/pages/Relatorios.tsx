@@ -218,7 +218,6 @@ const Relatorios = () => {
 
         case "metas": {
           // Buscar metas que se sobrepõem ao período selecionado
-          // Uma meta se sobrepõe se: data_inicio <= filtros.dataFim E data_fim >= filtros.dataInicio
           const { data: metasData, error } = await supabase
             .from("metas")
             .select("*")
@@ -229,7 +228,49 @@ const Relatorios = () => {
 
           if (error) throw error;
 
-          data = metasData || [];
+          // Buscar turnos para calcular progresso de cada meta
+          const { data: turnosData } = await supabase
+            .from("turnos_km")
+            .select("*")
+            .eq("user_id", user.id);
+
+          // Calcular progresso para cada meta
+          const metasComProgresso = (metasData || []).map(meta => {
+            const dataInicioMeta = new Date(meta.data_inicio);
+            const dataFimMeta = new Date(meta.data_fim);
+            
+            // Filtrar turnos dentro do período da meta
+            const turnosMeta = (turnosData || []).filter(t => {
+              const dataTurno = new Date(t.data);
+              return dataTurno >= dataInicioMeta && dataTurno <= dataFimMeta;
+            });
+
+            // Calcular progresso baseado na métrica selecionada
+            let alcancado: number;
+            if (meta.metrica_rastreamento === 'ganhos_brutos') {
+              alcancado = turnosMeta.reduce((sum, t) => sum + (t.valor_ganho || 0), 0);
+            } else {
+              // Lucro líquido: Ganhos - (Despesa Combustível + Outras Despesas)
+              alcancado = turnosMeta.reduce((sum, t) => {
+                const kmRodado = (t.km_final || 0) - (t.km_inicial || 0);
+                const despComb = t.consumo_combustivel > 0 
+                  ? (kmRodado / t.consumo_combustivel) * (t.preco_combustivel || 0) 
+                  : 0;
+                const outrasDespesas = t.outras_despesas || 0;
+                return sum + ((t.valor_ganho || 0) - despComb - outrasDespesas);
+              }, 0);
+            }
+
+            const percentual = meta.valor_meta > 0 ? (alcancado / meta.valor_meta) * 100 : 0;
+
+            return {
+              ...meta,
+              progresso_alcancado: alcancado,
+              progresso_percentual: Math.min(percentual, 100),
+            };
+          });
+
+          data = metasComProgresso;
           metricsData = {
             totalRegistros: data.length,
             valorTotal: data.reduce((sum, m) => sum + (m.valor_meta || 0), 0),
@@ -675,19 +716,73 @@ const Relatorios = () => {
         ));
 
       case "metas":
-        return resultados.map((resultado) => (
-          <div key={resultado.id} className="p-4 border rounded-lg space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-medium">{resultado.nome_personalizado || resultado.tipo}</p>
-              <p className="text-sm text-muted-foreground">
-                  {formatDateSafe(resultado.data_inicio)} - {formatDateSafe(resultado.data_fim)}
-                </p>
-              </div>
-              <p className="text-lg font-bold text-primary">R$ {resultado.valor_meta?.toFixed(2) || "0.00"}</p>
-            </div>
-          </div>
-        ));
+        return resultados.map((resultado) => {
+          // Calcular progresso da meta
+          const percentual = resultado.progresso_percentual || 0;
+          const alcancado = resultado.progresso_alcancado || 0;
+          const atingida = alcancado >= (resultado.valor_meta || 0);
+          const faltando = Math.max(0, (resultado.valor_meta || 0) - alcancado);
+          
+          return (
+            <Card key={resultado.id}>
+              <CardContent className="pt-6">
+                {/* Progresso Visual */}
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm font-bold text-foreground">Progresso da Meta</p>
+                    <p className="text-sm font-bold text-[#15a249]">{percentual.toFixed(1)}%</p>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-4 overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-500 ${atingida ? 'bg-[#15a249]' : 'bg-primary'}`}
+                      style={{ width: `${Math.min(percentual, 100)}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-xl font-bold text-[#15a249]">
+                      R$ {alcancado.toFixed(2)} / R$ {resultado.valor_meta?.toFixed(2) || "0.00"}
+                    </p>
+                    {atingida ? (
+                      <span className="text-sm font-bold text-[#15a249]">Meta Batida! 🎉</span>
+                    ) : (
+                      <span className="text-sm font-bold text-muted-foreground">Faltam R$ {faltando.toFixed(2)}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Detalhes da Meta */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Nome da Meta</p>
+                    <p className="text-xl font-bold text-[#15a249]">{resultado.nome_personalizado || resultado.tipo}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Valor da Meta</p>
+                    <p className="text-xl font-bold text-[#15a249]">R$ {resultado.valor_meta?.toFixed(2) || "0.00"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Período</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      {formatDateSafe(resultado.data_inicio)} - {formatDateSafe(resultado.data_fim)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Métrica de Rastreamento</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      {resultado.metrica_rastreamento === 'ganhos_brutos' ? 'Ganhos Brutos' : 'Lucro Líquido'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Exibição no Dashboard</p>
+                    <p className="text-xl font-bold text-[#15a249]">
+                      {resultado.mostrar_no_dashboard ? 'Sim' : 'Não'}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        });
 
       default:
         return null;

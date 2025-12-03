@@ -132,6 +132,18 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           setLoading(false);
           return;
         }
+      } else if (preSelectedType === "custom") {
+        // Validação para manutenção personalizada
+        if (!formData.veiculo_id || !formData.nome_oficina_produto || !formData.peca_trocada || 
+            !formData.km_final || !formData.valor || !formData.data || !formData.km_atual) {
+          toast({
+            variant: "destructive",
+            title: "Campos obrigatórios faltando",
+            description: "Preencha: Veículo, Nome da Oficina, Peça Trocada, Motivo da Troca, Custo, Data e KM Atual",
+          });
+          setLoading(false);
+          return;
+        }
       } else {
         if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.valor) {
           toast({
@@ -495,11 +507,12 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   type="text"
                   value={formData.peca_trocada}
                   onChange={(e) => setFormData({ ...formData, peca_trocada: e.target.value })}
+                  required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="observacoes">Descrição do Produto</Label>
+                <Label htmlFor="observacoes">Descrição do Produto (Opcional)</Label>
                 <Textarea
                   id="observacoes"
                   value={formData.observacoes}
@@ -516,6 +529,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   type="text"
                   value={formData.km_final}
                   onChange={(e) => setFormData({ ...formData, km_final: e.target.value })}
+                  required
                 />
               </div>
 
@@ -547,7 +561,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção</Label>
+                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção (Opcional)</Label>
                 <Input
                   id="proxima_data_manutencao"
                   type="date"
@@ -581,7 +595,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="comprovante">Anexar Comprovante</Label>
+                <Label htmlFor="comprovante">Anexar Comprovante (Opcional)</Label>
                 <Input
                   id="comprovante"
                   type="file"

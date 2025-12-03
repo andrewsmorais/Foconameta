@@ -524,17 +524,64 @@ const Relatorios = () => {
 
       case "manutencoes":
         return resultados.map((resultado) => (
-          <div key={resultado.id} className="p-4 border rounded-lg space-y-2">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-medium">{resultado.tipo_manutencao}</p>
-                <p className="text-sm text-muted-foreground">
-                  {format(new Date(resultado.data), "dd/MM/yyyy")} - {resultado.veiculos?.modelo}
-                </p>
+          <Card key={resultado.id}>
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg">{resultado.tipo_manutencao}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {resultado.veiculos?.modelo} - {resultado.veiculos?.placa}
+                  </p>
+                </div>
               </div>
-              <p className="text-lg font-bold text-destructive">R$ {resultado.valor?.toFixed(2) || "0.00"}</p>
-            </div>
-          </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Data</p>
+                  <p className="text-xl font-bold text-[#15a249]">{format(new Date(resultado.data), "dd/MM/yyyy")}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">Valor</p>
+                  <p className="text-xl font-bold text-[#15a249]">R$ {resultado.valor?.toFixed(2) || "0.00"}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.km_atual?.toFixed(0) || "0"} km</p>
+                </div>
+                {resultado.km_final && (
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
+                    <p className="text-xl font-bold text-[#15a249]">{resultado.km_final?.toFixed(0)} km</p>
+                  </div>
+                )}
+              </div>
+              {resultado.nome_oficina_produto && (
+                <div className="mt-4">
+                  <p className="text-sm font-bold text-foreground mb-1">Oficina/Produto</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.nome_oficina_produto}</p>
+                </div>
+              )}
+              {resultado.peca_trocada && (
+                <div className="mt-4">
+                  <p className="text-sm font-bold text-foreground mb-1">Peça Trocada</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.peca_trocada}</p>
+                </div>
+              )}
+              {resultado.proximo_km && (
+                <div className="mt-4">
+                  <p className="text-sm font-bold text-foreground mb-1">Próximo KM</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.proximo_km?.toFixed(0)} km</p>
+                </div>
+              )}
+              {resultado.observacoes && (
+                <div className="mt-4 p-3 bg-muted rounded-lg">
+                  <p className="text-sm font-bold text-foreground mb-1">Observações</p>
+                  <p className="text-xl font-bold text-[#15a249]">{resultado.observacoes}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         ));
 
       case "ganhos":

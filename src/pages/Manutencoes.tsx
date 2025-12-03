@@ -229,60 +229,52 @@ const Manutencoes = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   <div>
-                    <p className="text-muted-foreground font-bold">Data</p>
-                    <p className="font-medium">
+                    <p className="text-sm font-bold text-foreground mb-1">Data</p>
+                    <p className="text-xl font-bold text-[#15a249]">
                       {format(new Date(manutencao.data), "dd/MM/yyyy")}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground font-bold">Valor</p>
-                    <p className="font-medium text-destructive">
+                    <p className="text-sm font-bold text-foreground mb-1">Valor</p>
+                    <p className="text-xl font-bold text-[#15a249]">
                       R$ {manutencao.valor.toFixed(2)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground font-bold">KM Inicial</p>
-                    <p className="font-medium">{manutencao.km_atual.toFixed(0)} km</p>
+                    <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
+                    <p className="text-xl font-bold text-[#15a249]">{manutencao.km_atual.toFixed(0)} km</p>
                   </div>
                   {manutencao.km_final && (
                     <div>
-                      <p className="text-muted-foreground font-bold">KM Final</p>
-                      <p className="font-medium">{manutencao.km_final.toFixed(0)} km</p>
+                      <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
+                      <p className="text-xl font-bold text-[#15a249]">{manutencao.km_final.toFixed(0)} km</p>
                     </div>
                   )}
                 </div>
                 {manutencao.nome_oficina_produto && (
                   <div className="mt-4">
-                    <p className="text-sm">
-                      <span className="font-bold text-muted-foreground">Oficina/Produto:</span>{" "}
-                      <span className="font-medium">{manutencao.nome_oficina_produto}</span>
-                    </p>
+                    <p className="text-sm font-bold text-foreground mb-1">Oficina/Produto</p>
+                    <p className="text-xl font-bold text-[#15a249]">{manutencao.nome_oficina_produto}</p>
                   </div>
                 )}
                 {manutencao.peca_trocada && (
-                  <div className="mt-2">
-                    <p className="text-sm">
-                      <span className="font-bold text-muted-foreground">Peça Trocada:</span>{" "}
-                      <span className="font-medium">{manutencao.peca_trocada}</span>
-                    </p>
+                  <div className="mt-4">
+                    <p className="text-sm font-bold text-foreground mb-1">Peça Trocada</p>
+                    <p className="text-xl font-bold text-[#15a249]">{manutencao.peca_trocada}</p>
                   </div>
                 )}
                 {manutencao.proximo_km && (
-                  <div className="mt-2">
-                    <p className="text-sm">
-                      <span className="font-bold text-muted-foreground">Próximo KM:</span>{" "}
-                      <span className="font-medium">{manutencao.proximo_km.toFixed(0)} km</span>
-                    </p>
+                  <div className="mt-4">
+                    <p className="text-sm font-bold text-foreground mb-1">Próximo KM</p>
+                    <p className="text-xl font-bold text-[#15a249]">{manutencao.proximo_km.toFixed(0)} km</p>
                   </div>
                 )}
                 {manutencao.observacoes && (
                   <div className="mt-4 p-3 bg-muted rounded-lg">
-                    <p className="text-sm">
-                      <span className="font-bold text-muted-foreground">Observações:</span>{" "}
-                      <span className="font-medium">{manutencao.observacoes}</span>
-                    </p>
+                    <p className="text-sm font-bold text-foreground mb-1">Observações</p>
+                    <p className="text-xl font-bold text-[#15a249]">{manutencao.observacoes}</p>
                   </div>
                 )}
               </CardContent>

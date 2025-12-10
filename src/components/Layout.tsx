@@ -5,13 +5,17 @@ import { LayoutDashboard, Navigation, TrendingUp, Wrench, Target, FileText, Menu
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useSuperAdmin } from "@/hooks/useSuperAdmin";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
 interface LayoutProps {
   children: React.ReactNode;
 }
+
 const menuItems = [{
   icon: LayoutDashboard,
   label: "Dashboard",
@@ -40,10 +44,6 @@ const menuItems = [{
   icon: Settings,
   label: "Configurações",
   path: "/configuracoes"
-}, {
-  icon: Download,
-  label: "Instalar App",
-  path: "/instalar"
 }];
 export const Layout = ({
   children
@@ -57,6 +57,28 @@ export const Layout = ({
     signOut
   } = useAuth();
   const { isSuperAdmin } = useSuperAdmin();
+  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
+
+  const handleInstallApp = async () => {
+    if (isInstalled) {
+      toast.success("App já está instalado!");
+      return;
+    }
+    
+    if (isInstallable) {
+      const success = await install();
+      if (success) {
+        toast.success("App instalado com sucesso!");
+      } else {
+        toast.info("Instalação cancelada");
+      }
+    } else if (isIOS) {
+      toast.info("Toque em 'Compartilhar' e depois 'Adicionar à Tela Inicial'");
+      navigate("/instalar");
+    } else {
+      navigate("/instalar");
+    }
+  };
   useEffect(() => {
     loadProfile();
   }, [user]);
@@ -146,6 +168,21 @@ export const Layout = ({
                 <span className="font-medium">{item.label}</span>
               </Link>;
         })}
+        
+        {/* Install App Button */}
+        {!isInstalled && (
+          <button
+            onClick={handleInstallApp}
+            className={cn(
+              "flex items-center px-4 py-3 rounded-lg transition-colors w-full text-left",
+              "text-sidebar-foreground hover:bg-sidebar-accent/50"
+            )}
+          >
+            <Download className="w-5 h-5 mr-3" />
+            <span className="font-medium">Instalar App</span>
+          </button>
+        )}
+
         {isSuperAdmin && (
           <Link
             to="/super-admin"
@@ -183,6 +220,24 @@ export const Layout = ({
                 <span className="font-medium">{item.label}</span>
               </Link>;
         })}
+        
+        {/* Install App Button - Mobile */}
+        {!isInstalled && (
+          <button
+            onClick={() => {
+              handleInstallApp();
+              setSidebarOpen(false);
+            }}
+            className={cn(
+              "flex items-center px-4 py-3 rounded-lg transition-colors w-full text-left",
+              "text-sidebar-foreground hover:bg-sidebar-accent/50"
+            )}
+          >
+            <Download className="w-5 h-5 mr-3" />
+            <span className="font-medium">Instalar App</span>
+          </button>
+        )}
+
         {isSuperAdmin && (
           <Link
             to="/super-admin"

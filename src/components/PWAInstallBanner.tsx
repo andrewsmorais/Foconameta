@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
 import { X, Download } from "lucide-react";
 import { Button } from "./ui/button";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { toast } from "sonner";
 import pwaIcon from "@/assets/pwa-install-icon.png";
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
 export const PWAInstallBanner = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true);
-      return;
-    }
+    if (isInstalled) return;
 
     // Check if user dismissed the banner before
     const dismissed = localStorage.getItem("pwa-banner-dismissed");
@@ -31,43 +23,27 @@ export const PWAInstallBanner = () => {
       }
     }
 
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowBanner(true);
-    };
+    // Show banner after a delay
+    const timer = setTimeout(() => {
+      if (!isInstalled) {
+        setShowBanner(true);
+      }
+    }, 3000);
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    // For iOS/Safari - show banner after a delay since they don't support beforeinstallprompt
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    
-    if (isIOS || isSafari) {
-      const timer = setTimeout(() => {
-        if (!window.matchMedia("(display-mode: standalone)").matches) {
-          setShowBanner(true);
-        }
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    };
-  }, []);
+    return () => clearTimeout(timer);
+  }, [isInstalled]);
 
   const handleInstall = async () => {
-    if (deferredPrompt) {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
+    if (isInstallable) {
+      const success = await install();
+      if (success) {
         setShowBanner(false);
-        setIsInstalled(true);
+        toast.success("App instalado com sucesso!");
       }
-      setDeferredPrompt(null);
+    } else if (isIOS) {
+      toast.info("Toque em 'Compartilhar' e depois 'Adicionar à Tela Inicial'");
+      window.location.href = "/instalar";
     } else {
-      // For iOS/browsers without beforeinstallprompt, redirect to install page
       window.location.href = "/instalar";
     }
   };

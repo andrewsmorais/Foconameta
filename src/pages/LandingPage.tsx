@@ -44,7 +44,8 @@ const LandingPage = () => {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      navigate("/auth");
+      // Redirect to auth with plan parameter to allow signup
+      navigate(`/auth?plan=${planType}`);
       return;
     }
 
@@ -167,6 +168,23 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Header with Login Button */}
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+        <div className="container mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="Bateu a Meta" className="w-10 h-10 object-contain" />
+            <span className="font-bold text-lg">Bateu a Meta</span>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/auth")}
+            className="font-semibold"
+          >
+            Já sou Cliente
+          </Button>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden py-12 md:py-20 px-4">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />

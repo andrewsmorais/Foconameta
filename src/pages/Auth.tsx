@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,17 +14,49 @@ const authSchema = z.object({
   password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
 });
 
+const signupSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
+  nomeCompleto: z.string().min(2, "Nome completo é obrigatório"),
+  telefone: z.string().regex(/^\(\d{2}\)\s\d{5}-\d{4}$/, "Telefone deve estar no formato (XX) XXXXX-XXXX"),
+  cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF deve estar no formato XXX.XXX.XXX-XX"),
+});
+
+// CPF validation function
+const isValidCPF = (cpf: string): boolean => {
+  const cleanCPF = cpf.replace(/\D/g, "");
+  if (cleanCPF.length !== 11 || /^(\d)\1+$/.test(cleanCPF)) return false;
+  
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(cleanCPF[i]) * (10 - i);
+  let remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleanCPF[9])) return false;
+  
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(cleanCPF[i]) * (11 - i);
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  return remainder === parseInt(cleanCPF[10]);
+};
+
 const Auth = () => {
+  const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nomeCompleto, setNomeCompleto] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [cpf, setCpf] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if user came from plan selection
+  const hasPlanSelected = searchParams.get("plan") !== null;
+
   useEffect(() => {
-    // Check if already authenticated and has subscription
     const checkAuthAndSubscription = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -35,7 +67,7 @@ const Auth = () => {
         });
         
         if (data?.hasActiveSubscription) {
-          navigate("/");
+          navigate("/dashboard");
         } else {
           navigate("/planos");
         }
@@ -44,6 +76,21 @@ const Auth = () => {
     
     checkAuthAndSubscription();
   }, [navigate]);
+
+  const formatTelefone = (value: string) => {
+    const numbers = value.replace(/\D/g, "").slice(0, 11);
+    if (numbers.length <= 2) return numbers.length ? `(${numbers}` : "";
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
+  };
+
+  const formatCPF = (value: string) => {
+    const numbers = value.replace(/\D/g, "").slice(0, 11);
+    if (numbers.length <= 3) return numbers;
+    if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
+    if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
+    return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
+  };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,18 +135,58 @@ const Auth = () => {
     }
   };
 
+  const handleSignupAttempt = () => {
+    if (!hasPlanSelected) {
+      toast({
+        variant: "destructive",
+        title: "🚨 Escolha um plano de assinatura",
+        description: "Para continuar o cadastro, você precisa escolher um plano primeiro.",
+      });
+      navigate("/#pricing");
+      return false;
+    }
+    return true;
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate input
-    try {
-      authSchema.parse({ email, password });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+    if (isLogin) {
+      try {
+        authSchema.parse({ email, password });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast({
+            variant: "destructive",
+            title: "Erro de validação",
+            description: error.errors[0].message,
+          });
+          return;
+        }
+      }
+    } else {
+      // Check if user has selected a plan
+      if (!handleSignupAttempt()) return;
+
+      try {
+        signupSchema.parse({ email, password, nomeCompleto, telefone, cpf });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast({
+            variant: "destructive",
+            title: "Erro de validação",
+            description: error.errors[0].message,
+          });
+          return;
+        }
+      }
+
+      // Validate CPF digits
+      if (!isValidCPF(cpf)) {
         toast({
           variant: "destructive",
-          title: "Erro de validação",
-          description: error.errors[0].message,
+          title: "CPF inválido",
+          description: "Por favor, verifique o CPF informado.",
         });
         return;
       }
@@ -129,7 +216,6 @@ const Auth = () => {
             });
           }
         } else {
-          // Check subscription status after login
           const { data: subData } = await supabase.functions.invoke("check-subscription", {
             headers: {
               Authorization: `Bearer ${data.session?.access_token}`,
@@ -141,7 +227,7 @@ const Auth = () => {
               title: "Login realizado com sucesso!",
               description: "Bem-vindo de volta",
             });
-            navigate("/");
+            navigate("/dashboard");
           } else {
             toast({
               title: "Login realizado!",
@@ -157,6 +243,11 @@ const Auth = () => {
           password,
           options: {
             emailRedirectTo: redirectUrl,
+            data: {
+              nome_completo: nomeCompleto,
+              telefone: telefone.replace(/\D/g, ""),
+              cpf: cpf.replace(/\D/g, ""),
+            },
           },
         });
 
@@ -175,8 +266,15 @@ const Auth = () => {
             });
           }
         } else {
-          // Check if user was auto-confirmed (no email confirmation required)
           if (data.session) {
+            // Update profile with additional data
+            await supabase.from("profiles").upsert({
+              id: data.user?.id,
+              nome_completo: nomeCompleto,
+              telefone: telefone.replace(/\D/g, ""),
+              cpf: cpf.replace(/\D/g, ""),
+            });
+
             toast({
               title: "Conta criada com sucesso!",
               description: "Escolha seu plano para continuar",
@@ -221,7 +319,7 @@ const Auth = () => {
               ? "Digite seu email para receber o link de recuperação"
               : isLogin
               ? "Entre com suas credenciais para acessar o dashboard"
-              : "Crie sua conta e escolha seu plano"}
+              : "Preencha seus dados para criar sua conta"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -253,6 +351,40 @@ const Auth = () => {
           ) : (
             <>
               <form onSubmit={handleAuth} className="space-y-4">
+                {!isLogin && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="nomeCompleto">Nome Completo</Label>
+                      <Input
+                        id="nomeCompleto"
+                        type="text"
+                        value={nomeCompleto}
+                        onChange={(e) => setNomeCompleto(e.target.value)}
+                        required={!isLogin}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="telefone">Telefone</Label>
+                      <Input
+                        id="telefone"
+                        type="tel"
+                        value={telefone}
+                        onChange={(e) => setTelefone(formatTelefone(e.target.value))}
+                        required={!isLogin}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cpf">CPF</Label>
+                      <Input
+                        id="cpf"
+                        type="text"
+                        value={cpf}
+                        onChange={(e) => setCpf(formatCPF(e.target.value))}
+                        required={!isLogin}
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -284,9 +416,24 @@ const Auth = () => {
                     </button>
                   </div>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={loading || (!isLogin && !hasPlanSelected)}
+                  onClick={(e) => {
+                    if (!isLogin && !hasPlanSelected) {
+                      e.preventDefault();
+                      handleSignupAttempt();
+                    }
+                  }}
+                >
                   {loading ? "Processando..." : isLogin ? "Entrar" : "Criar Conta"}
                 </Button>
+                {!isLogin && !hasPlanSelected && (
+                  <p className="text-sm text-destructive text-center">
+                    Escolha um plano de assinatura para continuar o cadastro
+                  </p>
+                )}
               </form>
 
               <div className="mt-4 text-center text-sm">

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/PublicRoute";
 import Dashboard from "./pages/Dashboard";
 import KM from "./pages/KM";
 import GanhosDespesas from "./pages/GanhosDespesas";
@@ -30,7 +31,11 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
       <Routes>
-        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/" element={
+          <PublicRoute>
+            <LandingPage />
+          </PublicRoute>
+        } />
         <Route path="/auth" element={<Auth />} />
         <Route path="/planos" element={
           <ProtectedRoute requireSubscription={false}>
@@ -43,7 +48,7 @@ const App = () => (
           </ProtectedRoute>
         } />
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Layout>

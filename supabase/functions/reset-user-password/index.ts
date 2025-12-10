@@ -106,8 +106,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        password: provisionalPassword,
-        message: 'Senha resetada com sucesso',
+        message: 'Senha resetada com sucesso. A nova senha foi enviada via webhook configurado.',
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -1,14 +1,58 @@
 import { Shield, Users, Webhook, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { StatsCards } from "@/components/superadmin/StatsCards";
 import { UsersManagement } from "@/components/superadmin/UsersManagement";
 import { WebhookConfig } from "@/components/superadmin/WebhookConfig";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SuperAdmin() {
   const navigate = useNavigate();
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkSuperAdminAccess = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      // Server-side verification via edge function
+      const { data, error } = await supabase.functions.invoke("check-subscription", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error || !data?.isSuperAdmin) {
+        navigate("/");
+        return;
+      }
+
+      setIsAuthorized(true);
+    };
+
+    checkSuperAdminAccess();
+  }, [navigate]);
+
+  if (isAuthorized === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Verificando permissões...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -19,7 +63,7 @@ export default function SuperAdmin() {
             <Button 
               variant="ghost" 
               size="icon" 
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/")}
               className="hover:bg-muted"
             >
               <ArrowLeft className="h-6 w-6" />

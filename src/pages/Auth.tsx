@@ -27,7 +27,8 @@ const Auth = () => {
     // Check if already authenticated
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/");
+        // Redirect to plans page to check subscription
+        navigate("/planos");
       }
     });
   }, [navigate]);
@@ -120,11 +121,12 @@ const Auth = () => {
             title: "Login realizado com sucesso!",
             description: "Bem-vindo de volta",
           });
+          // Navigate to plans page - ProtectedRoute will handle subscription check
           navigate("/");
         }
       } else {
-        const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
+        const redirectUrl = `${window.location.origin}/planos`;
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -147,11 +149,20 @@ const Auth = () => {
             });
           }
         } else {
-          toast({
-            title: "Conta criada com sucesso!",
-            description: "Você pode fazer login agora",
-          });
-          setIsLogin(true);
+          // Check if user was auto-confirmed (no email confirmation required)
+          if (data.session) {
+            toast({
+              title: "Conta criada com sucesso!",
+              description: "Escolha seu plano para continuar",
+            });
+            navigate("/planos");
+          } else {
+            toast({
+              title: "Conta criada!",
+              description: "Verifique seu email para confirmar sua conta e depois escolha seu plano",
+            });
+            setIsLogin(true);
+          }
         }
       }
     } catch (error) {
@@ -184,7 +195,7 @@ const Auth = () => {
               ? "Digite seu email para receber o link de recuperação"
               : isLogin
               ? "Entre com suas credenciais para acessar o dashboard"
-              : "Crie sua conta para começar a controlar suas finanças"}
+              : "Crie sua conta e escolha seu plano"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -195,7 +206,6 @@ const Auth = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -222,7 +232,6 @@ const Auth = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="seu@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -233,7 +242,6 @@ const Auth = () => {
                   <Input
                     id="password"
                     type="password"
-                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required

@@ -16,6 +16,8 @@ import SuperAdmin from "./pages/SuperAdmin";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Instalar from "./pages/Instalar";
+import Planos from "./pages/Planos";
+import PagamentoSucesso from "./pages/PagamentoSucesso";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,16 @@ const App = () => (
       <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route path="/planos" element={
+          <ProtectedRoute requireSubscription={false}>
+            <Planos />
+          </ProtectedRoute>
+        } />
+        <Route path="/pagamento-sucesso" element={
+          <ProtectedRoute requireSubscription={false}>
+            <PagamentoSucesso />
+          </ProtectedRoute>
+        } />
         <Route
           path="/"
           element={

@@ -8,3 +8,12 @@ verify_jwt = false
 
 [functions.reset-user-password]
 verify_jwt = true
+
+[functions.create-checkout]
+verify_jwt = true
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.check-subscription]
+verify_jwt = true

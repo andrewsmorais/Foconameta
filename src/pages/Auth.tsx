@@ -24,13 +24,25 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if already authenticated
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check if already authenticated and has subscription
+    const checkAuthAndSubscription = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // Redirect to plans page to check subscription
-        navigate("/planos");
+        const { data } = await supabase.functions.invoke("check-subscription", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+        
+        if (data?.hasActiveSubscription) {
+          navigate("/");
+        } else {
+          navigate("/planos");
+        }
       }
-    });
+    };
+    
+    checkAuthAndSubscription();
   }, [navigate]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -97,7 +109,7 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -117,12 +129,26 @@ const Auth = () => {
             });
           }
         } else {
-          toast({
-            title: "Login realizado com sucesso!",
-            description: "Bem-vindo de volta",
+          // Check subscription status after login
+          const { data: subData } = await supabase.functions.invoke("check-subscription", {
+            headers: {
+              Authorization: `Bearer ${data.session?.access_token}`,
+            },
           });
-          // Navigate to plans page - ProtectedRoute will handle subscription check
-          navigate("/");
+
+          if (subData?.hasActiveSubscription) {
+            toast({
+              title: "Login realizado com sucesso!",
+              description: "Bem-vindo de volta",
+            });
+            navigate("/");
+          } else {
+            toast({
+              title: "Login realizado!",
+              description: "Escolha seu plano para continuar",
+            });
+            navigate("/planos");
+          }
         }
       } else {
         const redirectUrl = `${window.location.origin}/planos`;

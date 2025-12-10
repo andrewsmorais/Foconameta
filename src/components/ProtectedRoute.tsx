@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requireSubscription?: boolean;
 }
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ children, requireSubscription = true }: ProtectedRouteProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasSubscription, setHasSubscription] = useState<boolean | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -18,7 +21,15 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
+        
+        // Check subscription after auth state change
+        if (session?.user && requireSubscription) {
+          setTimeout(() => {
+            checkSubscription(session);
+          }, 0);
+        } else {
+          setLoading(false);
+        }
       }
     );
 
@@ -26,11 +37,38 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
+      
+      if (session?.user && requireSubscription) {
+        checkSubscription(session);
+      } else {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [requireSubscription]);
+
+  const checkSubscription = async (session: Session) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("check-subscription", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error("Error checking subscription:", error);
+        setHasSubscription(false);
+      } else {
+        setHasSubscription(data?.hasActiveSubscription ?? false);
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+      setHasSubscription(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -45,6 +83,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (!session || !user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // If subscription is required and user doesn't have one, redirect to plans
+  if (requireSubscription && hasSubscription === false) {
+    return <Navigate to="/planos" replace />;
   }
 
   return <>{children}</>;

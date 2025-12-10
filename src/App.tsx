@@ -15,6 +15,7 @@ import Configuracoes from "./pages/Configuracoes";
 import SuperAdmin from "./pages/SuperAdmin";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Instalar from "./pages/Instalar";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
@@ -115,6 +116,7 @@ const App = () => (
             </ProtectedRoute>
           }
         />
+        <Route path="/instalar" element={<Instalar />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

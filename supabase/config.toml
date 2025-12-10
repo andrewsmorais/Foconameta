@@ -3,9 +3,6 @@ project_id = "grfyoqsbypvvuzdudtgu"
 [functions.send-webhook]
 verify_jwt = true
 
-[functions.process-sale-webhook]
-verify_jwt = false
-
 [functions.reset-user-password]
 verify_jwt = true
 

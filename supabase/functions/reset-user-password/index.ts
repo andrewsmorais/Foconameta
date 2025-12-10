@@ -48,8 +48,8 @@ serve(async (req) => {
       throw new Error('user_id is required');
     }
 
-    // Generate or use provisional password
-    const provisionalPassword = '1234';
+    // Generate secure random provisional password
+    const provisionalPassword = crypto.randomUUID().slice(0, 12);
 
     // Reset user password
     const { error: updateError } = await supabaseClient.auth.admin.updateUserById(

@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import Instalar from "./pages/Instalar";
 import Planos from "./pages/Planos";
 import PagamentoSucesso from "./pages/PagamentoSucesso";
+import LandingPage from "./pages/LandingPage";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
       <Routes>
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/planos" element={
           <ProtectedRoute requireSubscription={false}>

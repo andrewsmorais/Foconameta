@@ -119,6 +119,10 @@ const Planos = () => {
                   <Check className="h-5 w-5 text-green-500" />
                   <span>Metas personalizadas</span>
                 </li>
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-5 text-green-500" />
+                  <span className="font-medium">Suporte prioritário</span>
+                </li>
               </ul>
 
               <Button 
@@ -151,9 +155,11 @@ const Planos = () => {
                 <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
                 <span className="text-muted-foreground">/ano</span>
               </div>
-              <p className="text-sm text-green-500 font-medium mb-4">
-                Economia de R$ 56,90 por ano!
-              </p>
+              <div className="bg-green-500/20 border border-green-500 rounded-lg px-4 py-2 mb-4">
+                <p className="text-lg text-green-500 font-bold">
+                  🎉 Economia de R$ 56,90 por ano!
+                </p>
+              </div>
 
               <ul className="space-y-3 mb-6 text-left">
                 <li className="flex items-center gap-2">

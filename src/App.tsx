@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicRoute } from "./components/PublicRoute";
+import { PWAInstallBanner } from "./components/PWAInstallBanner";
 import Dashboard from "./pages/Dashboard";
 import KM from "./pages/KM";
 import GanhosDespesas from "./pages/GanhosDespesas";
@@ -29,6 +30,7 @@ const App = () => (
     <ThemeProvider>
       <Toaster />
       <Sonner />
+      <PWAInstallBanner />
       <BrowserRouter>
       <Routes>
         <Route path="/" element={

@@ -25,6 +25,23 @@ import {
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 
+// WhatsApp testimonial images
+import whatsapp1 from "@/assets/testimonials/whatsapp-1.jpeg";
+import whatsapp2 from "@/assets/testimonials/whatsapp-2.jpeg";
+import whatsapp3 from "@/assets/testimonials/whatsapp-3.jpeg";
+import whatsapp4 from "@/assets/testimonials/whatsapp-4.jpeg";
+import whatsapp5 from "@/assets/testimonials/whatsapp-5.jpeg";
+import whatsapp6 from "@/assets/testimonials/whatsapp-6.jpeg";
+import whatsapp7 from "@/assets/testimonials/whatsapp-7.jpeg";
+import whatsapp8 from "@/assets/testimonials/whatsapp-8.jpeg";
+import whatsapp9 from "@/assets/testimonials/whatsapp-9.jpeg";
+import whatsapp10 from "@/assets/testimonials/whatsapp-10.jpeg";
+
+const whatsappTestimonials = [
+  whatsapp1, whatsapp2, whatsapp3, whatsapp4, whatsapp5,
+  whatsapp6, whatsapp7, whatsapp8, whatsapp9, whatsapp10
+];
+
 const PRICE_IDS = {
   mensal: "price_1ScddaK6aMDv1DOlB09lhJBF",
   anual: "price_1ScdelK6aMDv1DOlzvkwwZd9",
@@ -441,6 +458,26 @@ const LandingPage = () => {
             </p>
           </div>
 
+          {/* WhatsApp Testimonials Carousel */}
+          <Carousel className="w-full max-w-5xl mx-auto mb-12">
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {whatsappTestimonials.map((img, index) => (
+                <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
+                  <div className="overflow-hidden rounded-xl shadow-lg border border-border hover:shadow-xl transition-shadow">
+                    <img 
+                      src={img} 
+                      alt={`Depoimento WhatsApp ${index + 1}`}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-4 md:-left-6" />
+            <CarouselNext className="-right-4 md:-right-6" />
+          </Carousel>
+
+          {/* Text Testimonials Carousel */}
           <Carousel className="w-full max-w-4xl mx-auto">
             <CarouselContent>
               {testimonials.map((testimonial, index) => (

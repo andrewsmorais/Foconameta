@@ -103,7 +103,7 @@ serve(async (req) => {
         const priceId = subscription.items.data[0].price.id;
         
         // Determine plan type based on price
-        const isAnnual = priceId === "price_1ScdelK6aMDv1DOlzvkwwZd9";
+        const isAnnual = priceId === "price_1SdmJnK6aMDv1DOlafIvA9GC";
         const planName = isAnnual ? "anual" : "mensal";
 
         // Find or create the plan in database

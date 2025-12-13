@@ -12,8 +12,8 @@ import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { z } from "zod";
 
 const PRICE_IDS = {
-  mensal: "price_1ScddaK6aMDv1DOlB09lhJBF",
-  anual: "price_1ScdelK6aMDv1DOlzvkwwZd9",
+  mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",
+  anual: "price_1SdmJnK6aMDv1DOlafIvA9GC",
 };
 
 const userSchema = z.object({

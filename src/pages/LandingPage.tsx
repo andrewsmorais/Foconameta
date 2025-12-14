@@ -57,14 +57,6 @@ const LandingPage = () => {
 
   const handleSelectPlan = async (planType: "mensal" | "anual") => {
     setLoadingPlan(planType);
-    
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      // Redirect to auth with plan parameter to allow signup
-      navigate(`/auth?plan=${planType}`);
-      return;
-    }
 
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {

@@ -3,52 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Check, Crown, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
-import { z } from "zod";
 
 const PRICE_IDS = {
   mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",
   anual: "price_1SdmJnK6aMDv1DOlafIvA9GC",
 };
 
-const userSchema = z.object({
-  email: z.string().email("Email inválido"),
-  nomeCompleto: z.string().min(2, "Nome completo é obrigatório"),
-  telefone: z.string().regex(/^\(\d{2}\)\s\d{5}-\d{4}$/, "Telefone deve estar no formato (XX) XXXXX-XXXX"),
-  cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF deve estar no formato XXX.XXX.XXX-XX"),
-});
-
-// CPF validation function
-const isValidCPF = (cpf: string): boolean => {
-  const cleanCPF = cpf.replace(/\D/g, "");
-  if (cleanCPF.length !== 11 || /^(\d)\1+$/.test(cleanCPF)) return false;
-  
-  let sum = 0;
-  for (let i = 0; i < 9; i++) sum += parseInt(cleanCPF[i]) * (10 - i);
-  let remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cleanCPF[9])) return false;
-  
-  sum = 0;
-  for (let i = 0; i < 10; i++) sum += parseInt(cleanCPF[i]) * (11 - i);
-  remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  return remainder === parseInt(cleanCPF[10]);
-};
-
 const Planos = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [nomeCompleto, setNomeCompleto] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [cpf, setCpf] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -57,10 +24,7 @@ const Planos = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
-      // If authenticated, store user email
       if (session) {
-        setUserEmail(session.user.email || null);
-        
         const { data } = await supabase.functions.invoke("check-subscription", {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
@@ -76,82 +40,12 @@ const Planos = () => {
     checkAuth();
   }, [navigate]);
 
-  const formatTelefone = (value: string) => {
-    const numbers = value.replace(/\D/g, "").slice(0, 11);
-    if (numbers.length <= 2) return numbers.length ? `(${numbers}` : "";
-    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
-  };
-
-  const formatCPF = (value: string) => {
-    const numbers = value.replace(/\D/g, "").slice(0, 11);
-    if (numbers.length <= 3) return numbers;
-    if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
-    if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
-    return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
-  };
-
   const handleSelectPlan = async (planType: "mensal" | "anual") => {
-    // Get fresh session data at click time to avoid race conditions
-    const { data: { session } } = await supabase.auth.getSession();
-    const isCurrentlyAuthenticated = !!session;
-    
-    let emailToUse: string | null = null;
-    
-    if (isCurrentlyAuthenticated) {
-      emailToUse = session.user.email || null;
-      console.log("Authenticated user email:", emailToUse);
-    } else {
-      // If not authenticated, validate user data first
-      try {
-        userSchema.parse({ email, nomeCompleto, telefone, cpf });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          toast({
-            variant: "destructive",
-            title: "Erro de validação",
-            description: error.errors[0].message,
-          });
-          return;
-        }
-      }
-
-      if (!isValidCPF(cpf)) {
-        toast({
-          variant: "destructive",
-          title: "CPF inválido",
-          description: "Por favor, verifique o CPF informado.",
-        });
-        return;
-      }
-      
-      emailToUse = email;
-    }
-    
-    if (!emailToUse) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Email não encontrado. Faça login novamente.",
-      });
-      return;
-    }
-
     setLoading(planType);
-
-    const requestBody = { 
-      priceId: PRICE_IDS[planType],
-      email: emailToUse,
-      nomeCompleto: isCurrentlyAuthenticated ? undefined : nomeCompleto,
-      telefone: isCurrentlyAuthenticated ? undefined : telefone.replace(/\D/g, ""),
-      cpf: isCurrentlyAuthenticated ? undefined : cpf.replace(/\D/g, ""),
-    };
-    
-    console.log("Sending to create-checkout:", requestBody);
 
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: requestBody,
+        body: { priceId: PRICE_IDS[planType] },
       });
 
       if (error) {
@@ -181,7 +75,6 @@ const Planos = () => {
     setIsAuthenticated(false);
   };
 
-  // Show loading while checking auth
   if (isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -206,58 +99,6 @@ const Planos = () => {
             Selecione o plano ideal para controlar suas finanças como motorista
           </p>
         </div>
-
-        {/* User data form for non-authenticated users */}
-        {!isAuthenticated && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl">Seus Dados</CardTitle>
-              <CardDescription>
-                Preencha seus dados para criar sua conta após o pagamento
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="nomeCompleto">Nome Completo</Label>
-                  <Input
-                    id="nomeCompleto"
-                    type="text"
-                    value={nomeCompleto}
-                    onChange={(e) => setNomeCompleto(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="telefone">Telefone</Label>
-                  <Input
-                    id="telefone"
-                    type="tel"
-                    value={telefone}
-                    onChange={(e) => setTelefone(formatTelefone(e.target.value))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cpf">CPF</Label>
-                  <Input
-                    id="cpf"
-                    type="text"
-                    value={cpf}
-                    onChange={(e) => setCpf(formatCPF(e.target.value))}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Plano Mensal */}

@@ -46,8 +46,6 @@ serve(async (req) => {
       mode: "subscription",
       success_url: `${origin}/pagamento-sucesso?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/planos`,
-      // Let Stripe collect the email
-      customer_creation: "always",
     });
 
     console.log("Checkout session created:", session.id);

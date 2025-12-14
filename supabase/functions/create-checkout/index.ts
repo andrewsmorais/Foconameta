@@ -15,8 +15,8 @@ serve(async (req) => {
     const body = await req.json();
     console.log("Received body:", JSON.stringify(body));
     
-    const { priceId, email, nomeCompleto, telefone, cpf } = body;
-    console.log("Parsed values - priceId:", priceId, "email:", email);
+    const { priceId } = body;
+    console.log("Parsed values - priceId:", priceId);
 
     if (!priceId) {
       console.log("Error: Price ID is missing");
@@ -26,53 +26,17 @@ serve(async (req) => {
       });
     }
 
-    if (!email) {
-      console.log("Error: Email is missing");
-      return new Response(JSON.stringify({ error: "Email is required" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
-    }
-
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
     });
 
-    // Check if customer already exists
-    const customers = await stripe.customers.list({
-      email: email,
-      limit: 1,
-    });
+    const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
 
-    let customerId: string;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      // Update customer metadata
-      await stripe.customers.update(customerId, {
-        metadata: {
-          nome_completo: nomeCompleto || "",
-          telefone: telefone || "",
-          cpf: cpf || "",
-        },
-      });
-    } else {
-      const customer = await stripe.customers.create({
-        email: email,
-        name: nomeCompleto || undefined,
-        phone: telefone || undefined,
-        metadata: {
-          nome_completo: nomeCompleto || "",
-          telefone: telefone || "",
-          cpf: cpf || "",
-        },
-      });
-      customerId = customer.id;
-    }
+    console.log("Creating checkout session with price:", priceId);
 
-    console.log("Creating checkout session for email:", email, "with price:", priceId);
-
+    // Create checkout session without pre-defined customer
+    // Stripe will collect email in the checkout form
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
       line_items: [
         {
           price: priceId,
@@ -80,14 +44,10 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/pagamento-sucesso?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/planos`,
-      metadata: {
-        email: email,
-        nome_completo: nomeCompleto || "",
-        telefone: telefone || "",
-        cpf: cpf || "",
-      },
+      success_url: `${origin}/pagamento-sucesso?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/planos`,
+      // Let Stripe collect the email
+      customer_creation: "always",
     });
 
     console.log("Checkout session created:", session.id);

@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { 
@@ -15,32 +14,14 @@ import {
   CircleHelp, 
   DollarSign,
   CheckCircle2,
-  Users,
   Shield,
   Smartphone,
-  Star,
   Instagram,
   MessageCircle,
   ChevronDown
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 
-// WhatsApp testimonial images
-import whatsapp1 from "@/assets/testimonials/whatsapp-1.jpeg";
-import whatsapp2 from "@/assets/testimonials/whatsapp-2.jpeg";
-import whatsapp3 from "@/assets/testimonials/whatsapp-3.jpeg";
-import whatsapp4 from "@/assets/testimonials/whatsapp-4.jpeg";
-import whatsapp5 from "@/assets/testimonials/whatsapp-5.jpeg";
-import whatsapp6 from "@/assets/testimonials/whatsapp-6.jpeg";
-import whatsapp7 from "@/assets/testimonials/whatsapp-7.jpeg";
-import whatsapp8 from "@/assets/testimonials/whatsapp-8.jpeg";
-import whatsapp9 from "@/assets/testimonials/whatsapp-9.jpeg";
-import whatsapp10 from "@/assets/testimonials/whatsapp-10.jpeg";
-
-const whatsappTestimonials = [
-  whatsapp1, whatsapp2, whatsapp3, whatsapp4, whatsapp5,
-  whatsapp6, whatsapp7, whatsapp8, whatsapp9, whatsapp10
-];
 
 const PRICE_IDS = {
   mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",
@@ -125,53 +106,26 @@ const LandingPage = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Carlos M.",
-      role: "Motorista Uber",
-      text: "Finalmente sei exatamente quanto lucro por corrida. O app mudou minha vida financeira!",
-      rating: 5
-    },
-    {
-      name: "Ana Paula S.",
-      role: "Motorista 99",
-      text: "Controle de manutenção top! Nunca mais fui pego de surpresa com gastos do carro.",
-      rating: 5
-    },
-    {
-      name: "Roberto F.",
-      role: "Motorista Uber/99",
-      text: "As metas me motivam demais. Bato minhas metas todos os dias agora!",
-      rating: 5
-    },
-    {
-      name: "Juliana K.",
-      role: "Motorista iFood",
-      text: "Simples de usar e mostra tudo que preciso. Recomendo para todos os entregadores!",
-      rating: 5
-    }
-  ];
-
   const faqs = [
     {
-      question: "Funciona para Uber e 99?",
-      answer: "Sim! É compatível com todos os aplicativos de transporte e até mesmo entregas como iFood, Lalamove e outros."
+      question: "O aplicativo Bateu A Meta funciona no iPhone e no Android?",
+      answer: "Sim! O Bateu A Meta é um PWA (Progressive Web App) moderno e totalmente otimizado para ambos os sistemas (iOS e Android). Você instala ele diretamente no seu celular ou desktop."
     },
     {
-      question: "Posso usar no celular?",
-      answer: "Sim. Foi desenvolvido para ser 100% responsivo e intuitivo no seu smartphone. Você pode instalar como um app!"
+      question: "Por quanto tempo terei acesso ao Bateu A Meta?",
+      answer: "Seu acesso é conforme o plano escolhido. Ao adquirir o Plano Anual, você terá acesso por um ano completo. O Plano Mensal é renovado a cada 30 dias."
     },
     {
-      question: "Como cancelar minha assinatura?",
-      answer: "Você pode cancelar a qualquer momento diretamente nas configurações da sua conta. Sem burocracia."
+      question: "Quais são as formas de pagamento aceitas?",
+      answer: "Aceitamos as principais bandeiras de cartão de crédito (VISA, Mastercard) e também o pagamento instantâneo via Pix, através do nosso parceiro de pagamentos Stripe."
     },
     {
-      question: "Meus dados estão seguros?",
-      answer: "Sim. Utilizamos criptografia e políticas de segurança rigorosas (Supabase RLS) para garantir a proteção das suas informações financeiras e pessoais."
+      question: "Como vou ter certeza de que a compra e o acesso foram aprovados?",
+      answer: "Após a confirmação do pagamento, você receberá imediatamente um e-mail de boas-vindas com o seu login e a senha provisória para acessar o Dashboard."
     },
     {
-      question: "Tem período de teste?",
-      answer: "Oferecemos 7 dias de garantia de satisfação. Se não gostar, devolvemos seu dinheiro!"
+      question: "Para quem o aplicativo Bateu A Meta é indicado?",
+      answer: "Para todos os profissionais que trabalham com aplicativos de entrega ou transporte (Uber, 99, iFood, Loggi, etc.) e que precisam transformar corridas em lucro real."
     }
   ];
 
@@ -432,68 +386,6 @@ const LandingPage = () => {
               <span className="font-medium">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Social Proof Section */}
-      <section className="py-16 md:py-24 px-4 bg-muted/50">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-4 mb-12">
-            <div className="flex justify-center">
-              <Users className="h-12 w-12 text-primary" />
-            </div>
-            <h2 className="text-2xl md:text-4xl font-bold">
-              Quem Já <span className="text-primary">Bateu A Meta</span> Está Amando!
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Milhares de motoristas já controlam suas finanças e sabem o lucro real de cada corrida!
-            </p>
-          </div>
-
-          {/* WhatsApp Testimonials Carousel */}
-          <Carousel className="w-full max-w-5xl mx-auto mb-12">
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {whatsappTestimonials.map((img, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
-                  <div className="overflow-hidden rounded-xl shadow-lg border border-border hover:shadow-xl transition-shadow">
-                    <img 
-                      src={img} 
-                      alt={`Depoimento WhatsApp ${index + 1}`}
-                      className="w-full h-auto object-cover"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-4 md:-left-6" />
-            <CarouselNext className="-right-4 md:-right-6" />
-          </Carousel>
-
-          {/* Text Testimonials Carousel */}
-          <Carousel className="w-full max-w-4xl mx-auto">
-            <CarouselContent>
-              {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/2">
-                  <Card className="h-full">
-                    <CardContent className="p-6 space-y-4">
-                      <div className="flex gap-1">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                      <p className="text-muted-foreground italic">"{testimonial.text}"</p>
-                      <div>
-                        <p className="font-bold">{testimonial.name}</p>
-                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
         </div>
       </section>
 

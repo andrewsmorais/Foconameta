@@ -14,12 +14,17 @@ import {
   TrendingUp, 
   CircleHelp, 
   DollarSign,
-  CheckCircle2,
   Shield,
   Smartphone,
   Instagram,
   MessageCircle,
-  ChevronDown
+  ChevronDown,
+  LayoutDashboard,
+  Clock,
+  FileText,
+  Headphones,
+  CalendarX,
+  ShieldCheck
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 
@@ -166,12 +171,6 @@ const LandingPage = () => {
       <section className="relative overflow-hidden py-12 md:py-20 px-4 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-6">
-            <img 
-              src={logo} 
-              alt="Bateu a Meta" 
-              className="w-24 h-24 md:w-32 md:h-32 object-contain"
-            />
-            
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
               <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
               <span className="text-brand-blue">Resultados Reais!</span>
@@ -382,15 +381,17 @@ const LandingPage = () => {
 
                 <ul className="space-y-3">
                   {[
-                    { text: "Dashboard", bold: "completo" },
-                    { text: "Controle de turnos", bold: "ilimitado" },
-                    { text: "Metas", bold: "personalizadas" },
-                    { text: "Relatórios em", bold: "PDF" },
-                    { text: "Gestão de", bold: "manutenções" },
-                    { text: "Suporte", bold: "prioritário" }
+                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo", color: "from-blue-500 to-cyan-400" },
+                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado", color: "from-purple-500 to-pink-400" },
+                    { icon: Target, text: "Metas", bold: "personalizadas", color: "from-orange-500 to-yellow-400" },
+                    { icon: FileText, text: "Relatórios em", bold: "PDF", color: "from-green-500 to-emerald-400" },
+                    { icon: Wrench, text: "Gestão de", bold: "manutenções", color: "from-red-500 to-rose-400" },
+                    { icon: Headphones, text: "Suporte", bold: "prioritário", color: "from-indigo-500 to-violet-400" }
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-black">
-                      <CheckCircle2 className="h-5 w-5 text-[#3c83f6] shrink-0" />
+                      <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.color} shadow-md`}>
+                        <item.icon className="h-5 w-5 text-white" />
+                      </div>
                       <span>{item.text} <strong className="text-[#3c83f6]">{item.bold}</strong></span>
                     </li>
                   ))}
@@ -420,15 +421,17 @@ const LandingPage = () => {
 
                 <ul className="space-y-3">
                   {[
-                    { text: "Dashboard", bold: "completo" },
-                    { text: "Controle de turnos", bold: "ilimitado" },
-                    { text: "Metas", bold: "personalizadas" },
-                    { text: "Relatórios em", bold: "PDF" },
-                    { text: "Gestão de", bold: "manutenções" },
-                    { text: "Cancele", bold: "quando quiser" }
+                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo", color: "from-blue-500 to-cyan-400" },
+                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado", color: "from-purple-500 to-pink-400" },
+                    { icon: Target, text: "Metas", bold: "personalizadas", color: "from-orange-500 to-yellow-400" },
+                    { icon: FileText, text: "Relatórios em", bold: "PDF", color: "from-green-500 to-emerald-400" },
+                    { icon: Wrench, text: "Gestão de", bold: "manutenções", color: "from-red-500 to-rose-400" },
+                    { icon: CalendarX, text: "Cancele", bold: "quando quiser", color: "from-gray-500 to-slate-400" }
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-black">
-                      <CheckCircle2 className="h-5 w-5 text-[#3c83f6] shrink-0" />
+                      <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.color} shadow-md`}>
+                        <item.icon className="h-5 w-5 text-white" />
+                      </div>
                       <span>{item.text} <strong className="text-[#3c83f6]">{item.bold}</strong></span>
                     </li>
                   ))}
@@ -445,10 +448,10 @@ const LandingPage = () => {
             </Card>
           </div>
 
-          <div className="text-center mt-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3c83f6]/10 border border-[#3c83f6]/20">
-              <Shield className="h-5 w-5 text-[#3c83f6]" />
-              <span className="font-medium text-black">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+          <div className="text-center mt-10">
+            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-green-500/15 border-2 border-green-500/40 shadow-lg shadow-green-500/20">
+              <ShieldCheck className="h-8 w-8 md:h-10 md:w-10 text-green-600" />
+              <span className="text-lg md:text-xl lg:text-2xl font-bold text-green-600">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
         </div>
@@ -497,10 +500,11 @@ const LandingPage = () => {
             COMEÇAR AGORA
           </Button>
 
-          <div className="pt-4">
-            <p className="text-sm text-gray-400 mb-4">
-              7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta
-            </p>
+          <div className="pt-6">
+            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-green-500/20 border-2 border-green-500/50 shadow-lg shadow-green-500/30">
+              <ShieldCheck className="h-7 w-7 md:h-9 md:w-9 text-green-500" />
+              <span className="text-base md:text-lg lg:text-xl font-bold text-green-500">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-zinc-800">

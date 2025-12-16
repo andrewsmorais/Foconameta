@@ -204,43 +204,43 @@ const LandingPage = () => {
       </section>
 
       {/* Problem Section - #000000 */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* Problem Section - #3c83f6 */}
+      <section className="py-16 md:py-24 px-4 bg-[#3c83f6]">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6">
             <div className="flex justify-center">
-              <div className="p-4 rounded-full bg-[#c41313]/20">
+              <div className="p-4 rounded-full bg-white/20">
                 <CircleHelp className="h-12 w-12 text-[#c41313]" />
               </div>
             </div>
             
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              Cansado de Rodar Sem Ver o <span className="text-brand-blue">Lucro</span>?{" "}
-              <span className="text-brand-red">Nós Entendemos Suas Dores.</span>
+            <h2 className="text-2xl md:text-4xl font-bold text-[#c41313]">
+              Cansado de Rodar Sem Ver o Lucro? Nós Entendemos Suas Dores.
             </h2>
 
             <div className="grid md:grid-cols-3 gap-6 pt-8">
-              <Card className="border-zinc-700 bg-zinc-900">
+              <Card className="border-white/20 bg-white/10">
                 <CardContent className="p-6 text-center space-y-3">
                   <DollarSign className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
+                  <p className="text-lg font-medium text-[#c41313]">
                     Você realmente controla seus gastos com combustível e manutenção?
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="border-zinc-700 bg-zinc-900">
+              <Card className="border-white/20 bg-white/10">
                 <CardContent className="p-6 text-center space-y-3">
                   <Target className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
+                  <p className="text-lg font-medium text-[#c41313]">
                     Sabe quanto precisa rodar para bater sua meta de lucro diária?
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="border-zinc-700 bg-zinc-900">
+              <Card className="border-white/20 bg-white/10">
                 <CardContent className="p-6 text-center space-y-3">
                   <BarChart3 className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
+                  <p className="text-lg font-medium text-[#c41313]">
                     A fatura do cartão não deixa você saber o lucro real?
                   </p>
                 </CardContent>
@@ -278,26 +278,26 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* How It Works Section - #000000 */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* How It Works Section - #3c83f6 */}
+      <section className="py-16 md:py-24 px-4 bg-[#3c83f6]">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              <span className="text-brand-blue">3 Passos Simples</span> Para Começar
+            <h2 className="text-2xl md:text-4xl font-bold text-[#c41313]">
+              3 Passos Simples Para Começar
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step, index) => (
               <div key={index} className="relative text-center space-y-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-[#c41313] to-[#3c83f6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center text-[#c41313] text-2xl font-bold shadow-lg">
                   {step.number}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-white/50" />
                 )}
-                <h3 className="text-xl font-bold text-white">{step.title}</h3>
-                <p className="text-gray-400">{step.description}</p>
+                <h3 className="text-xl font-bold text-[#c41313]">{step.title}</h3>
+                <p className="text-white/90">{step.description}</p>
               </div>
             ))}
           </div>
@@ -449,9 +449,9 @@ const LandingPage = () => {
           </div>
 
           <div className="text-center mt-10">
-            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-green-500/15 border-2 border-green-500/40 shadow-lg shadow-green-500/20">
-              <ShieldCheck className="h-8 w-8 md:h-10 md:w-10 text-green-600" />
-              <span className="text-lg md:text-xl lg:text-2xl font-bold text-green-600">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-[#22c55e]">
+              <ShieldCheck className="h-8 w-8 md:h-10 md:w-10 text-white" />
+              <span className="text-lg md:text-xl lg:text-2xl font-bold text-white">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
         </div>
@@ -481,38 +481,38 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer CTA - #000000 */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* Footer CTA - #3c83f6 */}
+      <section className="py-16 md:py-24 px-4 bg-[#3c83f6]">
         <div className="container mx-auto max-w-4xl text-center space-y-8">
-          <h2 className="text-2xl md:text-4xl font-bold text-white">
-            Pronto Para <span className="text-gradient-brand">Bater Sua Meta</span>?
+          <h2 className="text-2xl md:text-4xl font-bold text-[#c41313]">
+            Pronto Para Bater Sua Meta?
           </h2>
           
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-[#c41313] max-w-2xl mx-auto">
             Junte-se a milhares de motoristas que já transformaram sua gestão financeira
           </p>
 
           <Button 
             size="lg" 
             onClick={scrollToPricing}
-            className="text-lg px-8 py-6 font-bold shadow-lg bg-gradient-to-r from-[#c41313] to-[#3c83f6] hover:from-[#a91010] hover:to-[#2a6ad9] text-white"
+            className="text-lg px-8 py-6 font-bold shadow-lg bg-[#c41313] hover:bg-[#a91010] text-white"
           >
             COMEÇAR AGORA
           </Button>
 
           <div className="pt-6">
-            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-green-500/20 border-2 border-green-500/50 shadow-lg shadow-green-500/30">
-              <ShieldCheck className="h-7 w-7 md:h-9 md:w-9 text-green-500" />
-              <span className="text-base md:text-lg lg:text-xl font-bold text-green-500">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-2xl bg-[#22c55e]">
+              <ShieldCheck className="h-7 w-7 md:h-9 md:w-9 text-white" />
+              <span className="text-base md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-zinc-800">
+          <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-white/30">
             <a 
               href="https://www.instagram.com/bateu_meta/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#c41313] hover:text-[#3c83f6] transition-colors font-medium"
+              className="flex items-center gap-2 text-[#c41313] hover:text-white transition-colors font-medium"
             >
               <Instagram className="h-5 w-5" />
               @bateu_meta
@@ -521,7 +521,7 @@ const LandingPage = () => {
               href="https://wa.me/5512981796135" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#3c83f6] hover:text-[#c41313] transition-colors font-medium"
+              className="flex items-center gap-2 text-[#c41313] hover:text-white transition-colors font-medium"
             >
               <MessageCircle className="h-5 w-5" />
               (12) 98179-6135
@@ -529,14 +529,14 @@ const LandingPage = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Política de Privacidade</a>
-            <span className="text-gray-600">•</span>
-            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Termos de Uso</a>
-            <span className="text-gray-600">•</span>
-            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Política de Reembolso</a>
+            <a href="#" className="text-[#c41313] hover:text-white transition-colors">Política de Privacidade</a>
+            <span className="text-white/60">•</span>
+            <a href="#" className="text-[#c41313] hover:text-white transition-colors">Termos de Uso</a>
+            <span className="text-white/60">•</span>
+            <a href="#" className="text-[#c41313] hover:text-white transition-colors">Política de Reembolso</a>
           </div>
 
-          <p className="text-sm text-gray-400 pt-4">
+          <p className="text-sm text-[#c41313] pt-4">
             © {new Date().getFullYear()} Bateu A Meta. Todos os direitos reservados.
           </p>
         </div>

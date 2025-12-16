@@ -9,8 +9,8 @@ import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
+import { PWAInstallDialog } from "./PWAInstallDialog";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -50,6 +50,7 @@ export const Layout = ({
 }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [installDialogOpen, setInstallDialogOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -57,27 +58,10 @@ export const Layout = ({
     signOut
   } = useAuth();
   const { isSuperAdmin } = useSuperAdmin();
-  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
+  const { isInstalled } = usePWAInstall();
 
-  const handleInstallApp = async () => {
-    if (isInstalled) {
-      toast.success("App já está instalado!");
-      return;
-    }
-    
-    if (isInstallable) {
-      const success = await install();
-      if (success) {
-        toast.success("App instalado com sucesso!");
-      } else {
-        toast.info("Instalação cancelada");
-      }
-    } else if (isIOS) {
-      toast.info("Toque em 'Compartilhar' e depois 'Adicionar à Tela Inicial'");
-      navigate("/instalar");
-    } else {
-      navigate("/instalar");
-    }
+  const handleInstallApp = () => {
+    setInstallDialogOpen(true);
   };
   useEffect(() => {
     loadProfile();
@@ -299,5 +283,8 @@ export const Layout = ({
         {/* Page Content */}
         <main className="p-6">{children}</main>
       </div>
+
+      {/* PWA Install Dialog */}
+      <PWAInstallDialog open={installDialogOpen} onOpenChange={setInstallDialogOpen} />
     </div>;
 };

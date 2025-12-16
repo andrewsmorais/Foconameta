@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Download, Check, Share, MoreVertical, Plus, Monitor, Smartphone } from "lucide-react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { toast } from "sonner";
-import pwaIcon from "@/assets/pwa-install-icon.png";
+const pwaIcon = "/pwa-icon.png";
 
 const Instalar = () => {
   const { isInstallable, isInstalled, isIOS, isAndroid, deviceType, browserName, install } = usePWAInstall();

@@ -145,27 +145,26 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen">
       {/* Header with Login Button */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+      <header className="sticky top-0 z-50 bg-[#fafafa] backdrop-blur border-b border-gray-200">
         <div className="container mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={logo} alt="Bateu a Meta" className="w-10 h-10 object-contain" />
-            <span className="font-bold text-lg">Bateu a Meta</span>
+            <span className="font-bold text-lg text-black">Bateu a Meta</span>
           </div>
           <Button 
             variant="outline" 
             onClick={() => navigate("/auth")}
-            className="font-semibold"
+            className="font-semibold border-gray-300 text-black hover:bg-gray-100"
           >
             Já sou Cliente
           </Button>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 md:py-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
+      {/* Hero Section - #fafafa */}
+      <section className="relative overflow-hidden py-12 md:py-20 px-4 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-6">
             <img 
@@ -174,17 +173,17 @@ const LandingPage = () => {
               className="w-24 h-24 md:w-32 md:h-32 object-contain"
             />
             
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl">
-              <span className="text-primary">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
-              <span className="text-primary">Resultados Reais!</span>
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
+              <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
+              <span className="text-brand-blue">Resultados Reais!</span>
             </h1>
             
-            <h2 className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl">
+            <h2 className="text-lg md:text-xl lg:text-2xl text-gray-600 max-w-2xl">
               Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 
             {/* VSL Video */}
-            <div className="w-full max-w-3xl aspect-video rounded-xl overflow-hidden shadow-2xl border border-border bg-muted">
+            <div className="w-full max-w-3xl aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-gray-100">
               <iframe
                 className="w-full h-full"
                 src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
@@ -197,7 +196,7 @@ const LandingPage = () => {
             <Button 
               size="lg" 
               onClick={scrollToPricing}
-              className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg hover:shadow-xl transition-all"
+              className="text-lg px-8 py-6 bg-[#c41313] hover:bg-[#a91010] text-white font-bold shadow-lg hover:shadow-xl transition-all"
             >
               Assine Agora e Comece a Lucrar
               <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
@@ -206,44 +205,44 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Problem Section */}
-      <section className="py-16 md:py-24 px-4 bg-muted/50">
+      {/* Problem Section - #000000 */}
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6">
             <div className="flex justify-center">
-              <div className="p-4 rounded-full bg-destructive/20">
-                <CircleHelp className="h-12 w-12 text-destructive" />
+              <div className="p-4 rounded-full bg-[#c41313]/20">
+                <CircleHelp className="h-12 w-12 text-[#c41313]" />
               </div>
             </div>
             
-            <h2 className="text-2xl md:text-4xl font-bold">
-              Cansado de Rodar Sem Ver o Lucro?{" "}
-              <span className="text-primary">Nós Entendemos Suas Dores.</span>
+            <h2 className="text-2xl md:text-4xl font-bold text-white">
+              Cansado de Rodar Sem Ver o <span className="text-brand-blue">Lucro</span>?{" "}
+              <span className="text-brand-red">Nós Entendemos Suas Dores.</span>
             </h2>
 
             <div className="grid md:grid-cols-3 gap-6 pt-8">
-              <Card className="border-destructive/30 bg-destructive/5">
+              <Card className="border-zinc-700 bg-zinc-900">
                 <CardContent className="p-6 text-center space-y-3">
-                  <DollarSign className="h-10 w-10 mx-auto text-destructive" />
-                  <p className="text-lg font-medium">
+                  <DollarSign className="h-10 w-10 mx-auto text-[#c41313]" />
+                  <p className="text-lg font-medium text-white">
                     Você realmente controla seus gastos com combustível e manutenção?
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="border-destructive/30 bg-destructive/5">
+              <Card className="border-zinc-700 bg-zinc-900">
                 <CardContent className="p-6 text-center space-y-3">
-                  <Target className="h-10 w-10 mx-auto text-destructive" />
-                  <p className="text-lg font-medium">
+                  <Target className="h-10 w-10 mx-auto text-[#c41313]" />
+                  <p className="text-lg font-medium text-white">
                     Sabe quanto precisa rodar para bater sua meta de lucro diária?
                   </p>
                 </CardContent>
               </Card>
               
-              <Card className="border-destructive/30 bg-destructive/5">
+              <Card className="border-zinc-700 bg-zinc-900">
                 <CardContent className="p-6 text-center space-y-3">
-                  <BarChart3 className="h-10 w-10 mx-auto text-destructive" />
-                  <p className="text-lg font-medium">
+                  <BarChart3 className="h-10 w-10 mx-auto text-[#c41313]" />
+                  <p className="text-lg font-medium text-white">
                     A fatura do cartão não deixa você saber o lucro real?
                   </p>
                 </CardContent>
@@ -253,27 +252,27 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Solution/Features Section */}
-      <section className="py-16 md:py-24 px-4">
+      {/* Solution/Features Section - #f9f9fa */}
+      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold">
-              A <span className="text-primary">Solução Completa</span> Para Suas Finanças
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              A <span className="text-gradient-brand">Solução Completa</span> Para Suas Finanças
             </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Recursos desenvolvidos especialmente para motoristas de aplicativo
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="group hover:border-primary/50 transition-all hover:shadow-lg">
+              <Card key={index} className="group hover:border-[#3c83f6]/50 transition-all hover:shadow-lg bg-white border-gray-200">
                 <CardContent className="p-6 space-y-4">
-                  <div className="p-3 rounded-xl bg-primary/10 w-fit group-hover:bg-primary/20 transition-colors">
-                    <feature.icon className="h-8 w-8 text-primary" />
+                  <div className="p-3 rounded-xl bg-[#3c83f6]/10 w-fit group-hover:bg-[#3c83f6]/20 transition-colors">
+                    <feature.icon className="h-8 w-8 text-[#3c83f6]" />
                   </div>
-                  <h3 className="text-xl font-bold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-black">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -281,38 +280,38 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-16 md:py-24 px-4 bg-muted/50">
+      {/* How It Works Section - #000000 */}
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold">
-              <span className="text-primary">3 Passos Simples</span> Para Começar
+            <h2 className="text-2xl md:text-4xl font-bold text-white">
+              <span className="text-brand-blue">3 Passos Simples</span> Para Começar
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step, index) => (
               <div key={index} className="relative text-center space-y-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-lg">
+                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-[#c41313] to-[#3c83f6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
                   {step.number}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-primary/30" />
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
                 )}
-                <h3 className="text-xl font-bold">{step.title}</h3>
-                <p className="text-muted-foreground">{step.description}</p>
+                <h3 className="text-xl font-bold text-white">{step.title}</h3>
+                <p className="text-gray-400">{step.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-16 md:py-24 px-4 bg-muted/50">
+      {/* Testimonials Section - #f9f9fa */}
+      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto">
-              <span className="text-primary">Veja Quem Já Bateu A Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em lucro líquido real.
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto text-black">
+              <span className="text-brand-red">Veja Quem Já Bateu A Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em <span className="text-brand-blue">lucro líquido real</span>.
             </h2>
           </div>
 
@@ -327,7 +326,7 @@ const LandingPage = () => {
               {[whatsapp1, whatsapp2, whatsapp3, whatsapp4, whatsapp5, whatsapp6, whatsapp7, whatsapp8, whatsapp9, whatsapp10, whatsapp11, whatsapp12, whatsapp13].map((img, index) => (
                 <CarouselItem key={index} className="pl-2 md:pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <div className="p-1">
-                    <Card className="overflow-hidden border-2 border-border hover:border-primary/50 transition-colors">
+                    <Card className="overflow-hidden border-2 border-gray-200 hover:border-[#3c83f6]/50 transition-colors bg-white">
                       <CardContent className="p-0">
                         <img 
                           src={img} 
@@ -340,59 +339,59 @@ const LandingPage = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-4" />
-            <CarouselNext className="hidden md:flex -right-4" />
+            <CarouselPrevious className="hidden md:flex -left-4 bg-white border-gray-300 text-black hover:bg-gray-100" />
+            <CarouselNext className="hidden md:flex -right-4 bg-white border-gray-300 text-black hover:bg-gray-100" />
           </Carousel>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-16 md:py-24 px-4">
+      {/* Pricing Section - #f9f9fa */}
+      <section id="pricing" className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold">
-              Escolha Seu <span className="text-primary">Plano</span>
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              Escolha Seu <span className="text-brand-blue">Plano</span>
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-gray-600 text-lg">
               Invista no controle das suas finanças
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Annual Plan */}
-            <Card className="relative border-2 border-primary shadow-xl scale-105">
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl scale-105 bg-white">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold">
+                <span className="bg-gradient-to-r from-[#c41313] to-[#3c83f6] text-white px-4 py-1 rounded-full text-sm font-bold">
                   MAIS POPULAR
                 </span>
               </div>
               <CardContent className="p-8 space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold">Plano Anual</h3>
+                  <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold text-primary">R$ 97,90</span>
-                    <span className="text-muted-foreground">/ano</span>
+                    <span className="text-4xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                    <span className="text-gray-500">/ano</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">Equivale a R$ 8,16/mês</p>
+                  <p className="text-sm text-gray-500">Equivale a R$ 8,16/mês</p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
-                  <p className="text-lg font-bold text-center">
+                  <p className="text-lg font-bold text-center text-green-700">
                     🎉 Economia de R$ 56,90 por ano!
                   </p>
                 </div>
 
                 <ul className="space-y-3">
                   {["Dashboard completo", "Controle de turnos ilimitado", "Metas personalizadas", "Relatórios em PDF", "Gestão de manutenções", "Suporte prioritário"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                    <li key={i} className="flex items-center gap-3 text-black">
+                      <CheckCircle2 className="h-5 w-5 text-[#3c83f6] shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Button 
-                  className="w-full py-6 text-lg font-bold"
+                  className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
                   onClick={() => handleSelectPlan("anual")}
                   disabled={loadingPlan === "anual"}
                 >
@@ -402,21 +401,21 @@ const LandingPage = () => {
             </Card>
 
             {/* Monthly Plan */}
-            <Card className="border border-border">
+            <Card className="border border-gray-200 bg-white">
               <CardContent className="p-8 space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold">Plano Mensal</h3>
+                  <h3 className="text-2xl font-bold text-black">Plano Mensal</h3>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold">R$ 12,90</span>
-                    <span className="text-muted-foreground">/mês</span>
+                    <span className="text-4xl md:text-5xl font-bold text-black">R$ 12,90</span>
+                    <span className="text-gray-500">/mês</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">Flexibilidade total</p>
+                  <p className="text-sm text-gray-500">Flexibilidade total</p>
                 </div>
 
                 <ul className="space-y-3">
                   {["Dashboard completo", "Controle de turnos ilimitado", "Metas personalizadas", "Relatórios em PDF", "Gestão de manutenções", "Cancele quando quiser"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-muted-foreground shrink-0" />
+                    <li key={i} className="flex items-center gap-3 text-black">
+                      <CheckCircle2 className="h-5 w-5 text-gray-400 shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -424,7 +423,7 @@ const LandingPage = () => {
 
                 <Button 
                   variant="outline"
-                  className="w-full py-6 text-lg font-bold"
+                  className="w-full py-6 text-lg font-bold border-gray-300 text-black hover:bg-gray-100"
                   onClick={() => handleSelectPlan("mensal")}
                   disabled={loadingPlan === "mensal"}
                 >
@@ -435,30 +434,30 @@ const LandingPage = () => {
           </div>
 
           <div className="text-center mt-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-              <Shield className="h-5 w-5 text-primary" />
-              <span className="font-medium">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3c83f6]/10 border border-[#3c83f6]/20">
+              <Shield className="h-5 w-5 text-[#3c83f6]" />
+              <span className="font-medium text-black">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-16 md:py-24 px-4">
+      {/* FAQ Section - #f9f9fa */}
+      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-3xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold">
-              Perguntas <span className="text-primary">Frequentes</span>
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              Perguntas <span className="text-brand-blue">Frequentes</span>
             </h2>
           </div>
 
           <Accordion type="single" collapsible className="w-full space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
-                <AccordionTrigger className="text-left font-medium hover:no-underline">
+              <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-4 bg-white">
+                <AccordionTrigger className="text-left font-medium hover:no-underline text-black">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
+                <AccordionContent className="text-gray-600">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -467,37 +466,37 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-16 md:py-24 px-4 bg-primary/10">
+      {/* Footer CTA - #000000 */}
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-4xl text-center space-y-8">
-          <h2 className="text-2xl md:text-4xl font-bold">
-            Pronto Para <span className="text-primary">Bater Sua Meta</span>?
+          <h2 className="text-2xl md:text-4xl font-bold text-white">
+            Pronto Para <span className="text-gradient-brand">Bater Sua Meta</span>?
           </h2>
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Junte-se a milhares de motoristas que já transformaram sua gestão financeira
           </p>
 
           <Button 
             size="lg" 
             onClick={scrollToPricing}
-            className="text-lg px-8 py-6 font-bold shadow-lg"
+            className="text-lg px-8 py-6 font-bold shadow-lg bg-gradient-to-r from-[#c41313] to-[#3c83f6] hover:from-[#a91010] hover:to-[#2a6ad9] text-white"
           >
             COMEÇAR AGORA
           </Button>
 
           <div className="pt-4">
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-gray-400 mb-4">
               7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-border">
+          <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-zinc-800">
             <a 
               href="https://instagram.com/BateuAMeta" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-gray-400 hover:text-[#3c83f6] transition-colors"
             >
               <Instagram className="h-5 w-5" />
               @BateuAMeta
@@ -506,14 +505,14 @@ const LandingPage = () => {
               href="https://wa.me/5512981796135" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-gray-400 hover:text-[#3c83f6] transition-colors"
             >
               <MessageCircle className="h-5 w-5" />
               (12) 98179-6135
             </a>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
             <span>Política de Privacidade</span>
             <span>•</span>
             <span>Termos de Uso</span>
@@ -521,7 +520,7 @@ const LandingPage = () => {
             <span>Política de Reembolso</span>
           </div>
 
-          <p className="text-sm text-muted-foreground pt-4">
+          <p className="text-sm text-gray-500 pt-4">
             © {new Date().getFullYear()} Bateu A Meta. Todos os direitos reservados.
           </p>
         </div>

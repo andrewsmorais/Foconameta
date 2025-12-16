@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand Colors for Landing Page */
+.text-brand-red {
+  color: #c41313;
+}
+
+.text-brand-blue {
+  color: #3c83f6;
+}
+
+.text-gradient-brand {
+  background: linear-gradient(90deg, #c41313 0%, #3c83f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

@@ -154,9 +154,8 @@ const LandingPage = () => {
             <span className="font-bold text-lg text-black">Bateu a Meta</span>
           </div>
           <Button 
-            variant="outline" 
             onClick={() => navigate("/auth")}
-            className="font-semibold border-gray-300 text-black hover:bg-gray-100"
+            className="font-semibold bg-black text-white hover:bg-zinc-800"
           >
             Já sou Cliente
           </Button>
@@ -268,8 +267,8 @@ const LandingPage = () => {
             {features.map((feature, index) => (
               <Card key={index} className="group hover:border-[#3c83f6]/50 transition-all hover:shadow-lg bg-white border-gray-200">
                 <CardContent className="p-6 space-y-4">
-                  <div className="p-3 rounded-xl bg-[#3c83f6]/10 w-fit group-hover:bg-[#3c83f6]/20 transition-colors">
-                    <feature.icon className="h-8 w-8 text-[#3c83f6]" />
+                  <div className="p-3 rounded-xl bg-[#3c83f6] w-fit group-hover:bg-[#2a6ad9] transition-colors shadow-md">
+                    <feature.icon className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-black">{feature.title}</h3>
                   <p className="text-gray-600">{feature.description}</p>
@@ -382,10 +381,17 @@ const LandingPage = () => {
                 </div>
 
                 <ul className="space-y-3">
-                  {["Dashboard completo", "Controle de turnos ilimitado", "Metas personalizadas", "Relatórios em PDF", "Gestão de manutenções", "Suporte prioritário"].map((item, i) => (
+                  {[
+                    { text: "Dashboard", bold: "completo" },
+                    { text: "Controle de turnos", bold: "ilimitado" },
+                    { text: "Metas", bold: "personalizadas" },
+                    { text: "Relatórios em", bold: "PDF" },
+                    { text: "Gestão de", bold: "manutenções" },
+                    { text: "Suporte", bold: "prioritário" }
+                  ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-black">
                       <CheckCircle2 className="h-5 w-5 text-[#3c83f6] shrink-0" />
-                      <span>{item}</span>
+                      <span>{item.text} <strong className="text-[#3c83f6]">{item.bold}</strong></span>
                     </li>
                   ))}
                 </ul>
@@ -413,17 +419,23 @@ const LandingPage = () => {
                 </div>
 
                 <ul className="space-y-3">
-                  {["Dashboard completo", "Controle de turnos ilimitado", "Metas personalizadas", "Relatórios em PDF", "Gestão de manutenções", "Cancele quando quiser"].map((item, i) => (
+                  {[
+                    { text: "Dashboard", bold: "completo" },
+                    { text: "Controle de turnos", bold: "ilimitado" },
+                    { text: "Metas", bold: "personalizadas" },
+                    { text: "Relatórios em", bold: "PDF" },
+                    { text: "Gestão de", bold: "manutenções" },
+                    { text: "Cancele", bold: "quando quiser" }
+                  ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-black">
-                      <CheckCircle2 className="h-5 w-5 text-gray-400 shrink-0" />
-                      <span>{item}</span>
+                      <CheckCircle2 className="h-5 w-5 text-[#3c83f6] shrink-0" />
+                      <span>{item.text} <strong className="text-[#3c83f6]">{item.bold}</strong></span>
                     </li>
                   ))}
                 </ul>
 
                 <Button 
-                  variant="outline"
-                  className="w-full py-6 text-lg font-bold border-gray-300 text-black hover:bg-gray-100"
+                  className="w-full py-6 text-lg font-bold bg-[#3c83f6] hover:bg-[#2a6ad9] text-white"
                   onClick={() => handleSelectPlan("mensal")}
                   disabled={loadingPlan === "mensal"}
                 >
@@ -493,34 +505,34 @@ const LandingPage = () => {
 
           <div className="flex flex-wrap justify-center gap-6 pt-8 border-t border-zinc-800">
             <a 
-              href="https://instagram.com/BateuAMeta" 
+              href="https://www.instagram.com/bateu_meta/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-gray-400 hover:text-[#3c83f6] transition-colors"
+              className="flex items-center gap-2 text-[#c41313] hover:text-[#3c83f6] transition-colors font-medium"
             >
               <Instagram className="h-5 w-5" />
-              @BateuAMeta
+              @bateu_meta
             </a>
             <a 
               href="https://wa.me/5512981796135" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-gray-400 hover:text-[#3c83f6] transition-colors"
+              className="flex items-center gap-2 text-[#3c83f6] hover:text-[#c41313] transition-colors font-medium"
             >
               <MessageCircle className="h-5 w-5" />
               (12) 98179-6135
             </a>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-            <span>Política de Privacidade</span>
-            <span>•</span>
-            <span>Termos de Uso</span>
-            <span>•</span>
-            <span>Política de Reembolso</span>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Política de Privacidade</a>
+            <span className="text-gray-600">•</span>
+            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Termos de Uso</a>
+            <span className="text-gray-600">•</span>
+            <a href="#" className="text-[#3c83f6] hover:text-[#c41313] transition-colors">Política de Reembolso</a>
           </div>
 
-          <p className="text-sm text-gray-500 pt-4">
+          <p className="text-sm text-gray-400 pt-4">
             © {new Date().getFullYear()} Bateu A Meta. Todos os direitos reservados.
           </p>
         </div>

@@ -15,11 +15,11 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "robots.txt"],
+      includeAssets: ["favicon.png", "apple-touch-icon.png", "robots.txt"],
       manifest: {
-        name: "Bateu a Meta",
-        short_name: "Bateu a Meta",
-        description: "Controle Financeiro para Motoristas de Aplicativos",
+        name: "Bateu A Meta: Lucro Líquido Real!",
+        short_name: "Bateu A Meta",
+        description: "Dashboard para Motoristas de Apps. Transforme corridas em lucro líquido real.",
         theme_color: "#121212",
         background_color: "#121212",
         display: "standalone",

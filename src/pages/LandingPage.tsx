@@ -312,7 +312,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto">
-              <span className="text-primary">Controle Comprovado:</span> Depoimentos de motoristas que usam o Bateu A Meta todos os dias e não abrem mão do lucro.
+              <span className="text-primary">Veja Quem Já Bateu A Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em lucro líquido real.
             </h2>
           </div>
 

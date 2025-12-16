@@ -214,7 +214,7 @@ const LandingPage = () => {
             </div>
             
             <h2 className="text-2xl md:text-4xl font-bold text-white">
-              Cansado de Rodar Sem Ver o Lucro? Nós Entendemos Suas Dores.
+              Cansado de Rodar Sem Ver o <span className="text-[#3c83f6] animate-pulse">Lucro</span>? Nós Entendemos Suas <span className="text-[#c41313] animate-pulse">Dores</span>.
             </h2>
 
             <div className="grid md:grid-cols-3 gap-6 pt-8">
@@ -282,7 +282,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-2xl md:text-4xl font-bold text-white">
-              3 Passos Simples Para Começar
+              <span className="text-[#c41313] animate-pulse">3 Passos Simples</span> Para <span className="text-[#3c83f6] animate-pulse">Começar</span>
             </h2>
           </div>
 
@@ -484,11 +484,11 @@ const LandingPage = () => {
       <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-4xl text-center space-y-8">
           <h2 className="text-2xl md:text-4xl font-bold text-white">
-            Pronto Para Bater Sua Meta?
+            Pronto Para <span className="text-[#c41313] animate-pulse">Bater Sua Meta</span>?
           </h2>
           
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Junte-se a milhares de motoristas que já transformaram sua gestão financeira
+            <span className="text-[#3c83f6] font-semibold animate-pulse">Junte-se</span> a milhares de motoristas que já <span className="text-[#c41313] font-semibold animate-pulse">transformaram</span> sua <span className="text-[#3c83f6] font-semibold animate-pulse">gestão financeira</span>
           </p>
 
           <Button 

@@ -22,16 +22,18 @@ import Planos from "./pages/Planos";
 import PagamentoSucesso from "./pages/PagamentoSucesso";
 import LandingPage from "./pages/LandingPage";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { OfflineProvider } from "./contexts/OfflineContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <Toaster />
-      <Sonner />
-      <PWAInstallBanner />
-      <BrowserRouter>
+      <OfflineProvider>
+        <Toaster />
+        <Sonner />
+        <PWAInstallBanner />
+        <BrowserRouter>
       <Routes>
         <Route path="/" element={
           <PublicRoute>
@@ -141,7 +143,8 @@ const App = () => (
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+        </BrowserRouter>
+      </OfflineProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

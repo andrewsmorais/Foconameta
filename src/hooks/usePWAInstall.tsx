@@ -13,10 +13,15 @@ declare global {
 
 let deferredPromptGlobal: BeforeInstallPromptEvent | null = null;
 
+export type DeviceType = "ios" | "android" | "desktop" | "unknown";
+
 export const usePWAInstall = () => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [deviceType, setDeviceType] = useState<DeviceType>("unknown");
+  const [browserName, setBrowserName] = useState<string>("");
 
   useEffect(() => {
     // Check if already installed
@@ -25,9 +30,42 @@ export const usePWAInstall = () => {
       return;
     }
 
-    // Check if iOS
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    // Also check for iOS standalone mode
+    if ((navigator as any).standalone === true) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Detect device type
+    const userAgent = navigator.userAgent.toLowerCase();
+    const iOS = /iphone|ipad|ipod/.test(userAgent);
+    const android = /android/.test(userAgent);
+    
     setIsIOS(iOS);
+    setIsAndroid(android);
+    
+    if (iOS) {
+      setDeviceType("ios");
+    } else if (android) {
+      setDeviceType("android");
+    } else if (/mobile|tablet/.test(userAgent)) {
+      setDeviceType("unknown");
+    } else {
+      setDeviceType("desktop");
+    }
+
+    // Detect browser
+    if (/chrome/.test(userAgent) && !/edge|edg/.test(userAgent)) {
+      setBrowserName("Chrome");
+    } else if (/edge|edg/.test(userAgent)) {
+      setBrowserName("Edge");
+    } else if (/safari/.test(userAgent) && !/chrome/.test(userAgent)) {
+      setBrowserName("Safari");
+    } else if (/firefox/.test(userAgent)) {
+      setBrowserName("Firefox");
+    } else {
+      setBrowserName("Navegador");
+    }
 
     // If we already have a deferred prompt, use it
     if (deferredPromptGlobal) {
@@ -70,6 +108,9 @@ export const usePWAInstall = () => {
     isInstallable,
     isInstalled,
     isIOS,
+    isAndroid,
+    deviceType,
+    browserName,
     install,
   };
 };

@@ -39,11 +39,12 @@ export const PWAInstallBanner = () => {
       if (success) {
         setShowBanner(false);
         toast.success("App instalado com sucesso!");
+      } else {
+        // If user dismissed, redirect to install page with instructions
+        window.location.href = "/instalar";
       }
-    } else if (isIOS) {
-      toast.info("Toque em 'Compartilhar' e depois 'Adicionar à Tela Inicial'");
-      window.location.href = "/instalar";
     } else {
+      // Redirect to install page with platform-specific instructions
       window.location.href = "/instalar";
     }
   };
@@ -74,7 +75,9 @@ export const PWAInstallBanner = () => {
                   Instale o App
                 </h3>
                 <p className="text-muted-foreground text-sm mt-1">
-                  Acesse mais rápido e use offline
+                  {isIOS 
+                    ? "Toque para ver como instalar" 
+                    : "Acesse mais rápido e use offline"}
                 </p>
               </div>
               <button 
@@ -93,7 +96,7 @@ export const PWAInstallBanner = () => {
                 className="flex-1 bg-[#15a249] hover:bg-[#128a3d] text-white"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Instalar Agora
+                {isInstallable ? "Instalar Agora" : "Ver Instruções"}
               </Button>
               <Button 
                 onClick={handleDismiss}

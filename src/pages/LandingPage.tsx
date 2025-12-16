@@ -307,6 +307,45 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="py-16 md:py-24 px-4 bg-muted/50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto">
+              <span className="text-primary">Controle Comprovado:</span> Depoimentos de motoristas que usam o Bateu A Meta todos os dias e não abrem mão do lucro.
+            </h2>
+          </div>
+
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {[whatsapp1, whatsapp2, whatsapp3, whatsapp4, whatsapp5, whatsapp6, whatsapp7, whatsapp8, whatsapp9, whatsapp10, whatsapp11, whatsapp12, whatsapp13].map((img, index) => (
+                <CarouselItem key={index} className="pl-2 md:pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                  <div className="p-1">
+                    <Card className="overflow-hidden border-2 border-border hover:border-primary/50 transition-colors">
+                      <CardContent className="p-0">
+                        <img 
+                          src={img} 
+                          alt={`Depoimento de motorista ${index + 1}`}
+                          className="w-full h-auto object-cover rounded-lg"
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex -left-4" />
+            <CarouselNext className="hidden md:flex -right-4" />
+          </Carousel>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-16 md:py-24 px-4">
         <div className="container mx-auto max-w-5xl">
@@ -401,45 +440,6 @@ const LandingPage = () => {
               <span className="font-medium">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-16 md:py-24 px-4 bg-muted/50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto">
-              <span className="text-primary">Controle Comprovado:</span> Depoimentos de motoristas que usam o Bateu A Meta todos os dias e não abrem mão do lucro.
-            </h2>
-          </div>
-
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {[whatsapp1, whatsapp2, whatsapp3, whatsapp4, whatsapp5, whatsapp6, whatsapp7, whatsapp8, whatsapp9, whatsapp10, whatsapp11, whatsapp12, whatsapp13].map((img, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                  <div className="p-1">
-                    <Card className="overflow-hidden border-2 border-border hover:border-primary/50 transition-colors">
-                      <CardContent className="p-0">
-                        <img 
-                          src={img} 
-                          alt={`Depoimento de motorista ${index + 1}`}
-                          className="w-full h-auto object-cover rounded-lg"
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-4" />
-            <CarouselNext className="hidden md:flex -right-4" />
-          </Carousel>
         </div>
       </section>
 

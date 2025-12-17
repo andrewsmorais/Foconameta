@@ -225,8 +225,10 @@ serve(async (req) => {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         const priceId = subscription.items.data[0].price.id;
         
-        // Determine plan type based on price
-        const isAnnual = priceId === "price_1SdmJnK6aMDv1DOlafIvA9GC";
+        // Price IDs correspondentes ao frontend
+        const ANNUAL_PRICE_ID = "price_1ScdelK6aMDv1DOlzvkwwZd9";
+        const MONTHLY_PRICE_ID = "price_1ScddaK6aMDv1DOlB09lhJBF";
+        const isAnnual = priceId === ANNUAL_PRICE_ID;
         const planType = isAnnual ? "anual" : "mensal";
 
         // Check if user already exists

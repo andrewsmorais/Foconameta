@@ -81,7 +81,7 @@ async function sendWelcomeEmail(email: string, password: string, nome: string) {
       body: JSON.stringify({
         sender: {
           name: "Bateu A Meta",
-          email: "noreply@bateuameta.com",
+          email: "suporte@bateuameta.com",
         },
         to: [{ email }],
         subject: "🚗 Acesso Liberado! Sua assinatura foi aprovada - Bateu A Meta",

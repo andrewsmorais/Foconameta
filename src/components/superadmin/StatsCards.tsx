@@ -12,7 +12,11 @@ import {
   WifiOff,
   Calendar,
   Gift,
-  RefreshCw
+  RefreshCw,
+  Wallet,
+  Clock,
+  Receipt,
+  Target
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -26,15 +30,29 @@ interface StripeMetrics {
   webhookHealthy: boolean;
   monthlyHistory: { month: string; lucro: number; receita: number }[];
   totalCharges: number;
+  availableBalance: number;
+  pendingBalance: number;
+  ticketMedio: number;
+  mrr: number;
 }
 
-export const StatsCards = () => {
+interface StatsCardsProps {
+  startDate: Date;
+  endDate: Date;
+}
+
+export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
   // Fetch Stripe metrics from edge function
   const { data: stripeMetrics, isLoading: stripeLoading } = useQuery({
-    queryKey: ["admin-stripe-metrics"],
+    queryKey: ["admin-stripe-metrics", startDate.toISOString(), endDate.toISOString()],
     queryFn: async (): Promise<StripeMetrics | null> => {
       try {
-        const { data, error } = await supabase.functions.invoke("get-stripe-metrics");
+        const { data, error } = await supabase.functions.invoke("get-stripe-metrics", {
+          body: { 
+            startDate: startDate.toISOString(), 
+            endDate: endDate.toISOString() 
+          },
+        });
         if (error) {
           console.error("Error fetching Stripe metrics:", error);
           return null;
@@ -87,11 +105,18 @@ export const StatsCards = () => {
         return expiresAt < now && sub.status !== "active";
       }).length || 0;
 
+      // Calculate conversion rate
+      const conversionRate = totalUsers && totalUsers > 0 
+        ? ((paidUserIds.length / totalUsers) * 100) 
+        : 0;
+
       return {
         totalUsers: totalUsers || 0,
         activeUsers: activeUsersCount || 0,
         freeUsers: Math.max(0, freeCount),
         churnedUsers: churned,
+        paidUsers: paidUserIds.length,
+        conversionRate: conversionRate.toFixed(1),
       };
     },
   });
@@ -100,8 +125,8 @@ export const StatsCards = () => {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
           <Card key={i}>
             <CardHeader className="pb-2">
               <Skeleton className="h-4 w-24" />
@@ -116,6 +141,93 @@ export const StatsCards = () => {
   }
 
   const statCards = [
+    // Balance Cards (highlight)
+    {
+      title: "Saldo Disponível",
+      value: `R$ ${(stripeMetrics?.availableBalance || 0).toFixed(2).replace('.', ',')}`,
+      icon: Wallet,
+      color: "text-[hsl(142,76%,36%)]",
+      bgColor: "from-[hsl(142,76%,36%)]/20",
+      description: "Disponível para saque",
+      highlight: true,
+    },
+    {
+      title: "Saldo Pendente",
+      value: `R$ ${(stripeMetrics?.pendingBalance || 0).toFixed(2).replace('.', ',')}`,
+      icon: Clock,
+      color: "text-[hsl(45,93%,47%)]",
+      bgColor: "from-[hsl(45,93%,47%)]/20",
+      description: "Em processamento",
+      highlight: true,
+    },
+    // Revenue Cards
+    {
+      title: "Receita Bruta",
+      value: `R$ ${(stripeMetrics?.grossRevenue || 0).toFixed(2).replace('.', ',')}`,
+      icon: DollarSign,
+      color: "text-[hsl(142,76%,36%)]",
+      bgColor: "from-[hsl(142,76%,36%)]/10",
+      description: "Total via Stripe",
+    },
+    {
+      title: "Lucro Líquido",
+      value: `R$ ${(stripeMetrics?.netProfit || 0).toFixed(2).replace('.', ',')}`,
+      icon: TrendingUp,
+      color: "text-[hsl(142,76%,36%)]",
+      bgColor: "from-[hsl(142,76%,36%)]/10",
+      description: "Após taxas Stripe",
+    },
+    {
+      title: "MRR",
+      value: `R$ ${(stripeMetrics?.mrr || 0).toFixed(2).replace('.', ',')}`,
+      icon: Target,
+      color: "text-[hsl(217,91%,60%)]",
+      bgColor: "from-[hsl(217,91%,60%)]/10",
+      description: "Receita Recorrente Mensal",
+    },
+    {
+      title: "Reembolsos",
+      value: `R$ ${(stripeMetrics?.totalRefunds || 0).toFixed(2).replace('.', ',')}`,
+      icon: RefreshCw,
+      color: "text-destructive",
+      bgColor: "from-destructive/10",
+      description: "Devoluções processadas",
+    },
+    // Sales Cards
+    {
+      title: "Total de Vendas",
+      value: stripeMetrics?.totalCharges || 0,
+      icon: Receipt,
+      color: "text-[hsl(217,91%,60%)]",
+      bgColor: "from-[hsl(217,91%,60%)]/10",
+      description: "Transações no período",
+    },
+    {
+      title: "Ticket Médio",
+      value: `R$ ${(stripeMetrics?.ticketMedio || 0).toFixed(2).replace('.', ',')}`,
+      icon: DollarSign,
+      color: "text-[hsl(217,91%,60%)]",
+      bgColor: "from-[hsl(217,91%,60%)]/10",
+      description: "Valor médio por venda",
+    },
+    // Plan Cards
+    {
+      title: "Plano Mensal",
+      value: stripeMetrics?.monthlyPlanCount || 0,
+      icon: Calendar,
+      color: "text-[hsl(217,91%,60%)]",
+      bgColor: "from-[hsl(217,91%,60%)]/10",
+      description: "R$ 12,90/mês",
+    },
+    {
+      title: "Plano Anual",
+      value: stripeMetrics?.annualPlanCount || 0,
+      icon: UserCheck,
+      color: "text-[hsl(142,76%,36%)]",
+      bgColor: "from-[hsl(142,76%,36%)]/10",
+      description: "R$ 97,90/ano",
+    },
+    // User Cards
     {
       title: "Total de Usuários",
       value: userStats?.totalUsers || 0,
@@ -133,52 +245,20 @@ export const StatsCards = () => {
       description: "Últimos 30 dias",
     },
     {
+      title: "Taxa de Conversão",
+      value: `${userStats?.conversionRate || 0}%`,
+      icon: TrendingUp,
+      color: "text-[hsl(142,76%,36%)]",
+      bgColor: "from-[hsl(142,76%,36%)]/10",
+      description: "Pagantes / Total",
+    },
+    {
       title: "Planos Free",
       value: userStats?.freeUsers || 0,
       icon: Gift,
       color: "text-muted-foreground",
       bgColor: "from-muted/30",
       description: "Contas gratuitas",
-    },
-    {
-      title: "Plano Mensal",
-      value: stripeMetrics?.monthlyPlanCount || 0,
-      icon: Calendar,
-      color: "text-[hsl(217,91%,60%)]",
-      bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "R$ 12,90/mês",
-    },
-    {
-      title: "Plano Anual",
-      value: stripeMetrics?.annualPlanCount || 0,
-      icon: UserCheck,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "R$ 97,90/ano",
-    },
-    {
-      title: "Receita Bruta",
-      value: `R$ ${(stripeMetrics?.grossRevenue || 0).toFixed(2).replace('.', ',')}`,
-      icon: DollarSign,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Total via Stripe",
-    },
-    {
-      title: "Reembolsos",
-      value: `R$ ${(stripeMetrics?.totalRefunds || 0).toFixed(2).replace('.', ',')}`,
-      icon: RefreshCw,
-      color: "text-destructive",
-      bgColor: "from-destructive/10",
-      description: "Devoluções processadas",
-    },
-    {
-      title: "Lucro Líquido",
-      value: `R$ ${(stripeMetrics?.netProfit || 0).toFixed(2).replace('.', ',')}`,
-      icon: TrendingUp,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Após taxas Stripe",
     },
     {
       title: "Churn",
@@ -199,13 +279,15 @@ export const StatsCards = () => {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
       {statCards.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <Card
             key={index}
-            className="relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+            className={`relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 ${
+              stat.highlight ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-transparent' : ''
+            }`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.bgColor} to-transparent rounded-full -mr-12 -mt-12`} />
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

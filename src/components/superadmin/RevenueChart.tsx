@@ -4,18 +4,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp } from "lucide-react";
+import { format } from "date-fns";
 
 interface StripeMetrics {
   monthlyHistory: { month: string; lucro: number; receita: number }[];
 }
 
-export const RevenueChart = () => {
-  // Fetch from Stripe metrics edge function
+interface RevenueChartProps {
+  startDate: Date;
+  endDate: Date;
+}
+
+export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
+  // Fetch from Stripe metrics edge function with date filter
   const { data: stripeMetrics, isLoading } = useQuery({
-    queryKey: ["admin-revenue-chart-stripe"],
+    queryKey: ["admin-revenue-chart-stripe", startDate.toISOString(), endDate.toISOString()],
     queryFn: async (): Promise<StripeMetrics | null> => {
       try {
-        const { data, error } = await supabase.functions.invoke("get-stripe-metrics");
+        const { data, error } = await supabase.functions.invoke("get-stripe-metrics", {
+          body: {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+        });
         if (error) {
           console.error("Error fetching Stripe metrics for chart:", error);
           return null;
@@ -52,7 +63,7 @@ export const RevenueChart = () => {
             Evolução do Lucro Líquido
           </CardTitle>
           <CardDescription>
-            Últimos 6 meses via Stripe (após taxas 3.99% + R$ 0,39)
+            {format(startDate, "dd/MM/yyyy")} - {format(endDate, "dd/MM/yyyy")} (após taxas 3.99% + R$ 0,39)
           </CardDescription>
         </div>
         <TrendingUp className="h-6 w-6 text-[hsl(142,76%,36%)]" />

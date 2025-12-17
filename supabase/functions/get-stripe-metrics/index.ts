@@ -87,20 +87,63 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // Get date 6 months ago
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    const sixMonthsAgoTimestamp = Math.floor(sixMonthsAgo.getTime() / 1000);
+    // Parse request body for date filters
+    let startDate: Date | null = null;
+    let endDate: Date | null = null;
+    
+    try {
+      const body = await req.json();
+      if (body.startDate) {
+        startDate = new Date(body.startDate);
+      }
+      if (body.endDate) {
+        endDate = new Date(body.endDate);
+        // Set end date to end of day
+        endDate.setHours(23, 59, 59, 999);
+      }
+    } catch {
+      // No body or invalid JSON, use defaults
+    }
 
-    // Fetch all charges from last 6 months
+    // Default to 6 months if no dates provided
+    const defaultStartDate = new Date();
+    defaultStartDate.setMonth(defaultStartDate.getMonth() - 6);
+    
+    const filterStartDate = startDate || defaultStartDate;
+    const filterEndDate = endDate || new Date();
+    
+    const startTimestamp = Math.floor(filterStartDate.getTime() / 1000);
+    const endTimestamp = Math.floor(filterEndDate.getTime() / 1000);
+
+    console.log("Date filter:", { 
+      start: filterStartDate.toISOString(), 
+      end: filterEndDate.toISOString() 
+    });
+
+    // Fetch Stripe account balance
+    let availableBalance = 0;
+    let pendingBalance = 0;
+    try {
+      const balance = await stripe.balance.retrieve();
+      // Get BRL balance
+      const brlAvailable = balance.available.find((b: { currency: string; amount: number }) => b.currency === 'brl');
+      const brlPending = balance.pending.find((b: { currency: string; amount: number }) => b.currency === 'brl');
+      availableBalance = brlAvailable ? brlAvailable.amount / 100 : 0;
+      pendingBalance = brlPending ? brlPending.amount / 100 : 0;
+      console.log("Stripe balance:", { availableBalance, pendingBalance });
+    } catch (err) {
+      console.error("Error fetching balance:", err);
+    }
+
+    // Fetch all charges within date range
     const charges = await stripe.charges.list({
-      created: { gte: sixMonthsAgoTimestamp },
+      created: { gte: startTimestamp, lte: endTimestamp },
       limit: 100,
     });
 
     // Fetch refunds
     const refunds = await stripe.refunds.list({
-      created: { gte: sixMonthsAgoTimestamp },
+      created: { gte: startTimestamp, lte: endTimestamp },
       limit: 100,
     });
 
@@ -122,12 +165,14 @@ serve(async (req) => {
     const monthlyData: { [key: string]: { gross: number; fees: number; refunds: number } } = {};
     const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
-    // Initialize last 6 months
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      const key = `${months[date.getMonth()]}/${date.getFullYear().toString().slice(2)}`;
-      monthlyData[key] = { gross: 0, fees: 0, refunds: 0 };
+    // Initialize months in range
+    const currentDate = new Date(filterStartDate);
+    while (currentDate <= filterEndDate) {
+      const key = `${months[currentDate.getMonth()]}/${currentDate.getFullYear().toString().slice(2)}`;
+      if (!monthlyData[key]) {
+        monthlyData[key] = { gross: 0, fees: 0, refunds: 0 };
+      }
+      currentDate.setMonth(currentDate.getMonth() + 1);
     }
 
     for (const charge of charges.data) {
@@ -187,6 +232,12 @@ serve(async (req) => {
     // Calculate net profit
     const netProfit = grossRevenue - totalFees - totalRefunds;
 
+    // Calculate additional metrics
+    const ticketMedio = validChargesCount > 0 ? grossRevenue / validChargesCount : 0;
+    
+    // MRR calculation: monthly subs * 12.90 + annual subs * (97.90 / 12)
+    const mrr = (monthlyPlanCount * 12.90) + (annualPlanCount * (97.90 / 12));
+
     // Check webhook health (last event within 24h)
     let webhookHealthy = true;
     try {
@@ -216,6 +267,11 @@ serve(async (req) => {
       webhookHealthy,
       monthlyHistory,
       totalCharges: validChargesCount,
+      // New metrics
+      availableBalance: Number(availableBalance.toFixed(2)),
+      pendingBalance: Number(pendingBalance.toFixed(2)),
+      ticketMedio: Number(ticketMedio.toFixed(2)),
+      mrr: Number(mrr.toFixed(2)),
     };
 
     console.log("Stripe metrics calculated (filtered):", response);

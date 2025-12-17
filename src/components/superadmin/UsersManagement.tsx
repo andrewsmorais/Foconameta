@@ -29,6 +29,9 @@ interface UserData {
   renewal_status?: "active" | "expired" | "churned" | "free";
   expires_at?: string | null;
   started_at?: string | null;
+  lastPaymentDate?: string | null;
+  paymentMethod?: string | null;
+  netAmount?: number | null;
 }
 
 export const UsersManagement = () => {
@@ -93,6 +96,19 @@ export const UsersManagement = () => {
         .from("user_roles")
         .select("user_id, role");
 
+      // Get emails from auth if possible (need edge function for this)
+      // For now, we'll use pending_registrations as backup
+      const { data: pendingRegs } = await supabase
+        .from("pending_registrations")
+        .select("email, stripe_customer_id");
+
+      const emailMap = new Map<string, string>();
+      pendingRegs?.forEach(reg => {
+        if (reg.email && reg.stripe_customer_id) {
+          emailMap.set(reg.stripe_customer_id, reg.email);
+        }
+      });
+
       const now = new Date();
       
       const usersWithRoles = profiles?.map((profile) => {
@@ -122,12 +138,49 @@ export const UsersManagement = () => {
           renewal_status,
           expires_at: subscription?.expires_at,
           started_at: subscription?.started_at,
+          lastPaymentDate: null,
+          paymentMethod: null,
+          netAmount: null,
         };
       });
 
       return usersWithRoles || [];
     },
   });
+
+  // Fetch payment details from Stripe for all users
+  const { data: paymentDetails } = useQuery({
+    queryKey: ["admin-payment-details", users?.map(u => u.email)],
+    queryFn: async () => {
+      if (!users || users.length === 0) return {};
+      
+      const emails = users.map(u => u.email).filter(Boolean);
+      if (emails.length === 0) return {};
+
+      try {
+        const { data, error } = await supabase.functions.invoke("get-user-payment-details", {
+          body: { emails },
+        });
+        if (error) {
+          console.error("Error fetching payment details:", error);
+          return {};
+        }
+        return data || {};
+      } catch (err) {
+        console.error("Failed to fetch payment details:", err);
+        return {};
+      }
+    },
+    enabled: !!users && users.length > 0,
+  });
+
+  // Merge payment details with users
+  const usersWithPayments = users?.map(user => ({
+    ...user,
+    lastPaymentDate: paymentDetails?.[user.email || ""]?.lastPaymentDate || null,
+    paymentMethod: paymentDetails?.[user.email || ""]?.paymentMethod || null,
+    netAmount: paymentDetails?.[user.email || ""]?.netAmount || null,
+  }));
 
   // Update user mutation
   const updateUserMutation = useMutation({
@@ -281,7 +334,7 @@ export const UsersManagement = () => {
     },
   });
 
-  const filteredUsers = users?.filter((user) =>
+  const filteredUsers = usersWithPayments?.filter((user) =>
     user.nome_completo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.cpf?.includes(searchTerm) ||
     user.telefone?.includes(searchTerm) ||
@@ -442,8 +495,10 @@ export const UsersManagement = () => {
                   <TableHead>Email</TableHead>
                   <TableHead>Telefone</TableHead>
                   <TableHead>CPF</TableHead>
+                  <TableHead>Último Pagamento</TableHead>
+                  <TableHead>Forma Pagamento</TableHead>
+                  <TableHead>Valor Líquido</TableHead>
                   <TableHead>Plano</TableHead>
-                  <TableHead>Contratação</TableHead>
                   <TableHead>Renovação</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -452,7 +507,7 @@ export const UsersManagement = () => {
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={11} className="text-center text-muted-foreground py-8">
                       Nenhum usuário encontrado
                     </TableCell>
                   </TableRow>
@@ -467,15 +522,31 @@ export const UsersManagement = () => {
                       </TableCell>
                       <TableCell>{user.telefone || "-"}</TableCell>
                       <TableCell>{user.cpf || "-"}</TableCell>
+                      <TableCell className="text-sm">
+                        {user.lastPaymentDate 
+                          ? new Date(user.lastPaymentDate).toLocaleDateString('pt-BR')
+                          : "-"}
+                      </TableCell>
+                      <TableCell>
+                        {user.paymentMethod ? (
+                          <Badge variant="outline" className={
+                            user.paymentMethod === "PIX" 
+                              ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30"
+                              : "bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30"
+                          }>
+                            {user.paymentMethod}
+                          </Badge>
+                        ) : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium text-[hsl(142,76%,36%)]">
+                        {user.netAmount !== null 
+                          ? `R$ ${user.netAmount.toFixed(2).replace('.', ',')}`
+                          : "-"}
+                      </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={user.planPrice > 0 ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30" : ""}>
                           {user.planPrice > 0 ? `R$ ${user.planPrice.toFixed(2).replace('.', ',')}` : "Free"}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {user.started_at 
-                          ? new Date(user.started_at).toLocaleDateString('pt-BR')
-                          : "-"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {user.expires_at 

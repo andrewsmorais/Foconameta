@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.resend-welcome-email]
 verify_jwt = false
+
+[functions.get-stripe-metrics]
+verify_jwt = true
+
+[functions.get-user-payment-details]
+verify_jwt = true

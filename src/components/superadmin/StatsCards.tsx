@@ -5,72 +5,57 @@ import {
   Users, 
   DollarSign, 
   TrendingUp, 
-  CreditCard, 
   UserCheck, 
   UserX, 
   Activity,
   Wifi,
   WifiOff,
   Calendar,
-  Gift
+  Gift,
+  RefreshCw
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface StripeMetrics {
+  grossRevenue: number;
+  netProfit: number;
+  totalRefunds: number;
+  totalFees: number;
+  monthlyPlanCount: number;
+  annualPlanCount: number;
+  webhookHealthy: boolean;
+  monthlyHistory: { month: string; lucro: number; receita: number }[];
+  totalCharges: number;
+}
+
 export const StatsCards = () => {
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ["admin-stats"],
+  // Fetch Stripe metrics from edge function
+  const { data: stripeMetrics, isLoading: stripeLoading } = useQuery({
+    queryKey: ["admin-stripe-metrics"],
+    queryFn: async (): Promise<StripeMetrics | null> => {
+      try {
+        const { data, error } = await supabase.functions.invoke("get-stripe-metrics");
+        if (error) {
+          console.error("Error fetching Stripe metrics:", error);
+          return null;
+        }
+        return data as StripeMetrics;
+      } catch (err) {
+        console.error("Failed to fetch Stripe metrics:", err);
+        return null;
+      }
+    },
+    refetchInterval: 60000, // Refresh every minute
+  });
+
+  // Fetch user stats from Supabase
+  const { data: userStats, isLoading: userLoading } = useQuery({
+    queryKey: ["admin-user-stats"],
     queryFn: async () => {
       // Get total users
       const { count: totalUsers } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true });
-
-      // Get active subscriptions with plan details
-      const { data: subscriptions } = await supabase
-        .from("subscriptions")
-        .select("plan_id, status, started_at, expires_at, plans(price, name)")
-        .eq("status", "active");
-
-      // Count subscriptions by type
-      let monthlyCount = 0;
-      let annualCount = 0;
-      let freeCount = 0;
-
-      subscriptions?.forEach((sub: any) => {
-        const price = sub.plans?.price || 0;
-        if (price === 0) {
-          freeCount++;
-        } else if (price < 50) {
-          monthlyCount++;
-        } else {
-          annualCount++;
-        }
-      });
-
-      // Calculate total gross revenue
-      const grossRevenue = subscriptions?.reduce((acc, sub: any) => {
-        return acc + (sub.plans?.price || 0);
-      }, 0) || 0;
-
-      // Estimate refunds (for now, 0 - could be tracked separately)
-      const refunds = 0;
-
-      // Estimate net profit (gross revenue - 10% fees - refunds)
-      const platformFeeRate = 0.10;
-      const netProfit = (grossRevenue * (1 - platformFeeRate)) - refunds;
-
-      // Get all subscriptions to calculate churn
-      const { data: allSubscriptions } = await supabase
-        .from("subscriptions")
-        .select("user_id, status, started_at, expires_at, plans(price)");
-
-      // Calculate churn
-      const now = new Date();
-      const churned = allSubscriptions?.filter((sub: any) => {
-        if (!sub.expires_at || sub.plans?.price === 0) return false;
-        const expiresAt = new Date(sub.expires_at);
-        return expiresAt < now && sub.status !== "active";
-      }).length || 0;
 
       // Get active users (logged in last 30 days)
       const thirtyDaysAgo = new Date();
@@ -81,29 +66,42 @@ export const StatsCards = () => {
         .select("*", { count: "exact", head: true })
         .gte("updated_at", thirtyDaysAgo.toISOString());
 
-      // Check API health (check recent webhook logs via edge function logs)
-      // For simplicity, assume healthy if we can query
-      const apiHealthy = true;
+      // Get free users (users without active paid subscription)
+      const { data: paidSubscriptions } = await supabase
+        .from("subscriptions")
+        .select("user_id, plans(price)")
+        .eq("status", "active");
+
+      const paidUserIds = paidSubscriptions?.filter((s: any) => s.plans?.price > 0).map(s => s.user_id) || [];
+      const freeCount = (totalUsers || 0) - paidUserIds.length;
+
+      // Calculate churn (expired subscriptions that weren't renewed)
+      const { data: allSubscriptions } = await supabase
+        .from("subscriptions")
+        .select("user_id, status, started_at, expires_at, plans(price)");
+
+      const now = new Date();
+      const churned = allSubscriptions?.filter((sub: any) => {
+        if (!sub.expires_at || sub.plans?.price === 0) return false;
+        const expiresAt = new Date(sub.expires_at);
+        return expiresAt < now && sub.status !== "active";
+      }).length || 0;
 
       return {
         totalUsers: totalUsers || 0,
         activeUsers: activeUsersCount || 0,
-        monthlyPlans: monthlyCount,
-        annualPlans: annualCount,
-        freePlans: freeCount,
-        grossRevenue,
-        refunds,
-        netProfit,
+        freeUsers: Math.max(0, freeCount),
         churnedUsers: churned,
-        apiHealthy,
       };
     },
   });
 
+  const isLoading = stripeLoading || userLoading;
+
   if (isLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <Card key={i}>
             <CardHeader className="pb-2">
               <Skeleton className="h-4 w-24" />
@@ -120,7 +118,7 @@ export const StatsCards = () => {
   const statCards = [
     {
       title: "Total de Usuários",
-      value: stats?.totalUsers || 0,
+      value: userStats?.totalUsers || 0,
       icon: Users,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
@@ -128,7 +126,7 @@ export const StatsCards = () => {
     },
     {
       title: "Usuários Ativos",
-      value: stats?.activeUsers || 0,
+      value: userStats?.activeUsers || 0,
       icon: Activity,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
@@ -136,23 +134,23 @@ export const StatsCards = () => {
     },
     {
       title: "Planos Free",
-      value: stats?.freePlans || 0,
+      value: userStats?.freeUsers || 0,
       icon: Gift,
       color: "text-muted-foreground",
       bgColor: "from-muted/30",
       description: "Contas gratuitas",
     },
     {
-      title: "Planos Mensais",
-      value: stats?.monthlyPlans || 0,
+      title: "Plano Mensal",
+      value: stripeMetrics?.monthlyPlanCount || 0,
       icon: Calendar,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Assinaturas mensais",
+      description: "R$ 12,90/mês",
     },
     {
-      title: "Planos Anuais",
-      value: stats?.annualPlans || 0,
+      title: "Plano Anual",
+      value: stripeMetrics?.annualPlanCount || 0,
       icon: UserCheck,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
@@ -160,23 +158,31 @@ export const StatsCards = () => {
     },
     {
       title: "Receita Bruta",
-      value: `R$ ${(stats?.grossRevenue || 0).toFixed(2).replace('.', ',')}`,
+      value: `R$ ${(stripeMetrics?.grossRevenue || 0).toFixed(2).replace('.', ',')}`,
       icon: DollarSign,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Todas as vendas",
+      description: "Total via Stripe",
+    },
+    {
+      title: "Reembolsos",
+      value: `R$ ${(stripeMetrics?.totalRefunds || 0).toFixed(2).replace('.', ',')}`,
+      icon: RefreshCw,
+      color: "text-destructive",
+      bgColor: "from-destructive/10",
+      description: "Devoluções processadas",
     },
     {
       title: "Lucro Líquido",
-      value: `R$ ${(stats?.netProfit || 0).toFixed(2).replace('.', ',')}`,
+      value: `R$ ${(stripeMetrics?.netProfit || 0).toFixed(2).replace('.', ',')}`,
       icon: TrendingUp,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Após taxas (10%)",
+      description: "Após taxas Stripe",
     },
     {
       title: "Churn",
-      value: stats?.churnedUsers || 0,
+      value: userStats?.churnedUsers || 0,
       icon: UserX,
       color: "text-destructive",
       bgColor: "from-destructive/10",
@@ -184,10 +190,10 @@ export const StatsCards = () => {
     },
     {
       title: "Status API",
-      value: stats?.apiHealthy ? "Online" : "Offline",
-      icon: stats?.apiHealthy ? Wifi : WifiOff,
-      color: stats?.apiHealthy ? "text-[hsl(142,76%,36%)]" : "text-destructive",
-      bgColor: stats?.apiHealthy ? "from-[hsl(142,76%,36%)]/10" : "from-destructive/10",
+      value: stripeMetrics?.webhookHealthy ? "Online" : stripeMetrics === null ? "Erro" : "Offline",
+      icon: stripeMetrics?.webhookHealthy ? Wifi : WifiOff,
+      color: stripeMetrics?.webhookHealthy ? "text-[hsl(142,76%,36%)]" : "text-destructive",
+      bgColor: stripeMetrics?.webhookHealthy ? "from-[hsl(142,76%,36%)]/10" : "from-destructive/10",
       description: "Webhook Stripe",
     },
   ];

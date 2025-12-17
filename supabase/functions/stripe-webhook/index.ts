@@ -15,35 +15,57 @@ const supabaseAdmin = createClient(
 const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 const APP_URL = "https://bateuameta.lovable.app";
 
-async function sendWelcomeEmail(email: string, password: string) {
+async function sendWelcomeEmail(email: string, password: string, nome: string) {
   if (!BREVO_API_KEY) {
     console.error("BREVO_API_KEY not configured");
     return;
   }
 
   const emailContent = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #15a249; margin-bottom: 10px;">🚗 Bem-vindo ao Bateu A Meta!</h1>
-        <p style="font-size: 18px; color: #333;">O seu acesso foi liberado com sucesso!</p>
+        <h1 style="color: #333; font-size: 24px; margin-bottom: 20px;">
+          Olá, ${nome}! 🎉
+        </h1>
+        <p style="font-size: 18px; color: #333; line-height: 1.6;">
+          Sua assinatura foi aprovada com sucesso.<br/>
+          Veja como começar:
+        </p>
       </div>
       
-      <div style="background-color: #f5f5f5; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
-        <h2 style="color: #333; margin-bottom: 15px;">📧 Dados de Acesso:</h2>
-        <p style="font-size: 16px; margin: 10px 0;"><strong>Email:</strong> ${email}</p>
-        <p style="font-size: 16px; margin: 10px 0;"><strong>Senha provisória:</strong> ${password}</p>
-        <p style="font-size: 14px; color: #666; margin-top: 15px;">⚠️ Recomendamos que altere a sua senha após o primeiro login.</p>
+      <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px; border-left: 4px solid #15a249;">
+        <h2 style="color: #333; margin-bottom: 15px; font-size: 18px;">1. SEU LOGIN:</h2>
+        <p style="font-size: 16px; margin: 10px 0; color: #333;">
+          <strong>Usuário:</strong> ${email}
+        </p>
+        <p style="font-size: 16px; margin: 10px 0; color: #333;">
+          <strong>Senha:</strong> ${password}
+        </p>
       </div>
       
-      <div style="text-align: center; margin-bottom: 25px;">
-        <a href="${APP_URL}/auth" style="display: inline-block; background-color: #15a249; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
-          🎯 Aceder ao Dashboard
+      <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px; border-left: 4px solid #3c83f6;">
+        <h2 style="color: #333; margin-bottom: 15px; font-size: 18px;">2. O QUE FAZER AGORA:</h2>
+        <ul style="font-size: 16px; color: #333; line-height: 2; padding-left: 20px; margin: 0;">
+          <li>Clique no botão abaixo para logar.</li>
+          <li>Cadastre seu veículo e seu primeiro turno.</li>
+          <li>Acompanhe seu lucro real no Dashboard.</li>
+        </ul>
+      </div>
+      
+      <div style="text-align: center; margin: 35px 0;">
+        <a href="${APP_URL}/auth" style="display: inline-block; background-color: #3c83f6; color: white; padding: 18px 50px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
+          🚀 ENTRAR NO APLICATIVO
         </a>
       </div>
       
-      <div style="border-top: 1px solid #ddd; padding-top: 20px; text-align: center;">
-        <p style="color: #666; font-size: 14px;">A sua meta começa agora! Bons ganhos! 💰</p>
-        <p style="color: #999; font-size: 12px;">Equipa Bateu A Meta</p>
+      <div style="border-top: 2px solid #eee; padding-top: 25px; text-align: center;">
+        <p style="color: #333; font-size: 16px; margin-bottom: 15px; font-weight: bold;">Dúvidas?</p>
+        <p style="color: #666; font-size: 15px; margin: 8px 0;">
+          📱 WhatsApp: <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none;">(12) 98179-6135</a>
+        </p>
+        <p style="color: #666; font-size: 15px; margin: 8px 0;">
+          📸 Instagram: <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none;">@bateu_meta</a>
+        </p>
       </div>
     </div>
   `;
@@ -62,7 +84,7 @@ async function sendWelcomeEmail(email: string, password: string) {
           email: "noreply@bateuameta.com",
         },
         to: [{ email }],
-        subject: "🚗 Acesso Liberado! A tua meta começa agora no Bateu A Meta",
+        subject: "🚗 Acesso Liberado! Sua assinatura foi aprovada - Bateu A Meta",
         htmlContent: emailContent,
       }),
     });
@@ -86,7 +108,7 @@ serve(async (req) => {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, signature!, webhookSecret!);
+    event = await stripe.webhooks.constructEventAsync(body, signature!, webhookSecret!);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error("Webhook signature verification failed:", errorMessage);
@@ -144,7 +166,8 @@ serve(async (req) => {
           console.log("New user created:", user.id);
 
           // Send welcome email with credentials
-          await sendWelcomeEmail(customerEmail, defaultPassword);
+          const customerName = session.customer_details?.name || customerEmail.split("@")[0];
+          await sendWelcomeEmail(customerEmail, defaultPassword, customerName);
         } else {
           console.log("User already exists:", user.id);
         }

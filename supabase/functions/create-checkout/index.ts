@@ -15,8 +15,8 @@ serve(async (req) => {
     const body = await req.json();
     console.log("Received body:", JSON.stringify(body));
     
-    const { priceId } = body;
-    console.log("Parsed values - priceId:", priceId);
+    const { priceId, email } = body;
+    console.log("Parsed values - priceId:", priceId, "email:", email);
 
     if (!priceId) {
       console.log("Error: Price ID is missing");
@@ -34,9 +34,8 @@ serve(async (req) => {
 
     console.log("Creating checkout session with price:", priceId);
 
-    // Create checkout session without pre-defined customer
-    // Stripe will collect email in the checkout form
-    const session = await stripe.checkout.sessions.create({
+    // Build checkout session options
+    const sessionOptions: Stripe.Checkout.SessionCreateParams = {
       line_items: [
         {
           price: priceId,
@@ -46,7 +45,14 @@ serve(async (req) => {
       mode: "subscription",
       success_url: `${origin}/auth?payment_success=true`,
       cancel_url: `${origin}/planos`,
-    });
+    };
+
+    // Pre-fill email if provided
+    if (email) {
+      sessionOptions.customer_email = email;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionOptions);
 
     console.log("Checkout session created:", session.id);
 

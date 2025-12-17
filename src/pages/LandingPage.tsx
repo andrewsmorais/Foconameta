@@ -44,8 +44,8 @@ import whatsapp12 from "@/assets/testimonials/whatsapp-12.jpeg";
 import whatsapp13 from "@/assets/testimonials/whatsapp-13.jpeg";
 
 const PRICE_IDS = {
-  mensal: "price_1ScddaK6aMDv1DOlB09lhJBF",  // TESTE
-  anual: "price_1ScdelK6aMDv1DOlzvkwwZd9",   // TESTE
+  mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",  // LIVE
+  anual: "price_1SdmJnK6aMDv1DOlafIvA9GC",   // LIVE
 };
 
 const LandingPage = () => {

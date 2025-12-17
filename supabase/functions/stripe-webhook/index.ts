@@ -225,9 +225,9 @@ serve(async (req) => {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         const priceId = subscription.items.data[0].price.id;
         
-        // Price IDs correspondentes ao frontend
-        const ANNUAL_PRICE_ID = "price_1ScdelK6aMDv1DOlzvkwwZd9";
-        const MONTHLY_PRICE_ID = "price_1ScddaK6aMDv1DOlB09lhJBF";
+        // Price IDs correspondentes ao frontend (LIVE)
+        const ANNUAL_PRICE_ID = "price_1SdmJnK6aMDv1DOlafIvA9GC";
+        const MONTHLY_PRICE_ID = "price_1SdmK9K6aMDv1DOlgCL7bq41";
         const isAnnual = priceId === ANNUAL_PRICE_ID;
         const planType = isAnnual ? "anual" : "mensal";
 

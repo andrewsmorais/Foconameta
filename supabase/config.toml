@@ -17,3 +17,6 @@ verify_jwt = true
 
 [functions.complete-registration]
 verify_jwt = false
+
+[functions.resend-welcome-email]
+verify_jwt = false

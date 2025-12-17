@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, AlertTriangle, Copy, Eye, MessageCircle, StickyNote } from "lucide-react";
+import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, AlertTriangle, Copy, Eye, MessageCircle, StickyNote, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
@@ -405,6 +405,58 @@ export const UsersManagement = () => {
     toast.success("Copiado para a área de transferência!");
   };
 
+  const exportToCSV = () => {
+    if (!filteredUsers || filteredUsers.length === 0) {
+      toast.error("Nenhum usuário para exportar");
+      return;
+    }
+
+    const headers = [
+      "Nome",
+      "Email",
+      "Telefone",
+      "CPF",
+      "Último Pagamento",
+      "Forma Pagamento",
+      "Valor Líquido",
+      "Plano",
+      "Dias Restantes",
+      "Status",
+      "Notas Admin"
+    ];
+
+    const rows = filteredUsers.map(user => [
+      user.nome_completo || "",
+      user.email || "",
+      user.telefone || "",
+      user.cpf || "",
+      user.lastPaymentDate ? new Date(user.lastPaymentDate).toLocaleDateString('pt-BR') : "",
+      user.paymentMethod || "",
+      user.netAmount !== null ? `R$ ${user.netAmount.toFixed(2).replace('.', ',')}` : "",
+      user.planPrice === 12.9 ? "Mensal R$ 12,90" : user.planPrice === 97.9 ? "Anual R$ 97,90" : "Free",
+      user.daysRemaining !== null && user.daysRemaining !== undefined ? String(user.daysRemaining) : "",
+      user.status === "active" ? "Ativo" : "Bloqueado",
+      user.admin_notes || ""
+    ]);
+
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(";"))
+    ].join("\n");
+
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `usuarios_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Arquivo CSV exportado com sucesso!");
+  };
+
   const formatWhatsAppLink = (phone: string | null) => {
     if (!phone) return null;
     const cleaned = phone.replace(/\D/g, '');
@@ -453,13 +505,18 @@ export const UsersManagement = () => {
                 Controle total sobre os usuários da plataforma - CRUD completo
               </CardDescription>
             </div>
-            <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-              <DialogTrigger asChild>
-                <Button className="gap-2">
-                  <UserPlus className="h-4 w-4" />
-                  Adicionar Usuário
-                </Button>
-              </DialogTrigger>
+            <div className="flex gap-2">
+              <Button variant="outline" className="gap-2" onClick={exportToCSV}>
+                <Download className="h-4 w-4" />
+                Exportar CSV
+              </Button>
+              <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Adicionar Usuário
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>Adicionar Novo Usuário</DialogTitle>
@@ -530,6 +587,7 @@ export const UsersManagement = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

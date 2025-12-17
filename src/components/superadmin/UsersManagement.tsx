@@ -222,7 +222,7 @@ export const UsersManagement = () => {
         .eq("id", userId);
       
       if (profileError) {
-        console.error("Profile delete error:", profileError);
+        throw profileError;
       }
 
       // Try to delete from auth (requires admin access)

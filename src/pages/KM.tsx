@@ -5,7 +5,7 @@ import { AddTurnoDialog } from "@/components/dialogs/AddTurnoDialog";
 import { EditTurnoDialog } from "@/components/dialogs/EditTurnoDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Pencil, Trash2 } from "lucide-react";
 import {
@@ -264,7 +264,7 @@ const KM = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div>
                       <p className="text-sm font-bold text-foreground mb-1">Data</p>
-                      <p className="text-xl font-bold text-[#15a249]">{format(new Date(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
+                      <p className="text-xl font-bold text-[#15a249]">{format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>

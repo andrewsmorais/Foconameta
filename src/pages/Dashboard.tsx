@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, CalendarIcon } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, CalendarIcon, Filter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, eachDayOfInterval, parseISO } from "date-fns";
@@ -40,7 +40,11 @@ interface DashboardMetrics {
 
 const Dashboard = () => {
   const hoje = new Date();
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>({
+    from: hoje,
+    to: hoje,
+  });
+  const [appliedDateRange, setAppliedDateRange] = useState<DateRange | undefined>({
     from: hoje,
     to: hoje,
   });
@@ -69,11 +73,11 @@ const Dashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Usar o intervalo de datas selecionado
-      if (!dateRange?.from || !dateRange?.to) return;
+      // Usar o intervalo de datas aplicado
+      if (!appliedDateRange?.from || !appliedDateRange?.to) return;
       
-      const dataInicio = dateRange.from;
-      const dataFim = dateRange.to;
+      const dataInicio = appliedDateRange.from;
+      const dataFim = appliedDateRange.to;
 
       // Buscar turnos do período
       const { data: turnos, error: turnosError } = await supabase
@@ -295,7 +299,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadDashboardData();
-  }, [dateRange]);
+  }, [appliedDateRange]);
+
+  const aplicarFiltros = () => {
+    setAppliedDateRange(selectedDateRange);
+  };
 
   if (loading) {
     return <div className="text-center py-8">Carregando...</div>;
@@ -305,41 +313,48 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-[280px] justify-start text-left font-normal",
-                !dateRange && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {dateRange?.from ? (
-                dateRange.to ? (
-                  <>
-                    {format(dateRange.from, "dd/MM/yyyy")} -{" "}
-                    {format(dateRange.to, "dd/MM/yyyy")}
-                  </>
+        <div className="flex flex-wrap items-center gap-4">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !selectedDateRange && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {selectedDateRange?.from ? (
+                  selectedDateRange.to ? (
+                    <>
+                      {format(selectedDateRange.from, "dd/MM/yyyy")} -{" "}
+                      {format(selectedDateRange.to, "dd/MM/yyyy")}
+                    </>
+                  ) : (
+                    format(selectedDateRange.from, "dd/MM/yyyy")
+                  )
                 ) : (
-                  format(dateRange.from, "dd/MM/yyyy")
-                )
-              ) : (
-                <span>Selecione o período</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="range"
-              selected={dateRange}
-              onSelect={setDateRange}
-              numberOfMonths={2}
-              locale={ptBR}
-              className={cn("p-3 pointer-events-auto")}
-            />
-          </PopoverContent>
-        </Popover>
+                  <span>Selecione o período</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="range"
+                selected={selectedDateRange}
+                onSelect={setSelectedDateRange}
+                numberOfMonths={2}
+                locale={ptBR}
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+          
+          <Button onClick={aplicarFiltros} className="gap-2">
+            <Filter className="w-4 h-4" />
+            Aplicar Filtros
+          </Button>
+        </div>
       </div>
 
       {/* Metrics Cards */}

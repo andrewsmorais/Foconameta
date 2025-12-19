@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { getLocalDateString } from "@/lib/utils";
 
 interface AddManutencaoDialogProps {
   onSuccess: () => void;
@@ -43,7 +44,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
   const [formData, setFormData] = useState({
     veiculo_id: "",
     tipo_manutencao: preSelectedType && preSelectedType !== "custom" ? preSelectedType : "",
-    data: new Date().toISOString().split("T")[0],
+    data: getLocalDateString(),
     km_atual: "",
     km_final: "",
     valor: "",
@@ -185,7 +186,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
       setFormData({
         veiculo_id: "",
         tipo_manutencao: "",
-        data: new Date().toISOString().split("T")[0],
+        data: getLocalDateString(),
         km_atual: "",
         km_final: "",
         valor: "",

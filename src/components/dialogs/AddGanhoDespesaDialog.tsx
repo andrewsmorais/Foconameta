@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { getLocalDateString } from "@/lib/utils";
 
 interface AddGanhoDespesaDialogProps {
   onSuccess: () => void;
@@ -23,9 +24,9 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
     tipo: "ganho" as "ganho" | "despesa",
     nome: "",
     valor: "",
-    data: new Date().toISOString().split("T")[0],
+    data: getLocalDateString(),
     recorrente: false,
-    dataInicio: new Date().toISOString().split("T")[0],
+    dataInicio: getLocalDateString(),
     dataFim: "",
     incluirDashboard: false,
     observacoes: "",
@@ -82,9 +83,9 @@ export const AddGanhoDespesaDialog = ({ onSuccess }: AddGanhoDespesaDialogProps)
         tipo: "ganho",
         nome: "",
         valor: "",
-        data: new Date().toISOString().split("T")[0],
+        data: getLocalDateString(),
         recorrente: false,
-        dataInicio: new Date().toISOString().split("T")[0],
+        dataInicio: getLocalDateString(),
         dataFim: "",
         incluirDashboard: false,
         observacoes: "",

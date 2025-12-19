@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { getLocalDateString } from "@/lib/utils";
 
 interface AddTurnoDialogProps {
   onSuccess: () => void;
@@ -47,7 +48,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
 
   const [formData, setFormData] = useState({
     veiculo_id: "",
-    data: new Date().toISOString().split("T")[0],
+    data: getLocalDateString(),
     outras_despesas: "",
     km_inicial: "",
     km_final: "",
@@ -229,7 +230,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
       setOpen(false);
       setFormData({
         veiculo_id: "",
-        data: new Date().toISOString().split("T")[0],
+        data: getLocalDateString(),
         outras_despesas: "",
         km_inicial: "",
         km_final: "",

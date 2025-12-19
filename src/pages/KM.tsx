@@ -368,13 +368,13 @@ const KM = () => {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-foreground mb-1">Despesa Combustível Total</p>
-                  <p className="text-xl font-bold text-[#15a249]">
+                  <p className="text-xl font-bold text-red-500">
                     R$ {metricas.despesaCombustivelTotal.toFixed(2)}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm font-bold text-foreground mb-1">Outras Despesas Total</p>
-                  <p className="text-xl font-bold text-[#15a249]">
+                  <p className="text-xl font-bold text-red-500">
                     R$ {metricas.outrasDespesasTotal.toFixed(2)}
                   </p>
                 </div>
@@ -392,7 +392,7 @@ const KM = () => {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-foreground mb-1">Custo de Combustível/KM</p>
-                  <p className="text-xl font-bold text-[#15a249]">
+                  <p className="text-xl font-bold text-red-500">
                     R$ {metricas.custoCombustivelPorKm.toFixed(2)}
                   </p>
                 </div>

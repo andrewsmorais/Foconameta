@@ -181,10 +181,10 @@ const LandingPage = () => {
             </h2>
 
             {/* VSL Video */}
-            <div className="w-full max-w-3xl aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-gray-100">
+            <div className="w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] bg-black">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                src="https://www.youtube.com/embed/LsFN5Ruzfbs?rel=0&modestbranding=1&showinfo=0"
                 title="Bateu a Meta - Apresentação"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -194,9 +194,9 @@ const LandingPage = () => {
             <Button 
               size="lg" 
               onClick={scrollToPricing}
-              className="text-lg px-8 py-6 bg-[#c41313] hover:bg-[#a91010] text-white font-bold shadow-lg hover:shadow-xl transition-all"
+              className="text-lg px-8 py-6 bg-[#3c83f6] hover:bg-[#2563eb] text-white font-bold shadow-lg hover:shadow-xl transition-all"
             >
-              Assine Agora e Comece a Lucrar
+              QUERO BATER MINHAS METAS AGORA
               <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
             </Button>
           </div>

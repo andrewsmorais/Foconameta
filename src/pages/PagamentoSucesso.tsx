@@ -63,23 +63,20 @@ const PagamentoSucesso = () => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from("pending_registrations")
-          .select("*")
-          .eq("session_id", sessionId)
-          .eq("status", "pending")
-          .single();
+        // Use secure edge function instead of direct database query
+        const { data, error } = await supabase.functions.invoke("get-pending-registration", {
+          body: { session_id: sessionId },
+        });
 
-        if (error || !data) {
+        if (error) {
           console.error("Error fetching pending registration:", error);
           setError("Registro de pagamento não encontrado ou já utilizado");
           setLoading(false);
           return;
         }
 
-        // Check if expired
-        if (new Date(data.expires_at) < new Date()) {
-          setError("Este link de cadastro expirou. Entre em contato com o suporte.");
+        if (data?.error) {
+          setError(data.error);
           setLoading(false);
           return;
         }

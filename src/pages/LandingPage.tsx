@@ -187,9 +187,13 @@ const LandingPage = () => {
               Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 
-            {/* VSL Video with Play Overlay */}
+            {/* VSL Video with Play Overlay - Responsivo */}
             <div 
-              className="w-full max-w-full md:max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] bg-black cursor-pointer relative ring-4 ring-[#3c83f6]/30"
+              className={`w-full rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] bg-black cursor-pointer relative ring-4 ring-[#3c83f6]/30
+                ${isMobile 
+                  ? 'aspect-[9/16] max-w-sm mx-auto'
+                  : 'aspect-video max-w-3xl'
+                }`}
               onClick={() => {
                 if (!videoStarted) {
                   setVideoStarted(true);
@@ -201,7 +205,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-zinc-900 to-black">
                   {/* YouTube Thumbnail */}
                   <img 
-                    src="https://img.youtube.com/vi/LsFN5Ruzfbs/maxresdefault.jpg"
+                    src="https://img.youtube.com/vi/UGWMWiYPZt4/maxresdefault.jpg"
                     alt="Clique para assistir"
                     className="absolute inset-0 w-full h-full object-cover opacity-80"
                   />
@@ -222,7 +226,7 @@ const LandingPage = () => {
                 <iframe
                   id="vsl-video"
                   className="w-full h-full"
-                  src={`https://www.youtube.com/embed/LsFN5Ruzfbs?rel=0&modestbranding=1&showinfo=0&autoplay=1&fs=1${isMobile ? '' : '&playsinline=1'}`}
+                  src={`https://www.youtube.com/embed/UGWMWiYPZt4?rel=0&modestbranding=1&showinfo=0&autoplay=1&fs=1${isMobile ? '' : '&playsinline=1'}`}
                   title="Bateu a Meta - Apresentação"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                   allowFullScreen

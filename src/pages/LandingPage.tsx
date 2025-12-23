@@ -181,12 +181,27 @@ const LandingPage = () => {
             </h2>
 
             {/* VSL Video */}
-            <div className="w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] bg-black">
+            <div 
+              className="w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] bg-black cursor-pointer relative"
+              onClick={() => {
+                const iframe = document.getElementById('vsl-video') as HTMLIFrameElement;
+                if (iframe) {
+                  if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                  } else if ((iframe as any).webkitRequestFullscreen) {
+                    (iframe as any).webkitRequestFullscreen();
+                  } else if ((iframe as any).webkitEnterFullscreen) {
+                    (iframe as any).webkitEnterFullscreen();
+                  }
+                }
+              }}
+            >
               <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/LsFN5Ruzfbs?rel=0&modestbranding=1&showinfo=0"
+                id="vsl-video"
+                className="w-full h-full pointer-events-none md:pointer-events-auto"
+                src="https://www.youtube.com/embed/LsFN5Ruzfbs?rel=0&modestbranding=1&showinfo=0&playsinline=1"
                 title="Bateu a Meta - Apresentação"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
               />
             </div>

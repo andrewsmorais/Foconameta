@@ -57,8 +57,8 @@ const KM = () => {
   const [editingTurno, setEditingTurno] = useState<Turno | null>(null);
   const { toast } = useToast();
 
-  // Limit display to 5 shifts per day (show only 5 most recent)
-  const turnosExibidos = turnos.slice(0, 5);
+  // Exibir apenas o último turno registrado
+  const turnosExibidos = turnos.slice(0, 1);
 
   const loadTurnos = async () => {
     try {
@@ -194,9 +194,9 @@ const KM = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center gap-2">
-        <h1 className="text-3xl font-bold text-center">Relatórios dos Turnos</h1>
+        <h1 className="text-3xl font-bold text-center">Último Turno Registrado</h1>
         <p className="text-sm text-muted-foreground text-center">
-          Exibindo os 5 turnos mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
+          Exibindo apenas o turno mais recente. Acesse o Menu Relatórios para ver o histórico completo.
         </p>
         <AddTurnoDialog onSuccess={loadTurnos} />
       </div>
@@ -333,55 +333,55 @@ const KM = () => {
       {metricas && (
         <>
           <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Métricas Calculadas</CardTitle>
+          <CardHeader>
+              <CardTitle>Métricas do Turno</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">KM Rodados Total</p>
+                  <p className="text-sm font-bold text-foreground mb-1">KM Rodados</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     {metricas.kmRodadosTotal.toFixed(2)} km
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Total de Horas Trabalhadas</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Horas Trabalhadas</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     {metricas.horasTrabalhadasTotal.toFixed(1)} h
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Consumo Médio do Período</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     {metricas.consumoMedio.toFixed(2)} km/L
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Preço Médio Combustível/Litro</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Preço Combustível/Litro</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     R$ {metricas.precoMedioCombustivel.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Ganhos Brutos Total</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Ganhos Brutos</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     R$ {metricas.ganhosBrutosTotal.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Despesa Combustível Total</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Despesa Combustível</p>
                   <p className="text-xl font-bold text-red-500">
                     R$ {metricas.despesaCombustivelTotal.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Outras Despesas Total</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
                   <p className="text-xl font-bold text-red-500">
                     R$ {metricas.outrasDespesasTotal.toFixed(2)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido Total</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     R$ {metricas.lucroLiquidoTotal.toFixed(2)}
                   </p>
@@ -405,7 +405,7 @@ const KM = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Ganhos/Hora Médio</p>
+                  <p className="text-sm font-bold text-foreground mb-1">Ganhos/Hora</p>
                   <p className="text-xl font-bold text-[#15a249]">
                     R$ {metricas.ganhosPorHoraMedio.toFixed(2)}
                   </p>
@@ -419,7 +419,7 @@ const KM = () => {
             <Card className="bg-blue-500/10 border-blue-500/30">
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">Ganhos Totais</p>
+                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">Ganhos do Turno</p>
                   <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                     R$ {metricas.ganhosBrutosTotal.toFixed(2)}
                   </p>
@@ -429,7 +429,7 @@ const KM = () => {
             <Card className="bg-red-500/10 border-red-500/30">
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <p className="text-sm font-bold text-red-600 dark:text-red-400 mb-2">Despesas Totais</p>
+                  <p className="text-sm font-bold text-red-600 dark:text-red-400 mb-2">Despesas do Turno</p>
                   <p className="text-3xl font-bold text-red-600 dark:text-red-400">
                     R$ {metricas.despesaTotalGeral.toFixed(2)}
                   </p>
@@ -439,7 +439,7 @@ const KM = () => {
             <Card className="bg-green-500/10 border-green-500/30">
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <p className="text-sm font-bold text-green-600 dark:text-green-400 mb-2">Lucro Líquido</p>
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400 mb-2">Lucro do Turno</p>
                   <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                     R$ {metricas.lucroLiquidoTotal.toFixed(2)}
                   </p>

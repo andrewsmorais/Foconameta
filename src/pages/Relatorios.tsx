@@ -545,26 +545,49 @@ const Relatorios = () => {
                   </div>
                 </div>
 
-                {/* Resumo do Turno */}
+                {/* Métricas Calculadas do Turno */}
                 <div className="mt-4 pt-4 border-t border-border">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-blue-500/10 rounded-lg p-3">
-                      <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Ganhos do Turno</p>
-                      <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                        R$ {metricasTurno.ganhoBruto.toFixed(2)}
-                      </p>
+                  <h4 className="text-lg font-semibold text-foreground mb-4">Métricas Calculadas</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
+                    <div>
+                      <p className="text-sm font-bold text-foreground">KM Rodados</p>
+                      <p className="text-xl font-bold text-[#15a249]">{metricasTurno.kmRodados.toFixed(2)} km</p>
                     </div>
-                    <div className="bg-red-500/10 rounded-lg p-3">
-                      <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Despesas do Turno</p>
-                      <p className="text-lg font-bold text-red-600 dark:text-red-400">
-                        R$ {metricasTurno.despesaTotal.toFixed(2)}
-                      </p>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Total de Horas</p>
+                      <p className="text-xl font-bold text-[#15a249]">{resultado.total_horas?.toFixed(1) || 0} h</p>
                     </div>
-                    <div className="bg-green-500/10 rounded-lg p-3">
-                      <p className="text-xs font-bold text-green-600 dark:text-green-400 mb-1">Lucro Líquido</p>
-                      <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                        R$ {metricasTurno.lucroLiquido.toFixed(2)}
-                      </p>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Consumo</p>
+                      <p className="text-xl font-bold text-[#15a249]">{resultado.consumo_combustivel?.toFixed(2) || 0} km/L</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Preço Combustível/Litro</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {resultado.preco_combustivel?.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Ganhos Brutos</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.ganhoBruto.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Despesa Combustível</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.despesaCombustivel.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Outras Despesas</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.outrasDespesas.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Lucro Líquido</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.lucroLiquido.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Lucro/KM</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.lucroPorKm.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Ganhos/Hora</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.ganhosPorHora.toFixed(2)}</p>
                     </div>
                   </div>
                 </div>

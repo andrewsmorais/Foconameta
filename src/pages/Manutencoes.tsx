@@ -6,8 +6,7 @@ import { EditManutencaoDialog } from "@/components/dialogs/EditManutencaoDialog"
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Wrench, Edit, Trash2 } from "lucide-react";
+import { Wrench, Edit, Trash2, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,11 +36,21 @@ interface Manutencao {
   };
 }
 
+interface EstadoManutencoes {
+  trocaOleo: Manutencao | null;
+  balanceamento: Manutencao | null;
+  revisao: Manutencao | null;
+}
+
 const Manutencoes = () => {
-  const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
+  const [estadoManutencoes, setEstadoManutencoes] = useState<EstadoManutencoes>({
+    trocaOleo: null,
+    balanceamento: null,
+    revisao: null,
+  });
   const [loading, setLoading] = useState(true);
   const [editingManutencao, setEditingManutencao] = useState<Manutencao | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingType, setDeletingType] = useState<string | null>(null);
   const { toast } = useToast();
 
   const loadManutencoes = async () => {
@@ -49,17 +58,42 @@ const Manutencoes = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
-        .from("manutencoes")
-        .select(`
-          *,
-          veiculos (modelo, placa)
-        `)
-        .eq("user_id", user.id)
-        .order("data", { ascending: false });
+      // Carregar último registro de cada tipo fixo
+      const [trocaOleoResult, balanceamentoResult, revisaoResult] = await Promise.all([
+        supabase
+          .from("manutencoes")
+          .select(`*, veiculos (modelo, placa)`)
+          .eq("user_id", user.id)
+          .eq("tipo_manutencao", "troca_oleo")
+          .order("data", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        supabase
+          .from("manutencoes")
+          .select(`*, veiculos (modelo, placa)`)
+          .eq("user_id", user.id)
+          .eq("tipo_manutencao", "balanceamento_alinhamento")
+          .order("data", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        supabase
+          .from("manutencoes")
+          .select(`*, veiculos (modelo, placa)`)
+          .eq("user_id", user.id)
+          .eq("tipo_manutencao", "revisao")
+          .order("data", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
 
-      if (error) throw error;
-      setManutencoes(data || []);
+      setEstadoManutencoes({
+        trocaOleo: trocaOleoResult.data || null,
+        balanceamento: balanceamentoResult.data || null,
+        revisao: revisaoResult.data || null,
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -81,16 +115,23 @@ const Manutencoes = () => {
       balanceamento_alinhamento: "Balanceamento e Alinhamento",
       revisao: "Revisão",
     };
-    // Se não for um tipo pré-definido, retorna o próprio tipo (personalizado)
     return labels[tipo] || tipo;
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (tipo: string) => {
     try {
+      const manutencao = tipo === "troca_oleo" 
+        ? estadoManutencoes.trocaOleo 
+        : tipo === "balanceamento_alinhamento" 
+        ? estadoManutencoes.balanceamento 
+        : estadoManutencoes.revisao;
+
+      if (!manutencao) return;
+
       const { error } = await supabase
         .from("manutencoes")
         .delete()
-        .eq("id", id);
+        .eq("id", manutencao.id);
 
       if (error) throw error;
 
@@ -99,7 +140,7 @@ const Manutencoes = () => {
         description: "O registro foi removido com sucesso",
       });
 
-      setDeletingId(null);
+      setDeletingType(null);
       loadManutencoes();
     } catch (error: any) {
       toast({
@@ -114,179 +155,150 @@ const Manutencoes = () => {
     return <div className="text-center py-8">Carregando...</div>;
   }
 
-  const isFixedType = (tipo: string) => {
-    return ['troca_oleo', 'balanceamento_alinhamento', 'revisao'].includes(tipo);
+  const renderFixedCard = (
+    tipo: string,
+    titulo: string,
+    descricao: string,
+    manutencao: Manutencao | null
+  ) => {
+    if (manutencao) {
+      // Card com dados
+      return (
+        <Card className="relative">
+          <CardHeader className="pb-2">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-2">
+                <Wrench className="w-5 h-5 text-primary" />
+                <CardTitle className="text-lg">{titulo}</CardTitle>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setEditingManutencao(manutencao)}
+                  className="h-8 w-8"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setDeletingType(tipo)}
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {manutencao.veiculos?.modelo} - {manutencao.veiculos?.placa}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Última Data</p>
+                <p className="text-sm font-semibold text-[#15a249]">
+                  {format(new Date(manutencao.data), "dd/MM/yyyy")}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Valor</p>
+                <p className="text-sm font-semibold text-[#15a249]">
+                  R$ {manutencao.valor.toFixed(2)}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">KM Atual</p>
+                <p className="text-sm font-semibold text-[#15a249]">
+                  {manutencao.km_atual.toFixed(0)} km
+                </p>
+              </div>
+              {manutencao.proximo_km && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Próximo KM</p>
+                  <p className="text-sm font-semibold text-[#15a249]">
+                    {manutencao.proximo_km.toFixed(0)} km
+                  </p>
+                </div>
+              )}
+              {manutencao.nome_oficina_produto && (
+                <div className="col-span-2">
+                  <p className="text-xs text-muted-foreground">Oficina</p>
+                  <p className="text-sm font-semibold text-[#15a249]">
+                    {manutencao.nome_oficina_produto}
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // Card vazio - permite adicionar
+    return (
+      <AddManutencaoDialog 
+        onSuccess={loadManutencoes} 
+        preSelectedType={tipo}
+        triggerButton={
+          <Card className="cursor-pointer hover:border-primary transition-colors h-full">
+            <CardContent className="flex flex-col items-center justify-center py-8 h-full">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                <Plus className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="font-semibold text-center">{titulo}</p>
+              <p className="text-sm text-muted-foreground text-center mt-1">{descricao}</p>
+              <p className="text-xs text-primary mt-2">Clique para adicionar</p>
+            </CardContent>
+          </Card>
+        }
+      />
+    );
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold text-center">Manutenções</h1>
-        <p className="text-sm text-muted-foreground text-center">
-          Exibindo as 5 manutenções mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
-        </p>
         
-        {/* Botão Nova Manutenção */}
+        {/* Cards de Estado Fixo */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {renderFixedCard(
+            "troca_oleo",
+            "Troca de Óleo",
+            "Manutenção preventiva do motor",
+            estadoManutencoes.trocaOleo
+          )}
+          
+          {renderFixedCard(
+            "balanceamento_alinhamento",
+            "Balanceamento e Alinhamento",
+            "Ajuste de pneus e direção",
+            estadoManutencoes.balanceamento
+          )}
+          
+          {renderFixedCard(
+            "revisao",
+            "Revisão",
+            "Revisão completa do veículo",
+            estadoManutencoes.revisao
+          )}
+        </div>
+
+        {/* Botão Nova Manutenção Personalizada */}
         <div className="flex justify-center">
           <AddManutencaoDialog 
             onSuccess={loadManutencoes} 
             preSelectedType="custom"
             triggerButton={
               <Button className="w-full md:w-auto">
-                Nova Manutenção
+                <Plus className="w-4 h-4 mr-2" />
+                Nova Manutenção Personalizada
               </Button>
             }
           />
         </div>
-
-        {/* Cards de Tipos Fixos */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <AddManutencaoDialog 
-            onSuccess={loadManutencoes} 
-            preSelectedType="troca_oleo"
-            triggerButton={
-              <Button variant="outline" className="h-auto py-6 w-full">
-                <div className="text-left w-full">
-                  <div className="font-semibold text-lg">Troca de Óleo</div>
-                  <div className="text-sm opacity-70">Manutenção preventiva do motor</div>
-                </div>
-              </Button>
-            }
-          />
-          
-          <AddManutencaoDialog 
-            onSuccess={loadManutencoes} 
-            preSelectedType="balanceamento_alinhamento"
-            triggerButton={
-              <Button variant="outline" className="h-auto py-6 w-full">
-                <div className="text-left w-full">
-                  <div className="font-semibold text-lg">Balanceamento e Alinhamento</div>
-                  <div className="text-sm opacity-70">Ajuste de pneus e direção</div>
-                </div>
-              </Button>
-            }
-          />
-          
-          <AddManutencaoDialog 
-            onSuccess={loadManutencoes} 
-            preSelectedType="revisao"
-            triggerButton={
-              <Button variant="outline" className="h-auto py-6 w-full">
-                <div className="text-left w-full">
-                  <div className="font-semibold text-lg">Revisão</div>
-                  <div className="text-sm opacity-70">Revisão completa do veículo</div>
-                </div>
-              </Button>
-            }
-          />
-        </div>
-      </div>
-
-      {/* Histórico de Manutenções */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Histórico de Manutenções</h2>
-        
-        {manutencoes.length === 0 ? (
-          <Card>
-            <CardContent className="py-8">
-              <p className="text-muted-foreground text-center">
-                Nenhuma manutenção registrada ainda. Clique em um dos cards acima para começar.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            <div className="grid gap-4">
-              {manutencoes.slice(0, 5).map((manutencao) => (
-            <Card key={manutencao.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <Wrench className="w-5 h-5" />
-                      <CardTitle className="text-lg">
-                        {getTipoLabel(manutencao.tipo_manutencao)}
-                      </CardTitle>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {manutencao.veiculos.modelo} - {manutencao.veiculos.placa}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setEditingManutencao(manutencao)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    {!isFixedType(manutencao.tipo_manutencao) && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeletingId(manutencao.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-4">
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Data</p>
-                    <p className="text-xl font-bold text-[#15a249]">
-                      {format(new Date(manutencao.data), "dd/MM/yyyy")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Valor</p>
-                    <p className="text-xl font-bold text-[#15a249]">
-                      R$ {manutencao.valor.toFixed(2)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
-                    <p className="text-xl font-bold text-[#15a249]">{manutencao.km_atual.toFixed(0)} km</p>
-                  </div>
-                  {manutencao.km_final && (
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
-                      <p className="text-xl font-bold text-[#15a249]">{manutencao.km_final.toFixed(0)} km</p>
-                    </div>
-                  )}
-                  {manutencao.nome_oficina_produto && (
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Oficina/Produto</p>
-                      <p className="text-xl font-bold text-[#15a249]">{manutencao.nome_oficina_produto}</p>
-                    </div>
-                  )}
-                  {manutencao.peca_trocada && (
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Peça Trocada</p>
-                      <p className="text-xl font-bold text-[#15a249]">{manutencao.peca_trocada}</p>
-                    </div>
-                  )}
-                  {manutencao.proximo_km && (
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Próximo KM</p>
-                      <p className="text-xl font-bold text-[#15a249]">{manutencao.proximo_km.toFixed(0)} km</p>
-                    </div>
-                  )}
-                </div>
-                {manutencao.observacoes && (
-                  <div className="mt-4 p-3 bg-muted rounded-lg">
-                    <p className="text-sm font-bold text-foreground mb-1">Observações</p>
-                    <p className="text-xl font-bold text-[#15a249]">{manutencao.observacoes}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {editingManutencao && (
@@ -298,17 +310,17 @@ const Manutencoes = () => {
         />
       )}
 
-      <AlertDialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
+      <AlertDialog open={!!deletingType} onOpenChange={(open) => !open && setDeletingType(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir esta manutenção? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir este registro de manutenção? O card será resetado para o estado vazio.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deletingId && handleDelete(deletingId)}>
+            <AlertDialogAction onClick={() => deletingType && handleDelete(deletingType)}>
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

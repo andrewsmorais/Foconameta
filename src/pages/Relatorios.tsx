@@ -26,7 +26,10 @@ interface Veiculo {
 
 const tiposRelatorio = [
   { value: "turnos", label: "Turnos" },
-  { value: "manutencoes", label: "Manutenções" },
+  { value: "manutencoes", label: "Manutenções (Todas)" },
+  { value: "troca_oleo", label: "Troca de Óleo" },
+  { value: "balanceamento_alinhamento", label: "Balanceamento e Alinhamento" },
+  { value: "revisao", label: "Revisão" },
   { value: "ganhos", label: "Ganhos" },
   { value: "despesas", label: "Despesas" },
   { value: "metas", label: "Metas" },
@@ -147,13 +150,21 @@ const Relatorios = () => {
           break;
         }
 
-        case "manutencoes": {
+        case "manutencoes":
+        case "troca_oleo":
+        case "balanceamento_alinhamento":
+        case "revisao": {
           let query = supabase
             .from("manutencoes")
             .select(`*, veiculos:veiculo_id (modelo, placa)`)
             .eq("user_id", user.id)
             .gte("data", filtros.dataInicio)
             .lte("data", filtros.dataFim);
+
+          // Filtrar por tipo específico se não for "manutencoes" (todas)
+          if (filtros.tipoRelatorio !== "manutencoes") {
+            query = query.eq("tipo_manutencao", filtros.tipoRelatorio);
+          }
 
           if (filtros.veiculo !== "todos") {
             query = query.eq("veiculo_id", filtros.veiculo);
@@ -597,6 +608,9 @@ const Relatorios = () => {
         });
 
       case "manutencoes":
+      case "troca_oleo":
+      case "balanceamento_alinhamento":
+      case "revisao":
         return resultados.map((resultado) => (
           <Card key={resultado.id}>
             <CardHeader>

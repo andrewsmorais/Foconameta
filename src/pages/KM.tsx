@@ -57,9 +57,6 @@ const KM = () => {
   const [editingTurno, setEditingTurno] = useState<Turno | null>(null);
   const { toast } = useToast();
 
-  // Exibir apenas o último turno registrado
-  const turnosExibidos = turnos.slice(0, 1);
-
   const loadTurnos = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -79,7 +76,8 @@ const KM = () => {
         `)
         .eq("user_id", user.id)
         .order("data", { ascending: false })
-        .order("hora_inicio", { ascending: false });
+        .order("hora_fim", { ascending: false })
+        .limit(1);
 
       if (error) throw error;
       setTurnos(data || []);
@@ -151,10 +149,10 @@ const KM = () => {
     };
   };
 
-  // Calculate consolidated metrics for displayed shifts
+  // Calculate consolidated metrics for the single displayed shift
   const calcularMetricasConsolidadas = () => {
-    const dados = turnosExibidos;
-    if (dados.length === 0) return null;
+    if (turnos.length === 0) return null;
+    const dados = [turnos[0]];
 
     const kmRodadosTotal = dados.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0);
     const horasTrabalhadasTotal = dados.reduce((sum, t) => sum + (t.total_horas || 0), 0);
@@ -193,11 +191,7 @@ const KM = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-3xl font-bold text-center">Último Turno Registrado</h1>
-        <p className="text-sm text-muted-foreground text-center">
-          Exibindo apenas o turno mais recente. Acesse o Menu Relatórios para ver o histórico completo.
-        </p>
+      <div className="flex justify-center mb-6">
         <AddTurnoDialog onSuccess={loadTurnos} />
       </div>
 
@@ -214,120 +208,119 @@ const KM = () => {
         </Card>
       ) : (
         <>
-        <div className="grid gap-4">
-          {turnosExibidos.map((turno) => {
-            const metricasTurno = calcularMetricasTurno(turno);
-            return (
-              <Card key={turno.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">
-                        {turno.veiculos.modelo} - {turno.veiculos.placa}
-                      </CardTitle>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-8 w-8"
-                        onClick={() => setEditingTurno(turno)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Excluir turno?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Esta ação não pode ser desfeita. O turno será permanentemente excluído.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(turno.id)}>
-                              Excluir
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
+        {(() => {
+          const turno = turnos[0];
+          const metricasTurno = calcularMetricasTurno(turno);
+          return (
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">
+                      {turno.veiculos.modelo} - {turno.veiculos.placa}
+                    </CardTitle>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  {/* Dados de Entrada */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Data</p>
-                      <p className="text-xl font-bold text-[#15a249]">{format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.km_inicial.toFixed(2)} km</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.km_final.toFixed(2)} km</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Hora Início</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.hora_inicio}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Hora Fim</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.hora_fim}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Tipo Combustível</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.tipo_combustivel}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Preço Combustível</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
-                      <p className="text-xl font-bold text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Valor Ganho</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</p>
-                    </div>
-                    <div className="col-span-full mt-2">
-                      <p className="text-sm font-bold text-foreground mb-2">Fontes de Ganho</p>
-                      <div className="ml-4 space-y-2">
-                        {turno.turno_fontes_ganho && turno.turno_fontes_ganho.length > 0 ? (
-                          turno.turno_fontes_ganho.map((fonte) => (
-                            <div key={fonte.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                              <span className="text-xl font-bold text-primary capitalize">{fonte.fonte_ganho}</span>
-                              <span className="text-xl font-bold text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
-                              <span className="text-xl font-bold text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                            <span className="text-xl font-bold text-primary capitalize">{turno.fonte_ganho}</span>
-                            <span className="text-xl font-bold text-muted-foreground">{turno.quantidade_corridas} corridas</span>
-                            <span className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8"
+                      onClick={() => setEditingTurno(turno)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Excluir turno?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta ação não pode ser desfeita. O turno será permanentemente excluído.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(turno.id)}>
+                            Excluir
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Dados de Entrada */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Data</p>
+                    <p className="text-xl font-bold text-[#15a249]">{format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
+                    <p className="text-xl font-bold text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.km_inicial.toFixed(2)} km</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.km_final.toFixed(2)} km</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Hora Início</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.hora_inicio}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Hora Fim</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.hora_fim}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Tipo Combustível</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.tipo_combustivel}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Preço Combustível</p>
+                    <p className="text-xl font-bold text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
+                    <p className="text-xl font-bold text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground mb-1">Valor Ganho</p>
+                    <p className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</p>
+                  </div>
+                  <div className="col-span-full mt-2">
+                    <p className="text-sm font-bold text-foreground mb-2">Fontes de Ganho</p>
+                    <div className="ml-4 space-y-2">
+                      {turno.turno_fontes_ganho && turno.turno_fontes_ganho.length > 0 ? (
+                        turno.turno_fontes_ganho.map((fonte) => (
+                          <div key={fonte.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
+                            <span className="text-xl font-bold text-primary capitalize">{fonte.fonte_ganho}</span>
+                            <span className="text-xl font-bold text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
+                            <span className="text-xl font-bold text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
                           </div>
-                        )}
-                      </div>
+                        ))
+                      ) : (
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
+                          <span className="text-xl font-bold text-primary capitalize">{turno.fonte_ganho}</span>
+                          <span className="text-xl font-bold text-muted-foreground">{turno.quantidade_corridas} corridas</span>
+                          <span className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </CardContent>
+                </div>
+              </CardContent>
             </Card>
           );
-        })}
-      </div>
+        })()}
 
       {/* Métricas Calculadas Consolidadas */}
       {metricas && (

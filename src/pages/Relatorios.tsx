@@ -26,7 +26,7 @@ interface Veiculo {
 
 const tiposRelatorio = [
   { value: "turnos", label: "Turnos" },
-  { value: "manutencoes", label: "Manutenções (Todas)" },
+  { value: "manutencoes", label: "Manutenções" },
   { value: "troca_oleo", label: "Troca de Óleo" },
   { value: "balanceamento_alinhamento", label: "Balanceamento e Alinhamento" },
   { value: "revisao", label: "Revisão" },
@@ -34,6 +34,9 @@ const tiposRelatorio = [
   { value: "despesas", label: "Despesas" },
   { value: "metas", label: "Metas" },
 ];
+
+// Tipos fixos de manutenção preventiva (não aparecem no filtro "Manutenções")
+const tiposManutencaoFixos = ["troca_oleo", "balanceamento_alinhamento", "revisao"];
 
 const getCategoriaLabel = (categoria: string) => {
   const labels: Record<string, string> = {
@@ -161,8 +164,12 @@ const Relatorios = () => {
             .gte("data", filtros.dataInicio)
             .lte("data", filtros.dataFim);
 
-          // Filtrar por tipo específico se não for "manutencoes" (todas)
-          if (filtros.tipoRelatorio !== "manutencoes") {
+          // Filtrar por tipo específico
+          if (filtros.tipoRelatorio === "manutencoes") {
+            // "Manutenções" mostra apenas registros custom (exclui tipos fixos)
+            query = query.not("tipo_manutencao", "in", `(${tiposManutencaoFixos.join(",")})`);
+          } else {
+            // Filtros específicos (Troca de Óleo, Balanceamento, Revisão)
             query = query.eq("tipo_manutencao", filtros.tipoRelatorio);
           }
 

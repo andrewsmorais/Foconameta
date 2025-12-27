@@ -181,7 +181,7 @@ const LandingPage = () => {
               <span className="text-brand-blue">Resultados Reais!</span>
             </h1>
             
-            <h2 className="text-base md:text-xl lg:text-2xl text-black max-w-2xl">
+            <h2 className="text-base md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
               Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 

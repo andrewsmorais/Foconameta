@@ -176,12 +176,12 @@ const LandingPage = () => {
       <section className="relative overflow-hidden py-6 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-4 md:space-y-6 px-4">
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-foreground">
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
               <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
               <span className="text-brand-blue">Resultados Reais!</span>
             </h1>
             
-            <h2 className="text-base md:text-xl lg:text-2xl text-muted-foreground max-w-2xl">
+            <h2 className="text-base md:text-xl lg:text-2xl text-black max-w-2xl">
               Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 

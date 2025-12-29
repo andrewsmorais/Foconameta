@@ -53,10 +53,18 @@ const getCategoriaLabel = (categoria: string) => {
   return labels[categoria] || categoria;
 };
 
-// Safe date formatting to prevent "Invalid time value" errors
+// Safe date formatting to prevent "Invalid time value" errors and timezone issues
 const formatDateSafe = (dateValue: string | null | undefined, formatStr: string = "dd/MM/yyyy"): string => {
   if (!dateValue) return "N/A";
   try {
+    // Para datas no formato "YYYY-MM-DD", parsear manualmente
+    // para evitar problemas de timezone (UTC vs local)
+    if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+      const [year, month, day] = dateValue.split('-').map(Number);
+      const date = new Date(year, month - 1, day); // Mês é 0-indexed
+      return format(date, formatStr);
+    }
+    
     const date = new Date(dateValue);
     if (isNaN(date.getTime())) return "N/A";
     return format(date, formatStr);
@@ -81,6 +89,7 @@ const Relatorios = () => {
     kmRodados: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [buscaRealizada, setBuscaRealizada] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -301,6 +310,7 @@ const Relatorios = () => {
 
       setResultados(data);
       setMetricas(metricsData);
+      setBuscaRealizada(true);
 
       toast({
         title: "Relatório gerado",
@@ -911,6 +921,22 @@ const Relatorios = () => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Mensagem quando não houver resultados */}
+      {resultados.length === 0 && buscaRealizada && !loading && (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center">
+              <p className="text-lg text-muted-foreground">
+                Nenhum registro encontrado para este período/veículo.
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Tente ajustar os filtros ou selecionar um período diferente.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {resultados.length > 0 && (
         <>

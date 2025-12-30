@@ -11,9 +11,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, AlertTriangle, Copy, Eye, MessageCircle, StickyNote, Download } from "lucide-react";
+import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, AlertTriangle, Copy, Eye, MessageCircle, StickyNote, Download, Undo2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface UserData {
   id: string;
@@ -46,6 +47,8 @@ export const UsersManagement = () => {
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isRefundOpen, setIsRefundOpen] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   
@@ -233,6 +236,30 @@ export const UsersManagement = () => {
     },
   });
 
+  // Refund user mutation
+  const refundUserMutation = useMutation({
+    mutationFn: async ({ email, userId, motivo }: { email: string; userId: string; motivo: string }) => {
+      const { data, error } = await supabase.functions.invoke("refund-user", {
+        body: { email, userId, motivo },
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-payment-details"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+      toast.success(data.message || "Reembolso processado com sucesso!");
+      setIsRefundOpen(false);
+      setRefundReason("");
+      setSelectedUser(null);
+    },
+    onError: (error) => {
+      toast.error("Erro ao processar reembolso: " + error.message);
+    },
+  });
+
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -332,6 +359,12 @@ export const UsersManagement = () => {
     setSelectedUser(user);
     setAdminNotes(user.admin_notes || "");
     setIsNotesOpen(true);
+  };
+
+  const handleRefundClick = (user: UserData) => {
+    setSelectedUser(user);
+    setRefundReason("");
+    setIsRefundOpen(true);
   };
 
   const copyToClipboard = (text: string) => {
@@ -501,7 +534,7 @@ export const UsersManagement = () => {
                         <SelectValue placeholder="Selecione um plano" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="free">Free</SelectItem>
+                        <SelectItem value="free">Free (Sem cobrança)</SelectItem>
                         <SelectItem value="mensal">Mensal R$ 12,90</SelectItem>
                         <SelectItem value="anual">Anual R$ 97,90</SelectItem>
                       </SelectContent>
@@ -624,6 +657,15 @@ export const UsersManagement = () => {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => handleRefundClick(user)}
+                            title="Reembolsar"
+                            disabled={!user.netAmount}
+                          >
+                            <Undo2 className={`h-4 w-4 ${user.netAmount ? "text-orange-500" : "text-muted-foreground"}`} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleEditClick(user)}
                             title="Editar"
                           >
@@ -688,6 +730,97 @@ export const UsersManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Refund User Dialog */}
+      <Dialog open={isRefundOpen} onOpenChange={setIsRefundOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Undo2 className="h-5 w-5 text-orange-500" />
+              Reembolsar Usuário
+            </DialogTitle>
+            <DialogDescription>
+              Processar reembolso para {selectedUser?.nome_completo || "o usuário"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Payment Summary */}
+          <div className="bg-muted p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Email:</span>
+              <span className="font-medium">{selectedUser?.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Último Pagamento:</span>
+              <span className="font-medium">
+                {selectedUser?.lastPaymentDate 
+                  ? new Date(selectedUser.lastPaymentDate).toLocaleDateString('pt-BR')
+                  : "-"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Método:</span>
+              <span className="font-medium">{selectedUser?.paymentMethod || "-"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Valor Líquido:</span>
+              <span className="font-medium text-[hsl(142,76%,36%)]">
+                {selectedUser?.netAmount !== null && selectedUser?.netAmount !== undefined
+                  ? `R$ ${selectedUser.netAmount.toFixed(2).replace('.', ',')}`
+                  : "-"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Plano:</span>
+              <span className="font-medium">
+                {selectedUser?.planPrice === 12.9 ? "Mensal R$ 12,90" : 
+                 selectedUser?.planPrice === 97.9 ? "Anual R$ 97,90" : "Free"}
+              </span>
+            </div>
+          </div>
+
+          {/* Refund Reason */}
+          <div className="space-y-2">
+            <Label htmlFor="refund-reason">Motivo do Reembolso *</Label>
+            <Textarea
+              id="refund-reason"
+              value={refundReason}
+              onChange={(e) => setRefundReason(e.target.value)}
+              placeholder="Descreva o motivo do reembolso..."
+              rows={4}
+            />
+          </div>
+
+          {/* Warning Alert */}
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Esta ação irá reembolsar o valor total e cancelar a assinatura do usuário. O motivo será registrado nas notas do admin.
+            </AlertDescription>
+          </Alert>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsRefundOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={!refundReason.trim() || refundUserMutation.isPending}
+              onClick={() => {
+                if (selectedUser?.email && selectedUser?.id) {
+                  refundUserMutation.mutate({
+                    email: selectedUser.email,
+                    userId: selectedUser.id,
+                    motivo: refundReason,
+                  });
+                }
+              }}
+            >
+              {refundUserMutation.isPending ? "Processando..." : "Confirmar Reembolso"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit User Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>

@@ -53,119 +53,92 @@ const initFacebookPixel = () => {
 
 // Hook principal
 export const useFacebookPixel = () => {
-  
   useEffect(() => {
     initFacebookPixel();
   }, []);
 
-  // Evento: PageView - disparado automaticamente ao carregar a página
-  const trackPageView = useCallback(() => {
-    if (window.fbq) {
-      window.fbq('track', 'PageView');
-      console.log('[FB Pixel] Evento: PageView');
-    }
-  }, []);
-
-  // Evento: Lead - quando clica em "Ver Planos" ou rola até preços
-  const trackLead = useCallback((contentName?: string) => {
-    if (window.fbq) {
-      window.fbq('track', 'Lead', {
-        content_name: contentName || 'Ver Planos',
-      });
-      console.log('[FB Pixel] Evento: Lead -', contentName);
-    }
-  }, []);
-
-  // Evento: ViewContent - visualização de conteúdo específico
-  const trackViewContent = useCallback((contentName: string, contentCategory?: string) => {
-    if (window.fbq) {
-      window.fbq('track', 'ViewContent', {
-        content_name: contentName,
-        content_category: contentCategory || 'Landing Page',
-      });
-      console.log('[FB Pixel] Evento: ViewContent -', contentName);
-    }
-  }, []);
-
-  // Evento: InitiateCheckout - quando clica em "Assinar Agora"
-  const trackInitiateCheckout = useCallback((planType: string, value: number) => {
-    if (window.fbq) {
-      window.fbq('track', 'InitiateCheckout', {
-        content_name: `Plano ${planType}`,
-        content_category: 'Subscription',
-        value: value,
-        currency: 'BRL',
-        num_items: 1,
-      });
-      console.log('[FB Pixel] Evento: InitiateCheckout -', planType, value);
-    }
-  }, []);
-
-  // Evento: AddToCart - interesse em plano específico (clique em card de preço)
-  const trackAddToCart = useCallback((planType: string, value: number) => {
-    if (window.fbq) {
-      window.fbq('track', 'AddToCart', {
-        content_name: `Plano ${planType}`,
-        content_type: 'product',
-        value: value,
-        currency: 'BRL',
-      });
-      console.log('[FB Pixel] Evento: AddToCart -', planType);
-    }
-  }, []);
-
-  // Evento: AddPaymentInfo - quando o usuário chega na página de completar cadastro após pagamento
-  const trackAddPaymentInfo = useCallback((planType: string, value: number) => {
-    if (window.fbq) {
-      window.fbq('track', 'AddPaymentInfo', {
-        content_name: `Plano ${planType}`,
-        content_category: 'Subscription',
-        value: value,
-        currency: 'BRL',
-      });
-      console.log('[FB Pixel] Evento: AddPaymentInfo -', planType, value);
-    }
-  }, []);
-
-  // Evento: Contact - clique no WhatsApp ou suporte
-  const trackContact = useCallback((method: string) => {
-    if (window.fbq) {
-      window.fbq('track', 'Contact', {
-        content_name: method,
-      });
-      console.log('[FB Pixel] Evento: Contact -', method);
-    }
-  }, []);
-
-  // Evento: CompleteRegistration - após cadastro completo
-  const trackCompleteRegistration = useCallback((value?: number) => {
-    if (window.fbq) {
-      window.fbq('track', 'CompleteRegistration', {
-        value: value || 0,
-        currency: 'BRL',
-      });
-      console.log('[FB Pixel] Evento: CompleteRegistration');
-    }
-  }, []);
-
-  // Evento customizado genérico
-  const trackCustomEvent = useCallback((eventName: string, params?: object) => {
-    if (window.fbq) {
-      window.fbq('trackCustom', eventName, params);
-      console.log('[FB Pixel] Evento Custom:', eventName, params);
-    }
-  }, []);
-
+  // Retorna funções simples (não hooks) para evitar problemas de HMR
   return {
-    trackPageView,
-    trackLead,
-    trackViewContent,
-    trackInitiateCheckout,
-    trackAddToCart,
-    trackAddPaymentInfo,
-    trackContact,
-    trackCompleteRegistration,
-    trackCustomEvent,
+    trackPageView: () => {
+      if (window.fbq) {
+        window.fbq('track', 'PageView');
+        console.log('[FB Pixel] Evento: PageView');
+      }
+    },
+    trackLead: (contentName?: string) => {
+      if (window.fbq) {
+        window.fbq('track', 'Lead', {
+          content_name: contentName || 'Ver Planos',
+        });
+        console.log('[FB Pixel] Evento: Lead -', contentName);
+      }
+    },
+    trackViewContent: (contentName: string, contentCategory?: string) => {
+      if (window.fbq) {
+        window.fbq('track', 'ViewContent', {
+          content_name: contentName,
+          content_category: contentCategory || 'Landing Page',
+        });
+        console.log('[FB Pixel] Evento: ViewContent -', contentName);
+      }
+    },
+    trackInitiateCheckout: (planType: string, value: number) => {
+      if (window.fbq) {
+        window.fbq('track', 'InitiateCheckout', {
+          content_name: `Plano ${planType}`,
+          content_category: 'Subscription',
+          value: value,
+          currency: 'BRL',
+          num_items: 1,
+        });
+        console.log('[FB Pixel] Evento: InitiateCheckout -', planType, value);
+      }
+    },
+    trackAddToCart: (planType: string, value: number) => {
+      if (window.fbq) {
+        window.fbq('track', 'AddToCart', {
+          content_name: `Plano ${planType}`,
+          content_type: 'product',
+          value: value,
+          currency: 'BRL',
+        });
+        console.log('[FB Pixel] Evento: AddToCart -', planType);
+      }
+    },
+    trackAddPaymentInfo: (planType: string, value: number) => {
+      if (window.fbq) {
+        window.fbq('track', 'AddPaymentInfo', {
+          content_name: `Plano ${planType}`,
+          content_category: 'Subscription',
+          value: value,
+          currency: 'BRL',
+        });
+        console.log('[FB Pixel] Evento: AddPaymentInfo -', planType, value);
+      }
+    },
+    trackContact: (method: string) => {
+      if (window.fbq) {
+        window.fbq('track', 'Contact', {
+          content_name: method,
+        });
+        console.log('[FB Pixel] Evento: Contact -', method);
+      }
+    },
+    trackCompleteRegistration: (value?: number) => {
+      if (window.fbq) {
+        window.fbq('track', 'CompleteRegistration', {
+          value: value || 0,
+          currency: 'BRL',
+        });
+        console.log('[FB Pixel] Evento: CompleteRegistration');
+      }
+    },
+    trackCustomEvent: (eventName: string, params?: object) => {
+      if (window.fbq) {
+        window.fbq('trackCustom', eventName, params);
+        console.log('[FB Pixel] Evento Custom:', eventName, params);
+      }
+    },
   };
 };
 

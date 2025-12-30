@@ -180,23 +180,23 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-6 md:py-20 bg-[#fafafa]">
+      <section className="relative overflow-hidden py-6 md:py-20 bg-black">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-4 md:space-y-6 px-4">
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
-              <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
-              <span className="text-brand-blue">Resultados Reais!</span>
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-white">
+              Chega de rodar sem saber seu{" "}
+              <span className="text-[#ff6b35]">lucro real</span>. Assuma o controle total dos seus ganhos, gastos e manutenções em um só lugar.
             </h1>
             
-            <h2 className="text-base md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
-              Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
+            <h2 className="text-base md:text-xl lg:text-2xl text-gray-300 font-medium max-w-3xl leading-relaxed">
+              Descubra exatamente quanto sobra no seu bolso ao final de cada turno. O <span className="text-white font-bold">Bateu A Meta</span> foi feito para o motorista que quer profissionalizar sua gestão e parar de perder dinheiro com despesas invisíveis.
             </h2>
 
             {/* VSL Video - Thumbnail clicável que abre modal */}
             <div className="w-full max-w-4xl mx-auto px-0 sm:px-4">
               <button
                 onClick={() => setVideoOpen(true)}
-                className="relative w-full aspect-video rounded-none sm:rounded-xl overflow-hidden shadow-2xl ring-2 ring-[#3c83f6]/40 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#3c83f6]/60"
+                className="relative w-full aspect-video rounded-none sm:rounded-xl overflow-hidden shadow-2xl ring-2 ring-[#ff6b35]/40 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#ff6b35]/60"
               >
                 {/* Thumbnail do YouTube */}
                 <img
@@ -208,7 +208,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                 {/* Botão de Play */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 md:w-24 md:h-24 bg-[#c41313] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-r from-[#ff6b35] to-[#f7931e] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
                     <Play className="w-8 h-8 md:w-12 md:h-12 text-white ml-1" fill="white" />
                   </div>
                 </div>

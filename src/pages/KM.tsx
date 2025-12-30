@@ -419,7 +419,7 @@ const KM = () => {
             <Card className="bg-blue-500/10 border-blue-500/30">
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">Ganhos Bruto</p>
+                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">Ganhos Brutos</p>
                   <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                     R$ {metricas.ganhosBrutosTotal.toFixed(2)}
                   </p>

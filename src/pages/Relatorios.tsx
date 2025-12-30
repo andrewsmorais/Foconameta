@@ -975,7 +975,7 @@ const Relatorios = () => {
                     <Card className="bg-blue-500/20 border-blue-500/50">
                       <CardContent className="pt-6 pb-6">
                         <div className="text-center">
-                          <p className="text-sm font-bold text-blue-400 mb-2">💰 Ganhos Bruto</p>
+                          <p className="text-sm font-bold text-blue-400 mb-2">💰 Ganhos Brutos</p>
                           <p className="text-4xl font-bold text-blue-400">
                             R$ {metricasTurnos.ganhosBrutosTotal.toFixed(2)}
                           </p>

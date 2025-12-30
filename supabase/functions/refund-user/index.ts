@@ -89,17 +89,32 @@ serve(async (req) => {
     // Get the last successful charge for this customer
     const charges = await stripe.charges.list({
       customer: customer.id,
-      limit: 10,
+      limit: 20,
     });
 
+    // Filter only successful charges that haven't been fully refunded
     const successfulCharges = charges.data.filter(
       (charge: Stripe.Charge) => charge.status === "succeeded" && !charge.refunded
     );
 
+    // Check if there are any charges at all
+    const allCharges = charges.data.filter((c: Stripe.Charge) => c.status === "succeeded");
+    const refundedCharges = allCharges.filter((c: Stripe.Charge) => c.refunded);
+
+    console.log(`[Refund] Found ${allCharges.length} total charges, ${refundedCharges.length} already refunded`);
+
     if (successfulCharges.length === 0) {
-      console.log(`[Refund] No refundable charges found for ${email}`);
+      const message = allCharges.length === 0 
+        ? "Nenhum pagamento encontrado para este cliente"
+        : `Todos os ${allCharges.length} pagamento(s) já foram reembolsados anteriormente`;
+      
+      console.log(`[Refund] ${message} for ${email}`);
       return new Response(
-        JSON.stringify({ error: "Nenhum pagamento encontrado para reembolso" }),
+        JSON.stringify({ 
+          error: message,
+          totalCharges: allCharges.length,
+          refundedCharges: refundedCharges.length 
+        }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

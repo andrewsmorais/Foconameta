@@ -72,6 +72,16 @@ const Dashboard = () => {
       // Usar o intervalo de datas selecionado
       if (!dateRange?.from || !dateRange?.to) return;
       
+      // Validar datas invertidas
+      if (dateRange.from > dateRange.to) {
+        toast({
+          variant: "destructive",
+          title: "Erro nas Datas",
+          description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+        });
+        return;
+      }
+      
       const dataInicio = dateRange.from;
       const dataFim = dateRange.to;
 
@@ -333,7 +343,18 @@ const Dashboard = () => {
             <Calendar
               mode="range"
               selected={dateRange}
-              onSelect={setDateRange}
+              onSelect={(range) => {
+                // Validar se from > to
+                if (range?.from && range?.to && range.from > range.to) {
+                  toast({
+                    variant: "destructive",
+                    title: "Erro nas Datas",
+                    description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+                  });
+                  return;
+                }
+                setDateRange(range);
+              }}
               numberOfMonths={2}
               locale={ptBR}
               className={cn("p-3 pointer-events-auto")}

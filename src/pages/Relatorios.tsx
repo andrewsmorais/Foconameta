@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, Filter, FileDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -118,15 +119,40 @@ const Relatorios = () => {
     }
   };
 
-  const aplicarFiltros = async () => {
-    if (!filtros.dataInicio || !filtros.dataFim) {
+  // Verificar se todos os filtros estão válidos
+  const filtrosValidos = 
+    filtros.tipoRelatorio && 
+    filtros.veiculo && 
+    filtros.dataInicio && 
+    filtros.dataFim &&
+    new Date(filtros.dataInicio) <= new Date(filtros.dataFim);
+
+  const validarFiltros = (): boolean => {
+    // Verificar campos obrigatórios
+    if (!filtros.tipoRelatorio || !filtros.veiculo || !filtros.dataInicio || !filtros.dataFim) {
       toast({
         variant: "destructive",
-        title: "Campos obrigatórios",
-        description: "Preencha o período (Data Início e Data Fim)",
+        title: "Atenção",
+        description: "Por favor, preencha todos os filtros (Tipo, Veículo e Período) para gerar o relatório.",
       });
-      return;
+      return false;
     }
+    
+    // Verificar datas invertidas
+    if (new Date(filtros.dataInicio) > new Date(filtros.dataFim)) {
+      toast({
+        variant: "destructive",
+        title: "Erro nas Datas",
+        description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+      });
+      return false;
+    }
+    
+    return true;
+  };
+
+  const aplicarFiltros = async () => {
+    if (!validarFiltros()) return;
 
     setLoading(true);
     try {
@@ -915,10 +941,21 @@ const Relatorios = () => {
             </div>
           </div>
 
-          <Button onClick={aplicarFiltros} disabled={loading} className="gap-2">
-            <Filter className="w-4 h-4" />
-            {loading ? "Gerando..." : "Aplicar Filtros"}
-          </Button>
+          <div className="space-y-2">
+            <Button 
+              onClick={aplicarFiltros} 
+              disabled={loading || !filtrosValidos} 
+              className={cn("gap-2", !filtrosValidos && "opacity-50 cursor-not-allowed")}
+            >
+              <Filter className="w-4 h-4" />
+              {loading ? "Gerando..." : "Aplicar Filtros"}
+            </Button>
+            {!filtrosValidos && (
+              <p className="text-sm text-amber-600 dark:text-amber-400">
+                Preencha todos os filtros para habilitar a consulta.
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
 

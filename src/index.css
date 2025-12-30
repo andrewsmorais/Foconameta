@@ -17,26 +17,6 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
-/* CTA Action Color - Vibrant Orange for conversion */
-.bg-cta-action {
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-}
-
-.bg-cta-action:hover {
-  background: linear-gradient(135deg, #e85a2a 0%, #e0851a 100%);
-}
-
-/* CTA Glow Effect */
-.cta-glow {
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), 0 4px 15px rgba(247, 147, 30, 0.3);
-  transition: all 0.3s ease;
-}
-
-.cta-glow:hover {
-  box-shadow: 0 0 30px rgba(255, 107, 53, 0.6), 0 6px 25px rgba(247, 147, 30, 0.5);
-  transform: translateY(-2px);
-}
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

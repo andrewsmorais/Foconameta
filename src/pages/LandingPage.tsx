@@ -28,8 +28,6 @@ import {
   CalendarX,
   ShieldCheck,
   Play,
-  Check,
-  Sparkles,
   X
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
@@ -180,23 +178,23 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-6 md:py-20 bg-black">
+      <section className="relative overflow-hidden py-6 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-4 md:space-y-6 px-4">
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-white">
-              Chega de rodar sem saber seu{" "}
-              <span className="text-[#ff6b35]">lucro real</span>. Assuma o controle total dos seus ganhos, gastos e manutenções em um só lugar.
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
+              <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
+              <span className="text-brand-blue">Resultados Reais!</span>
             </h1>
             
-            <h2 className="text-base md:text-xl lg:text-2xl text-gray-300 font-medium max-w-3xl leading-relaxed">
-              Descubra exatamente quanto sobra no seu bolso ao final de cada turno. O <span className="text-white font-bold">Bateu A Meta</span> foi feito para o motorista que quer profissionalizar sua gestão e parar de perder dinheiro com despesas invisíveis.
+            <h2 className="text-base md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
+              Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 
             {/* VSL Video - Thumbnail clicável que abre modal */}
             <div className="w-full max-w-4xl mx-auto px-0 sm:px-4">
               <button
                 onClick={() => setVideoOpen(true)}
-                className="relative w-full aspect-video rounded-none sm:rounded-xl overflow-hidden shadow-2xl ring-2 ring-[#ff6b35]/40 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#ff6b35]/60"
+                className="relative w-full aspect-video rounded-none sm:rounded-xl overflow-hidden shadow-2xl ring-2 ring-[#3c83f6]/40 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#3c83f6]/60"
               >
                 {/* Thumbnail do YouTube */}
                 <img
@@ -208,7 +206,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                 {/* Botão de Play */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-r from-[#ff6b35] to-[#f7931e] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 md:w-24 md:h-24 bg-[#c41313] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
                     <Play className="w-8 h-8 md:w-12 md:h-12 text-white ml-1" fill="white" />
                   </div>
                 </div>
@@ -246,9 +244,9 @@ const LandingPage = () => {
             <Button 
               size="lg" 
               onClick={scrollToPricing}
-              className="text-lg px-8 py-6 bg-cta-action cta-glow text-white font-bold transition-all"
+              className="text-lg px-8 py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-lg hover:shadow-xl transition-all"
             >
-              QUERO COMEÇAR A LUCRAR MAIS HOJE
+              QUERO BATER MINHAS METAS AGORA
               <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
             </Button>
           </div>
@@ -408,8 +406,57 @@ const LandingPage = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Monthly Plan - Secondary Position */}
-            <Card className="border border-gray-200 bg-white order-2 md:order-1">
+            {/* Annual Plan */}
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl scale-105 bg-white">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span className="bg-gradient-to-r from-[#c41313] to-[#3c83f6] text-white px-4 py-1 rounded-full text-sm font-bold">
+                  MAIS POPULAR
+                </span>
+              </div>
+              <CardContent className="p-8 space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-4xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                    <span className="text-gray-500">/ano</span>
+                  </div>
+                  <p className="text-sm text-gray-500">Equivale a R$ 8,16/mês</p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
+                  <p className="text-lg font-bold text-center text-green-700">
+                    🎉 Economia de R$ 56,90 por ano!
+                  </p>
+                </div>
+
+                <ul className="space-y-3">
+                  {[
+                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo" },
+                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado" },
+                    { icon: Target, text: "Metas", bold: "personalizadas" },
+                    { icon: FileText, text: "Relatórios em", bold: "PDF" },
+                    { icon: Wrench, text: "Gestão de", bold: "manutenções" },
+                    { icon: Headphones, text: "Suporte", bold: "prioritário" }
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-black">
+                      <item.icon className="h-5 w-5 stroke-green-600 text-green-600" strokeWidth={2} />
+                      <span>{item.text} <strong className="text-black">{item.bold}</strong></span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button 
+                  className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
+                  onClick={() => handleSelectPlan("anual")}
+                  disabled={loadingPlan === "anual"}
+                >
+                  {loadingPlan === "anual" ? "Processando..." : "ASSINAR AGORA"}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Monthly Plan */}
+            <Card className="border border-gray-200 bg-white">
               <CardContent className="p-8 space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-black">Plano Mensal</h3>
@@ -430,73 +477,18 @@ const LandingPage = () => {
                     { icon: CalendarX, text: "Cancele", bold: "quando quiser" }
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-black">
-                      <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
+                      <item.icon className="h-5 w-5 stroke-green-600 text-green-600" strokeWidth={2} />
                       <span>{item.text} <strong className="text-black">{item.bold}</strong></span>
                     </li>
                   ))}
                 </ul>
 
                 <Button 
-                  className="w-full py-6 text-base font-bold bg-cta-action cta-glow text-white border-0"
+                  className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
                   onClick={() => handleSelectPlan("mensal")}
                   disabled={loadingPlan === "mensal"}
                 >
-                  {loadingPlan === "mensal" ? "Processando..." : "QUERO COMEÇAR A LUCRAR MAIS HOJE"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Annual Plan - Primary Position with Enhanced Highlight */}
-            <Card className="relative border-2 border-[#ff6b35] shadow-2xl scale-105 bg-white order-1 md:order-2">
-              {/* Best Value Badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#ff6b35] to-[#f7931e] text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-lg">
-                  <Sparkles className="h-4 w-4" />
-                  MELHOR CUSTO-BENEFÍCIO
-                </span>
-              </div>
-              <CardContent className="p-8 space-y-6 pt-10">
-                <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold text-[#ff6b35]">R$ 97,90</span>
-                    <span className="text-gray-500">/ano</span>
-                  </div>
-                  {/* Price Anchoring - Monthly Equivalent */}
-                  <p className="text-base font-semibold text-green-600">
-                    Apenas R$ 8,15 por mês
-                  </p>
-                  <p className="text-xs text-gray-500">Menos que o valor de uma corrida!</p>
-                </div>
-
-                <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
-                  <p className="text-lg font-bold text-center text-green-700">
-                    🎉 Economia de R$ 56,90 por ano!
-                  </p>
-                </div>
-
-                <ul className="space-y-3">
-                  {[
-                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo" },
-                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado" },
-                    { icon: Target, text: "Metas", bold: "personalizadas" },
-                    { icon: FileText, text: "Relatórios em", bold: "PDF" },
-                    { icon: Wrench, text: "Gestão de", bold: "manutenções" },
-                    { icon: Headphones, text: "Suporte", bold: "prioritário" }
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-black">
-                      <Check className="h-5 w-5 text-green-600" strokeWidth={2.5} />
-                      <span>{item.text} <strong className="text-black">{item.bold}</strong></span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button 
-                  className="w-full py-6 text-base font-bold bg-cta-action cta-glow text-white border-0"
-                  onClick={() => handleSelectPlan("anual")}
-                  disabled={loadingPlan === "anual"}
-                >
-                  {loadingPlan === "anual" ? "Processando..." : "QUERO COMEÇAR A LUCRAR MAIS HOJE"}
+                  {loadingPlan === "mensal" ? "Processando..." : "ESCOLHER MENSAL"}
                 </Button>
               </CardContent>
             </Card>

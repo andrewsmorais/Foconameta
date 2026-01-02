@@ -49,7 +49,16 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
     queryKey: ["admin-stripe-metrics", startDate.toISOString(), endDate.toISOString()],
     queryFn: async (): Promise<StripeMetrics | null> => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.href = "/auth";
+          return null;
+        }
+
         const { data, error } = await supabase.functions.invoke("get-stripe-metrics", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: { 
             startDate: startDate.toISOString(), 
             endDate: endDate.toISOString() 

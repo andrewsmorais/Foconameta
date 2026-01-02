@@ -85,9 +85,23 @@ export const UsersManagement = () => {
     queryKey: ["admin-users"],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase.functions.invoke("get-admin-users");
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.href = "/auth";
+          throw new Error("Sessão expirada");
+        }
+
+        const { data, error } = await supabase.functions.invoke("get-admin-users", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
         
         if (error) {
+          if (error.message?.includes("Invalid token") || error.message?.includes("session_not_found")) {
+            toast.error("Sessão expirada. Redirecionando para login...");
+            window.location.href = "/auth";
+          }
           console.error("Error fetching admin users:", error);
           throw error;
         }
@@ -110,7 +124,13 @@ export const UsersManagement = () => {
       if (emails.length === 0) return {};
 
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return {};
+
         const { data, error } = await supabase.functions.invoke("get-user-payment-details", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: { emails },
         });
         if (error) {
@@ -239,7 +259,17 @@ export const UsersManagement = () => {
   // Refund user mutation
   const refundUserMutation = useMutation({
     mutationFn: async ({ email, userId, motivo }: { email: string; userId: string; motivo: string }) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Sessão expirada. Redirecionando para login...");
+        window.location.href = "/auth";
+        throw new Error("Sessão expirada");
+      }
+
       const { data, error } = await supabase.functions.invoke("refund-user", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: { email, userId, motivo },
       });
 
@@ -328,7 +358,17 @@ export const UsersManagement = () => {
   // Reset password mutation
   const resetPasswordMutation = useMutation({
     mutationFn: async (userId: string) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Sessão expirada. Redirecionando para login...");
+        window.location.href = "/auth";
+        throw new Error("Sessão expirada");
+      }
+
       const { data, error } = await supabase.functions.invoke("reset-user-password", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: { user_id: userId },
       });
       

@@ -65,13 +65,16 @@ serve(async (req) => {
 
     console.log("[create-checkout -> MP] Mapped to planType:", planType);
 
-    const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
+    const origin = req.headers.get("origin") || "https://bateuameta.com";
+    const supabaseUrl = "https://grfyoqsbypvvuzdudtgu.supabase.co";
 
-    // Se não tiver email, redirecionar para página intermediária de coleta
+    // Se não tiver email, redirecionar para Edge Function HTML de coleta de email
+    // Isso funciona para qualquer versão do app (inclusive cache/PWA antigo)
     if (!email) {
-      console.log("[create-checkout -> MP] No email provided, redirecting to /finalizar-assinatura");
+      const redirectUrl = `${supabaseUrl}/functions/v1/mp-email?planType=${planType}&origin=${encodeURIComponent(origin)}`;
+      console.log("[create-checkout -> MP] No email provided, redirecting to mp-email:", redirectUrl);
       return new Response(
-        JSON.stringify({ url: `${origin}/finalizar-assinatura?planType=${planType}` }),
+        JSON.stringify({ url: redirectUrl }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,

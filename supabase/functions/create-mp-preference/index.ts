@@ -70,10 +70,13 @@ serve(async (req) => {
         },
       ],
       payment_methods: {
-        // Permite todos os métodos de pagamento
-        excluded_payment_types: [],
+        // Apenas PIX e Boleto - exclui cartões
+        excluded_payment_types: [
+          { id: "credit_card" },
+          { id: "debit_card" }
+        ],
         excluded_payment_methods: [],
-        installments: 1, // Apenas à vista
+        installments: 1,
       },
       back_urls: {
         success: `${origin}/auth?payment_success=true&plan=${planType}`,

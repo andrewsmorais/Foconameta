@@ -65,6 +65,20 @@ serve(async (req) => {
 
     console.log("[create-checkout -> MP] Mapped to planType:", planType);
 
+    const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
+
+    // Se não tiver email, redirecionar para página intermediária de coleta
+    if (!email) {
+      console.log("[create-checkout -> MP] No email provided, redirecting to /finalizar-assinatura");
+      return new Response(
+        JSON.stringify({ url: `${origin}/finalizar-assinatura?planType=${planType}` }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
+
     if (!MP_ACCESS_TOKEN) {
       console.error("[create-checkout -> MP] MP_ACCESS_TOKEN not configured");
       return new Response(
@@ -77,14 +91,13 @@ serve(async (req) => {
     }
 
     const plan = PLANS[planType as keyof typeof PLANS];
-    const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
 
     // Criar PreApproval (assinatura) no Mercado Pago
-    const preapprovalData: Record<string, unknown> = {
+    const preapprovalData = {
       reason: plan.reason,
       auto_recurring: plan.auto_recurring,
       back_url: `${origin}/auth?payment_success=true`,
-      ...(email && { payer_email: email }),
+      payer_email: email,
     };
 
     console.log("[create-checkout -> MP] Creating preapproval:", JSON.stringify(preapprovalData));

@@ -52,6 +52,18 @@ serve(async (req) => {
       );
     }
 
+    // Email é obrigatório para criar assinatura
+    if (!email) {
+      console.log("[MP Checkout] Error: Email is required");
+      return new Response(
+        JSON.stringify({ error: "Email é obrigatório para criar a assinatura" }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        }
+      );
+    }
+
     if (!MP_ACCESS_TOKEN) {
       console.error("[MP Checkout] MP_ACCESS_TOKEN not configured");
       return new Response(
@@ -67,11 +79,11 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
 
     // Criar PreApproval (assinatura) no Mercado Pago
-    const preapprovalData: Record<string, unknown> = {
+    const preapprovalData = {
       reason: plan.reason,
       auto_recurring: plan.auto_recurring,
       back_url: `${origin}/auth?payment_success=true`,
-      ...(email && { payer_email: email }),
+      payer_email: email,
     };
 
     console.log("[MP Checkout] Creating preapproval:", JSON.stringify(preapprovalData));

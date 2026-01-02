@@ -81,6 +81,13 @@ const LandingPage = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const email = session?.user?.email;
 
+      // Se não tiver email, redirecionar para página de coleta de email
+      if (!email) {
+        navigate(`/finalizar-assinatura?planType=${planType}`);
+        setLoadingPlan(null);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("create-mp-checkout", {
         body: { planType, email },
       });

@@ -68,13 +68,14 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://bateuameta.com";
     const supabaseUrl = "https://grfyoqsbypvvuzdudtgu.supabase.co";
 
-    // Se não tiver email, redirecionar para página frontend de coleta de email
-    // A página frontend renderiza corretamente (Edge Functions não podem servir HTML)
+    // Se não tiver email, redirecionar para página HTML estática no Storage
+    // Isso funciona para qualquer versão do app (inclusive cache/PWA antigo)
+    // Edge Functions não podem servir HTML em *.supabase.co (vira text/plain)
     if (!email) {
-      const redirectUrl = `${origin}/finalizar-assinatura?planType=${planType}`;
-      console.log("[create-checkout -> MP] No email provided, redirecting to frontend:", redirectUrl);
+      const storagePageUrl = `${supabaseUrl}/storage/v1/object/public/public-pages/checkout-email.html?planType=${planType}&origin=${encodeURIComponent(origin)}`;
+      console.log("[create-checkout -> MP] No email provided, redirecting to Storage page:", storagePageUrl);
       return new Response(
-        JSON.stringify({ url: redirectUrl }),
+        JSON.stringify({ url: storagePageUrl }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,

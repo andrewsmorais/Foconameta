@@ -52,14 +52,18 @@ serve(async (req) => {
       );
     }
 
-    // Email é obrigatório para criar assinatura
+    const supabaseUrl = "https://grfyoqsbypvvuzdudtgu.supabase.co";
+    const origin = req.headers.get("origin") || "https://bateuameta.com";
+
+    // Se não tiver email, redirecionar para página HTML estática no Storage
     if (!email) {
-      console.log("[MP Checkout] Error: Email is required");
+      const storagePageUrl = `${supabaseUrl}/storage/v1/object/public/public-pages/checkout-email.html?planType=${planType}&origin=${encodeURIComponent(origin)}`;
+      console.log("[MP Checkout] No email provided, redirecting to Storage page:", storagePageUrl);
       return new Response(
-        JSON.stringify({ error: "Email é obrigatório para criar a assinatura" }),
+        JSON.stringify({ url: storagePageUrl }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
+          status: 200,
         }
       );
     }
@@ -76,7 +80,6 @@ serve(async (req) => {
     }
 
     const plan = PLANS[planType as keyof typeof PLANS];
-    const origin = req.headers.get("origin") || "https://bateuameta.lovable.app";
 
     // Criar PreApproval (assinatura) no Mercado Pago
     const preapprovalData = {

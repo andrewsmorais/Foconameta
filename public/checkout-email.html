@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Assinatura - Bateu a Meta</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo h1 {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .plan-info {
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .plan-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f97316;
+      margin-bottom: 4px;
+    }
+    .plan-price {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .error-message {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      color: #fca5a5;
+      font-size: 14px;
+      display: none;
+    }
+    .error-message.show { display: block; }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="email"]:focus {
+      outline: none;
+      border-color: #f97316;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    }
+    input[type="email"]::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    button {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .secure-note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .secure-note svg {
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: #f97316;
+    }
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>🎯 Bateu a Meta</h1>
+    </div>
+    
+    <div class="plan-info">
+      <div class="plan-name" id="planName">Plano Mensal</div>
+      <div class="plan-price" id="planPrice">R$ 12,90/mês</div>
+    </div>
+    
+    <div class="error-message" id="errorMessage"></div>
+    
+    <form id="checkoutForm" method="POST" action="https://grfyoqsbypvvuzdudtgu.supabase.co/functions/v1/mp-email">
+      <input type="hidden" name="planType" id="planTypeInput" value="mensal">
+      <input type="hidden" name="origin" id="originInput" value="https://bateuameta.com">
+      
+      <label for="email">Seu e-mail</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        placeholder="seu@email.com" 
+        required 
+        autocomplete="email"
+      >
+      
+      <button type="submit" id="submitBtn">
+        <span class="btn-content">
+          <span class="spinner" id="spinner"></span>
+          <span id="btnText">Continuar para pagamento</span>
+        </span>
+      </button>
+    </form>
+    
+    <p class="secure-note">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      </svg>
+      Pagamento processado com segurança via Mercado Pago
+    </p>
+    
+    <a href="https://bateuameta.com" class="back-link" id="backLink">← Voltar</a>
+  </div>
+
+  <script>
+    (function() {
+      // Parse query params
+      const params = new URLSearchParams(window.location.search);
+      const planType = params.get('planType') || 'mensal';
+      const origin = params.get('origin') || 'https://bateuameta.com';
+      const error = params.get('error');
+
+      // Set hidden inputs
+      document.getElementById('planTypeInput').value = planType;
+      document.getElementById('originInput').value = origin;
+
+      // Update plan info display
+      const planName = document.getElementById('planName');
+      const planPrice = document.getElementById('planPrice');
+      if (planType === 'anual') {
+        planName.textContent = 'Plano Anual';
+        planPrice.textContent = 'R$ 97,90/ano (economia de 37%)';
+      } else {
+        planName.textContent = 'Plano Mensal';
+        planPrice.textContent = 'R$ 12,90/mês';
+      }
+
+      // Show error if present
+      if (error) {
+        const errorEl = document.getElementById('errorMessage');
+        errorEl.textContent = decodeURIComponent(error);
+        errorEl.classList.add('show');
+      }
+
+      // Update back link
+      document.getElementById('backLink').href = origin;
+
+      // Form submit handling
+      const form = document.getElementById('checkoutForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btnText');
+
+      form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        spinner.style.display = 'block';
+        btnText.textContent = 'Processando...';
+      });
+    })();
+  </script>
+</body>
+</html>

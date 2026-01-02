@@ -84,7 +84,7 @@ serve(async (req) => {
       reason: plan.reason,
       auto_recurring: plan.auto_recurring,
       back_url: `${origin}/auth?payment_success=true`,
-      payer_email: email || undefined,
+      ...(email && { payer_email: email }),
     };
 
     console.log("[create-checkout -> MP] Creating preapproval:", JSON.stringify(preapprovalData));

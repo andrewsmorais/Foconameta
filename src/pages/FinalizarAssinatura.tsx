@@ -40,7 +40,7 @@ const FinalizarAssinatura = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("create-mp-checkout", {
+      const { data, error } = await supabase.functions.invoke("create-mp-preference", {
         body: { planType, email },
       });
 

@@ -76,7 +76,6 @@ serve(async (req) => {
           { id: "ticket" }
         ],
         excluded_payment_methods: [],
-        installments: 1,
       },
       back_urls: {
         success: `${origin}/auth?payment_success=true&plan=${planType}`,
@@ -122,12 +121,18 @@ serve(async (req) => {
     }
 
     console.log("[MP Preference] Preference created successfully:", data.id);
-    console.log("[MP Preference] Init point:", data.init_point);
+
+    const isTestToken = typeof MP_ACCESS_TOKEN === "string" && MP_ACCESS_TOKEN.startsWith("TEST-");
+    const checkoutUrl = (isTestToken && data?.sandbox_init_point) ? data.sandbox_init_point : data.init_point;
+
+    console.log("[MP Preference] Mode:", isTestToken ? "sandbox" : "production");
+    console.log("[MP Preference] Checkout URL:", checkoutUrl);
 
     return new Response(
-      JSON.stringify({ 
-        url: data.init_point,
+      JSON.stringify({
+        url: checkoutUrl,
         preference_id: data.id,
+        mode: isTestToken ? "sandbox" : "production",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -55,12 +55,12 @@ serve(async (req) => {
     const supabaseUrl = "https://grfyoqsbypvvuzdudtgu.supabase.co";
     const origin = req.headers.get("origin") || "https://bateuameta.com";
 
-    // Se não tiver email, redirecionar para página HTML estática no Storage
+    // Se não tiver email, redirecionar para Edge Function mp-email que serve o HTML diretamente
     if (!email) {
-      const storagePageUrl = `${supabaseUrl}/storage/v1/object/public/public-pages/checkout-email.html?planType=${planType}&origin=${encodeURIComponent(origin)}`;
-      console.log("[MP Checkout] No email provided, redirecting to Storage page:", storagePageUrl);
+      const emailFormUrl = `${supabaseUrl}/functions/v1/mp-email?planType=${planType}&origin=${encodeURIComponent(origin)}`;
+      console.log("[MP Checkout] No email provided, redirecting to mp-email:", emailFormUrl);
       return new Response(
-        JSON.stringify({ url: storagePageUrl }),
+        JSON.stringify({ url: emailFormUrl }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,

@@ -35,3 +35,9 @@ verify_jwt = false
 
 [functions.refund-user]
 verify_jwt = true
+
+[functions.create-mp-checkout]
+verify_jwt = false
+
+[functions.mercadopago-webhook]
+verify_jwt = false

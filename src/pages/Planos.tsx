@@ -8,11 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 
-const PRICE_IDS = {
-  mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",  // LIVE
-  anual: "price_1SdmJnK6aMDv1DOlafIvA9GC",   // LIVE
-};
-
 const Planos = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -44,8 +39,8 @@ const Planos = () => {
     setLoading(planType);
 
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: PRICE_IDS[planType] },
+      const { data, error } = await supabase.functions.invoke("create-mp-checkout", {
+        body: { planType },
       });
 
       if (error) {
@@ -58,12 +53,13 @@ const Planos = () => {
       } else {
         throw new Error("URL de checkout não retornada");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Tente novamente mais tarde";
       console.error("Error creating checkout:", error);
       toast({
         variant: "destructive",
         title: "Erro ao processar pagamento",
-        description: error.message || "Tente novamente mais tarde",
+        description: errorMessage,
       });
     } finally {
       setLoading(null);

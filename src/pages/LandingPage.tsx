@@ -47,10 +47,8 @@ import whatsapp11 from "@/assets/testimonials/whatsapp-11.jpeg";
 import whatsapp12 from "@/assets/testimonials/whatsapp-12.jpeg";
 import whatsapp13 from "@/assets/testimonials/whatsapp-13.jpeg";
 
-const PRICE_IDS = {
-  mensal: "price_1SdmK9K6aMDv1DOlgCL7bq41",  // LIVE
-  anual: "price_1SdmJnK6aMDv1DOlafIvA9GC",   // LIVE
-};
+// Mercado Pago plan types
+type PlanType = "mensal" | "anual";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -71,7 +69,7 @@ const LandingPage = () => {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSelectPlan = async (planType: "mensal" | "anual") => {
+  const handleSelectPlan = async (planType: PlanType) => {
     setLoadingPlan(planType);
     
     // Facebook Pixel - InitiateCheckout
@@ -79,15 +77,22 @@ const LandingPage = () => {
     trackInitiateCheckout(planType === "anual" ? "Anual" : "Mensal", valor);
 
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: PRICE_IDS[planType] },
+      // Get user email if logged in
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+
+      const { data, error } = await supabase.functions.invoke("create-mp-checkout", {
+        body: { planType, email },
       });
 
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
+      } else {
+        throw new Error("URL de checkout não retornada");
       }
     } catch (error: any) {
+      console.error("Checkout error:", error);
       toast.error("Erro ao processar. Tente novamente.");
     } finally {
       setLoadingPlan(null);
@@ -161,7 +166,7 @@ const LandingPage = () => {
     },
     {
       question: "Quais são as formas de pagamento aceitas?",
-      answer: "Aceitamos as principais bandeiras de cartão de crédito (VISA, Mastercard) e também o pagamento instantâneo via Pix, através do nosso parceiro de pagamentos Stripe."
+      answer: "Aceitamos as principais bandeiras de cartão de crédito (VISA, Mastercard) e também o pagamento instantâneo via Pix, através do Mercado Pago."
     },
     {
       question: "Como vou ter certeza de que a compra e o acesso foram aprovados?",

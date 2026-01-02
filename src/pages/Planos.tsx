@@ -39,8 +39,22 @@ const Planos = () => {
     setLoading(planType);
 
     try {
+      // Pegar email do usuário logado
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+
+      if (!email) {
+        toast({
+          variant: "destructive",
+          title: "Email não encontrado",
+          description: "Faça login novamente para continuar.",
+        });
+        setLoading(null);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("create-mp-checkout", {
-        body: { planType },
+        body: { planType, email },
       });
 
       if (error) {

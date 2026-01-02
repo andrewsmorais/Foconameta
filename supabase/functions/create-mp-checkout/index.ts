@@ -52,13 +52,12 @@ serve(async (req) => {
       );
     }
 
-    const supabaseUrl = "https://grfyoqsbypvvuzdudtgu.supabase.co";
     const origin = req.headers.get("origin") || "https://bateuameta.com";
 
-    // Se não tiver email, redirecionar para Edge Function mp-email que serve o HTML diretamente
+    // Se não tiver email, redirecionar para página React de coleta de email
     if (!email) {
-      const emailFormUrl = `${supabaseUrl}/functions/v1/mp-email?planType=${planType}&origin=${encodeURIComponent(origin)}`;
-      console.log("[MP Checkout] No email provided, redirecting to mp-email:", emailFormUrl);
+      const emailFormUrl = `${origin}/finalizar-assinatura?planType=${planType}`;
+      console.log("[MP Checkout] No email provided, redirecting to React page:", emailFormUrl);
       return new Response(
         JSON.stringify({ url: emailFormUrl }),
         {

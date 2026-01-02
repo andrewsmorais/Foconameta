@@ -113,6 +113,32 @@ const LandingPage = () => {
     }
   };
 
+  // Checkout PIX/Boleto (pagamento único)
+  const handlePixBoleto = async (planType: PlanType) => {
+    const valor = planType === "anual" ? 97.90 : 12.90;
+    trackInitiateCheckout(planType === "anual" ? "Anual PIX/Boleto" : "Mensal PIX/Boleto", valor);
+
+    setLoadingPlan(`${planType}_pix`);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("create-mp-preference", {
+        body: { planType },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("URL de checkout não retornada");
+      }
+    } catch (error: unknown) {
+      console.error("PIX/Boleto checkout error:", error);
+      toast.error("Erro ao processar. Tente novamente.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   const handleEmailSubmit = (email: string) => {
     if (selectedPlan) {
       processCheckout(selectedPlan, email);
@@ -487,13 +513,26 @@ const LandingPage = () => {
                   ))}
                 </ul>
 
-                <Button 
-                  className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
-                  onClick={() => handleSelectPlan("anual")}
-                  disabled={loadingPlan === "anual"}
-                >
-                  {loadingPlan === "anual" ? "Processando..." : "ASSINAR AGORA"}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
+                    onClick={() => handleSelectPlan("anual")}
+                    disabled={loadingPlan !== null}
+                  >
+                    {loadingPlan === "anual" ? "Processando..." : "💳 ASSINAR COM CARTÃO"}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="w-full py-5 text-base font-semibold border-2 border-[#3c83f6] text-[#3c83f6] hover:bg-[#3c83f6]/10"
+                    onClick={() => handlePixBoleto("anual")}
+                    disabled={loadingPlan !== null}
+                  >
+                    {loadingPlan === "anual_pix" ? "Processando..." : "📱 PAGAR COM PIX/BOLETO"}
+                  </Button>
+                  <p className="text-xs text-center text-gray-500">
+                    Cartão: cobrança automática | PIX/Boleto: renovação manual
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
@@ -525,13 +564,26 @@ const LandingPage = () => {
                   ))}
                 </ul>
 
-                <Button 
-                  className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
-                  onClick={() => handleSelectPlan("mensal")}
-                  disabled={loadingPlan === "mensal"}
-                >
-                  {loadingPlan === "mensal" ? "Processando..." : "ESCOLHER MENSAL"}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full py-6 text-lg font-bold bg-[#c41313] hover:bg-[#a91010] text-white"
+                    onClick={() => handleSelectPlan("mensal")}
+                    disabled={loadingPlan !== null}
+                  >
+                    {loadingPlan === "mensal" ? "Processando..." : "💳 ASSINAR COM CARTÃO"}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="w-full py-5 text-base font-semibold border-2 border-gray-400 text-gray-700 hover:bg-gray-100"
+                    onClick={() => handlePixBoleto("mensal")}
+                    disabled={loadingPlan !== null}
+                  >
+                    {loadingPlan === "mensal_pix" ? "Processando..." : "📱 PAGAR COM PIX/BOLETO"}
+                  </Button>
+                  <p className="text-xs text-center text-gray-500">
+                    Cartão: cobrança automática | PIX/Boleto: renovação manual
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>

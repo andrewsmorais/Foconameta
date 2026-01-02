@@ -90,6 +90,34 @@ const Planos = () => {
     }
   };
 
+  // Checkout PIX/Boleto (pagamento único)
+  const handlePixBoleto = async (planType: "mensal" | "anual") => {
+    setLoading(`${planType}_pix`);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("create-mp-preference", {
+        body: { planType },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("URL de checkout não retornada");
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Tente novamente mais tarde";
+      console.error("PIX/Boleto checkout error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao processar pagamento",
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(null);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsAuthenticated(false);
@@ -163,14 +191,28 @@ const Planos = () => {
                 </li>
               </ul>
 
-              <Button 
-                className="w-full" 
-                size="lg"
-                onClick={() => handleSelectPlan("mensal")}
-                disabled={loading !== null}
-              >
-                {loading === "mensal" ? "Processando..." : "Assinar Mensal"}
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => handleSelectPlan("mensal")}
+                  disabled={loading !== null}
+                >
+                  {loading === "mensal" ? "Processando..." : "💳 Assinar com Cartão"}
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                  onClick={() => handlePixBoleto("mensal")}
+                  disabled={loading !== null}
+                >
+                  {loading === "mensal_pix" ? "Processando..." : "📱 Pagar com PIX/Boleto"}
+                </Button>
+                <p className="text-xs text-center text-muted-foreground">
+                  Cartão: cobrança automática | PIX/Boleto: renovação manual
+                </p>
+              </div>
             </CardContent>
           </Card>
 
@@ -226,14 +268,28 @@ const Planos = () => {
                 </li>
               </ul>
 
-              <Button 
-                className="w-full" 
-                size="lg"
-                onClick={() => handleSelectPlan("anual")}
-                disabled={loading !== null}
-              >
-                {loading === "anual" ? "Processando..." : "Assinar Anual"}
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={() => handleSelectPlan("anual")}
+                  disabled={loading !== null}
+                >
+                  {loading === "anual" ? "Processando..." : "💳 Assinar com Cartão"}
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                  onClick={() => handlePixBoleto("anual")}
+                  disabled={loading !== null}
+                >
+                  {loading === "anual_pix" ? "Processando..." : "📱 Pagar com PIX/Boleto"}
+                </Button>
+                <p className="text-xs text-center text-muted-foreground">
+                  Cartão: cobrança automática | PIX/Boleto: renovação manual
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

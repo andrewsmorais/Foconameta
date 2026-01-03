@@ -72,14 +72,11 @@ const MastercardLogo = () => (
   </div>
 );
 
+import mercadoPagoLogo from "@/assets/payment/mercadopago-full.png";
+
 const MercadoPagoLogo = () => (
-  <div className="flex items-center gap-3">
-    <svg viewBox="0 0 40 40" className="h-12 w-12">
-      <circle fill="#009EE3" cx="20" cy="20" r="20"/>
-      <circle fill="#FFF" cx="20" cy="20" r="12"/>
-      <circle fill="#009EE3" cx="20" cy="20" r="6"/>
-    </svg>
-    <span className="text-[#00214B] font-bold text-xl">Mercado Pago</span>
+  <div className="flex items-center justify-center">
+    <img src={mercadoPagoLogo} alt="Mercado Pago" className="h-20 w-auto" />
   </div>
 );
 

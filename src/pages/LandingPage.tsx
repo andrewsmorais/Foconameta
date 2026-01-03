@@ -61,6 +61,9 @@ import whatsapp11 from "@/assets/testimonials/whatsapp-11.jpeg";
 import whatsapp12 from "@/assets/testimonials/whatsapp-12.jpeg";
 import whatsapp13 from "@/assets/testimonials/whatsapp-13.jpeg";
 
+// Founder image
+import fundadorImg from "@/assets/fundador.png";
+
 // Mercado Pago plan types
 type PlanType = "mensal" | "anual";
 
@@ -666,6 +669,34 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Founder Section */}
+      <section className="py-16 md:py-24 px-4 bg-white">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left - Text */}
+            <div className="space-y-6 order-2 md:order-1">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#3c83f6]">
+                Chega de 'bater lata'. É hora de bater a meta com inteligência
+              </h2>
+              <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+                Eu também sou motorista e sei que o segredo do lucro está no controle. 
+                Criei o Bateu a Meta para ser nosso braço direito na gestão financeira: 
+                prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
+                lucro real. Vamos juntos bater nossas metas com inteligência!
+              </p>
+            </div>
+            
+            {/* Right - Photo */}
+            <div className="order-1 md:order-2 flex justify-center">
+              <img 
+                src={fundadorImg} 
+                alt="Fundador do Bateu a Meta"
+                className="w-full max-w-md rounded-2xl shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Testimonials Section - #f9f9fa */}
       <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">

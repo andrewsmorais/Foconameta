@@ -687,9 +687,11 @@ const LandingPage = () => {
               <h2 className="text-2xl md:text-3xl font-bold text-[#3c83f6]">
                 Chega de 'bater lata'. É hora de bater a meta com inteligência
               </h2>
-              <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-                Eu também sou <span className="font-semibold text-[#3c83f6]">motorista</span> e sei que o segredo do <span className="font-semibold text-[#3c83f6]">lucro</span> está no <span className="font-semibold text-[#3c83f6]">controle</span>. 
-                Criei o <span className="font-semibold text-brand-red">Bateu a Meta</span> para ser nosso braço direito na gestão financeira: <span className="font-semibold">prático, barato e direto ao ponto</span>. Chega de '<span className="font-semibold">bater lata</span>' sem saber o seu <span className="font-semibold text-[#3c83f6]">lucro real</span>. Vamos juntos bater nossas <span className="font-semibold text-brand-red">metas</span> com <span className="font-semibold text-[#3c83f6]">inteligência</span>!
+              <p className="text-black text-base md:text-lg leading-relaxed font-medium">
+                Eu também sou motorista e sei que o segredo do lucro está no controle. 
+                Criei o Bateu a Meta para ser nosso braço direito na gestão financeira: 
+                prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
+                lucro real. Vamos juntos bater nossas metas com inteligência!
               </p>
             </div>
           </div>

@@ -17,9 +17,12 @@ import {
   ChevronDown,
   ChevronUp,
   Phone,
-  Lock
+  Lock,
+  ShieldCheck
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
+import eloLogo from "@/assets/payment/elo.png";
+import hipercardLogo from "@/assets/payment/hipercard.png";
 
 type PlanType = "mensal" | "anual";
 
@@ -50,6 +53,37 @@ interface CardData {
 
 // Mercado Pago Public Key
 const MP_PUBLIC_KEY = "APP_USR-0eb91d31-0f75-4e5d-bb89-ce5ed15a93b7";
+
+// SVG Card Brand Logos
+const VisaLogo = () => (
+  <svg viewBox="0 0 780 500" className="h-6 w-auto">
+    <path fill="#1434CB" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7zM518.7 158.6c-10.5-4-27-8.3-47.6-8.3-52.3 0-89.2 26.3-89.5 64-0.3 27.9 26.3 43.4 46.4 52.7 20.7 9.5 27.6 15.5 27.5 24-0.1 13-16.5 18.9-31.8 18.9-21.3 0-32.6-3-50.1-10.2l-6.9-3.1-7.5 43.8c12.4 5.4 35.4 10.1 59.3 10.4 55.6 0 91.7-26 92.2-66.3 0.2-22.1-13.9-38.9-44.5-52.8-18.5-9-29.9-14.9-29.8-24 0-8 9.6-16.6 30.4-16.6 17.3-0.3 29.9 3.5 39.7 7.4l4.8 2.2 7.2-42.1zM609.5 153h-41c-12.7 0-22.2 3.5-27.8 16.2l-78.8 178.5h55.7s9.1-24 11.2-29.2c6.1 0 60.2 0.1 67.9 0.1 1.6 6.8 6.5 29.1 6.5 29.1h49.2l-42.9-194.7zm-65.2 125.9c4.4-11.2 21.2-54.3 21.2-54.3-0.3 0.5 4.4-11.3 7.1-18.6l3.6 16.8s10.2 46.6 12.3 56.1h-44.2zM248.5 153l-51.9 133.4-5.5-27c-9.6-30.8-39.5-64.2-73-81l47.4 169.9h56l83.4-195.3h-56.4z"/>
+    <path fill="#F9A533" d="M146.9 153H60.9l-0.7 4.2c66.5 16.1 110.5 54.9 128.8 101.6l-18.5-89.1c-3.2-12.3-12.5-16.2-23.6-16.7z"/>
+  </svg>
+);
+
+const MastercardLogo = () => (
+  <svg viewBox="0 0 780 500" className="h-6 w-auto">
+    <circle fill="#EB001B" cx="250" cy="250" r="150"/>
+    <circle fill="#F79E1B" cx="530" cy="250" r="150"/>
+    <path fill="#FF5F00" d="M325 127.5c-38.2 30.5-62.7 77.3-62.7 130s24.5 99.5 62.7 130c38.2-30.5 62.7-77.3 62.7-130s-24.5-99.5-62.7-130z"/>
+  </svg>
+);
+
+const AmexLogo = () => (
+  <svg viewBox="0 0 780 500" className="h-6 w-auto">
+    <rect fill="#006FCF" width="780" height="500" rx="40"/>
+    <path fill="#FFF" d="M40 241h80l16-38 16 38h80v-82l-40 82h-32l-40-82v82h-80v-120h64l16 38 16-38h224v24l-24 36 24 36v24h-64l-16-38-16 38h-224z"/>
+  </svg>
+);
+
+const MercadoPagoLogo = () => (
+  <svg viewBox="0 0 120 30" className="h-5 w-auto">
+    <path fill="#009EE3" d="M15 0C6.7 0 0 6.7 0 15s6.7 15 15 15 15-6.7 15-15S23.3 0 15 0zm0 24c-5 0-9-4-9-9s4-9 9-9 9 4 9 9-4 9-9 9z"/>
+    <path fill="#009EE3" d="M15 8c-3.9 0-7 3.1-7 7s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 11c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+    <text x="35" y="20" fill="#00214B" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold">Mercado Pago</text>
+  </svg>
+);
 
 const FinalizarAssinatura = () => {
   const [searchParams] = useSearchParams();
@@ -397,19 +431,51 @@ const FinalizarAssinatura = () => {
 
   return (
     <div className="min-h-screen bg-[#f9fafb]">
-      {/* Clean Header */}
-      <header className="bg-white border-b border-[#e5e7eb] py-4">
-        <div className="max-w-5xl mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Bateu a Meta" className="w-10 h-10 object-contain" />
-            <div>
-              <h1 className="font-semibold text-gray-900">{planName}</h1>
-              <p className="text-sm text-gray-500">Finalizar assinatura</p>
+      {/* Header with Plan Details - Hotmart Style */}
+      <header className="bg-white border-b border-[#e5e7eb]">
+        <div className="max-w-5xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left side - Product info */}
+            <div className="flex items-center gap-4">
+              <img src={logo} alt="Bateu a Meta" className="w-12 h-12 object-contain rounded-lg" />
+              <div>
+                <h1 className="font-semibold text-gray-900 text-lg">Bateu a Meta - {planName}</h1>
+                <p className="text-sm text-gray-500">Aplicativo de Gestão para Motoristas</p>
+              </div>
+            </div>
+            
+            {/* Right side - Security badge */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
+              <Lock className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium text-green-700">Checkout Seguro</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-gray-500">
-            <Lock className="w-4 h-4" />
-            <span className="text-sm">Checkout seguro</span>
+          
+          {/* Price details row */}
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+            {planType === "anual" ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-gray-900">12x de R$ {installmentValue}</span>
+                  <span className="text-gray-500">/ano</span>
+                </div>
+                <span className="text-gray-400">ou</span>
+                <span className="text-gray-600">R$ {planPrice.toFixed(2).replace(".", ",")} à vista</span>
+                <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
+                  Plano Anual - Parcelado
+                </span>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-gray-900">R$ {planPrice.toFixed(2).replace(".", ",")}</span>
+                  <span className="text-gray-500">/mês</span>
+                </div>
+                <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
+                  Plano Mensal
+                </span>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -459,7 +525,7 @@ const FinalizarAssinatura = () => {
                       placeholder="seu@email.com"
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.email ? "border-red-400" : ""}`}
+                      className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.email ? "border-red-400" : ""}`}
                     />
                     {formErrors.email && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.email}</p>
@@ -476,7 +542,7 @@ const FinalizarAssinatura = () => {
                       placeholder="seu@email.com"
                       value={formData.confirmEmail}
                       onChange={(e) => setFormData(prev => ({ ...prev, confirmEmail: e.target.value }))}
-                      className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.confirmEmail ? "border-red-400" : ""}`}
+                      className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.confirmEmail ? "border-red-400" : ""}`}
                     />
                     {formErrors.confirmEmail && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.confirmEmail}</p>
@@ -493,7 +559,7 @@ const FinalizarAssinatura = () => {
                       placeholder="João da Silva"
                       value={formData.fullName}
                       onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                      className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.fullName ? "border-red-400" : ""}`}
+                      className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.fullName ? "border-red-400" : ""}`}
                     />
                     {formErrors.fullName && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.fullName}</p>
@@ -511,7 +577,7 @@ const FinalizarAssinatura = () => {
                         placeholder="000.000.000-00"
                         value={formData.cpf}
                         onChange={(e) => setFormData(prev => ({ ...prev, cpf: formatCPF(e.target.value) }))}
-                        className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.cpf ? "border-red-400" : ""}`}
+                        className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.cpf ? "border-red-400" : ""}`}
                         maxLength={14}
                       />
                       {formErrors.cpf && (
@@ -534,7 +600,7 @@ const FinalizarAssinatura = () => {
                           placeholder="(00) 00000-0000"
                           value={formData.phone}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: formatPhone(e.target.value) }))}
-                          className={`rounded-l-none border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.phone ? "border-red-400" : ""}`}
+                          className={`rounded-l-none bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${formErrors.phone ? "border-red-400" : ""}`}
                           maxLength={15}
                         />
                       </div>
@@ -562,7 +628,7 @@ const FinalizarAssinatura = () => {
                           placeholder="Digite seu cupom"
                           value={formData.coupon}
                           onChange={(e) => setFormData(prev => ({ ...prev, coupon: e.target.value.toUpperCase() }))}
-                          className="border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                          className="bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400"
                         />
                       </div>
                     )}
@@ -616,7 +682,7 @@ const FinalizarAssinatura = () => {
                           placeholder="0000 0000 0000 0000"
                           value={cardData.cardNumber}
                           onChange={(e) => handleCardNumberChange(e.target.value)}
-                          className={`pr-16 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.cardNumber ? "border-red-400" : ""}`}
+                          className={`pr-16 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.cardNumber ? "border-red-400" : ""}`}
                           maxLength={19}
                         />
                         {cardBrand && (
@@ -641,7 +707,7 @@ const FinalizarAssinatura = () => {
                           placeholder="MM/AA"
                           value={cardData.expiry}
                           onChange={(e) => setCardData(prev => ({ ...prev, expiry: formatExpiry(e.target.value) }))}
-                          className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.expiry ? "border-red-400" : ""}`}
+                          className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.expiry ? "border-red-400" : ""}`}
                           maxLength={5}
                         />
                         {cardErrors.expiry && (
@@ -658,7 +724,7 @@ const FinalizarAssinatura = () => {
                           placeholder="000"
                           value={cardData.cvv}
                           onChange={(e) => setCardData(prev => ({ ...prev, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))}
-                          className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.cvv ? "border-red-400" : ""}`}
+                          className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.cvv ? "border-red-400" : ""}`}
                           maxLength={4}
                         />
                         {cardErrors.cvv && (
@@ -677,7 +743,7 @@ const FinalizarAssinatura = () => {
                         placeholder="JOÃO DA SILVA"
                         value={cardData.holderName}
                         onChange={(e) => setCardData(prev => ({ ...prev, holderName: e.target.value.toUpperCase() }))}
-                        className={`mt-1.5 border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.holderName ? "border-red-400" : ""}`}
+                        className={`mt-1.5 bg-white border-gray-200 focus:border-blue-400 focus:ring-blue-400 ${cardErrors.holderName ? "border-red-400" : ""}`}
                       />
                       {cardErrors.holderName && (
                         <p className="text-xs text-red-500 mt-1">{cardErrors.holderName}</p>
@@ -768,7 +834,7 @@ const FinalizarAssinatura = () => {
                             <Input
                               value={pixData.qr_code}
                               readOnly
-                              className="text-xs font-mono border-gray-200"
+                              className="text-xs font-mono bg-white border-gray-200"
                             />
                             <Button
                               onClick={handleCopyPixCode}
@@ -807,23 +873,34 @@ const FinalizarAssinatura = () => {
                   </div>
                 )}
 
-                {/* Security Footer */}
-                <div className="mt-6 pt-6 border-t border-gray-100">
-                  <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-                    <Shield className="h-3.5 w-3.5" />
-                    <span>Pagamento processado com segurança via Mercado Pago</span>
+                {/* Trust Badges Section */}
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                  {/* Security Badges Row */}
+                  <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
+                    <div className="flex items-center gap-2">
+                      <Lock className="h-5 w-5 text-green-600" />
+                      <span className="text-sm font-medium text-gray-700">Checkout Seguro</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="h-5 w-5 text-green-600" />
+                      <span className="text-sm font-medium text-gray-700">Pagamento 100% Seguro</span>
+                    </div>
                   </div>
                   
-                  {/* Card Brands - Monochromatic */}
-                  <div className="flex items-center justify-center gap-4 mt-4">
-                    {["Visa", "Master", "Elo", "Amex", "Hipercard"].map((brand) => (
-                      <span 
-                        key={brand} 
-                        className="text-[10px] font-medium text-gray-300 uppercase tracking-wide"
-                      >
-                        {brand}
-                      </span>
-                    ))}
+                  {/* Card Brands - Colored Logos */}
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <VisaLogo />
+                    <MastercardLogo />
+                    <img src={eloLogo} alt="Elo" className="h-6 w-auto object-contain" />
+                    <AmexLogo />
+                    <img src={hipercardLogo} alt="Hipercard" className="h-6 w-auto object-contain" />
+                  </div>
+                  
+                  {/* Mercado Pago */}
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <Shield className="h-4 w-4 text-[#009EE3]" />
+                    <span>Pagamento processado com segurança via</span>
+                    <MercadoPagoLogo />
                   </div>
                 </div>
               </CardContent>
@@ -865,15 +942,26 @@ const FinalizarAssinatura = () => {
                         R$ {planPrice.toFixed(2).replace(".", ",")}
                       </p>
                       {planType === "anual" && (
-                        <p className="text-xs text-gray-500">ou 12x de R$ {installmentValue}</p>
+                        <p className="text-xs text-gray-500">
+                          ou 12x de R$ {installmentValue}
+                        </p>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-gray-400 pt-4 border-t border-gray-100">
-                  <Shield className="h-4 w-4" />
-                  <span>Pagamento 100% seguro</span>
+                {/* Security badges in summary */}
+                <div className="border-t border-gray-100 pt-4">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Lock className="h-4 w-4 text-green-600" />
+                      <span>Checkout Seguro</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <ShieldCheck className="h-4 w-4 text-green-600" />
+                      <span>Pagamento 100% Seguro</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

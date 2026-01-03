@@ -420,7 +420,7 @@ const FinalizarAssinatura = () => {
         <Card className="w-full max-w-md border-[#e5e7eb]">
           <CardContent className="pt-6 text-center">
             <p className="text-gray-600">Plano não selecionado.</p>
-            <Button onClick={() => navigate("/planos")} className="mt-4 bg-[#10b981] hover:bg-[#059669]">
+            <Button onClick={() => navigate("/planos")} className="mt-4 bg-[#25D366] hover:bg-[#20BD5A]">
               Ver Planos
             </Button>
           </CardContent>
@@ -444,11 +444,6 @@ const FinalizarAssinatura = () => {
               </div>
             </div>
             
-            {/* Right side - Security badge */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
-              <Lock className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-green-700">Checkout Seguro</span>
-            </div>
           </div>
           
           {/* Price details row */}
@@ -769,7 +764,7 @@ const FinalizarAssinatura = () => {
                     <Button
                       onClick={handleCardPayment}
                       disabled={loading}
-                      className="w-full bg-[#10b981] hover:bg-[#059669] text-white font-semibold py-6 text-base mt-2 rounded-lg shadow-sm"
+                      className="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold py-6 text-base mt-2 rounded-lg shadow-sm"
                     >
                       {loading ? (
                         <>
@@ -797,7 +792,7 @@ const FinalizarAssinatura = () => {
                         <Button
                           onClick={handlePixPayment}
                           disabled={loading}
-                          className="w-full bg-[#10b981] hover:bg-[#059669] text-white font-semibold py-6 text-base rounded-lg shadow-sm"
+                          className="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold py-6 text-base rounded-lg shadow-sm"
                         >
                           {loading ? (
                             <>
@@ -842,7 +837,7 @@ const FinalizarAssinatura = () => {
                               className="shrink-0 border-gray-200 hover:bg-gray-50"
                             >
                               {copied ? (
-                                <Check className="h-4 w-4 text-[#10b981]" />
+                                <Check className="h-4 w-4 text-[#25D366]" />
                               ) : (
                                 <Copy className="h-4 w-4 text-gray-500" />
                               )}
@@ -875,18 +870,6 @@ const FinalizarAssinatura = () => {
 
                 {/* Trust Badges Section */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                  {/* Security Badges Row */}
-                  <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
-                    <div className="flex items-center gap-2">
-                      <Lock className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-medium text-gray-700">Checkout Seguro</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-medium text-gray-700">Pagamento 100% Seguro</span>
-                    </div>
-                  </div>
-                  
                   {/* Card Brands - Colored Logos */}
                   <div className="flex items-center justify-center gap-4 mb-6">
                     <VisaLogo />
@@ -897,10 +880,14 @@ const FinalizarAssinatura = () => {
                   </div>
                   
                   {/* Mercado Pago */}
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                    <Shield className="h-4 w-4 text-[#009EE3]" />
-                    <span>Pagamento processado com segurança via</span>
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-4">
                     <MercadoPagoLogo />
+                  </div>
+                  
+                  {/* Site Protegido Badge */}
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+                    <Lock className="h-3.5 w-3.5" />
+                    <span>Site Protegido</span>
                   </div>
                 </div>
               </CardContent>
@@ -929,7 +916,7 @@ const FinalizarAssinatura = () => {
                   {formData.coupon && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Cupom: {formData.coupon}</span>
-                      <span className="text-[#10b981]">-R$ 0,00</span>
+                      <span className="text-[#25D366]">-R$ 0,00</span>
                     </div>
                   )}
                 </div>
@@ -950,17 +937,11 @@ const FinalizarAssinatura = () => {
                   </div>
                 </div>
 
-                {/* Security badges in summary */}
+                {/* Site Protegido in summary */}
                 <div className="border-t border-gray-100 pt-4">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Lock className="h-4 w-4 text-green-600" />
-                      <span>Checkout Seguro</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <ShieldCheck className="h-4 w-4 text-green-600" />
-                      <span>Pagamento 100% Seguro</span>
-                    </div>
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+                    <Lock className="h-3.5 w-3.5" />
+                    <span>Site Protegido</span>
                   </div>
                 </div>
               </CardContent>

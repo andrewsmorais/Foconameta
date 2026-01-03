@@ -263,11 +263,11 @@ const LandingPage = () => {
       </section>
 
       {/* App Demo Carousel Section */}
-      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
-              Sua Jornada para o <span className="text-brand-blue">Lucro Real</span> Começa Aqui.
+            <h2 className="text-2xl md:text-4xl font-bold text-white">
+              Sua Jornada para o <span className="text-[#15a249] drop-shadow-[0_0_10px_rgba(21,162,73,0.5)]">Lucro Real</span> Começa Aqui.
             </h2>
           </div>
 
@@ -287,13 +287,13 @@ const LandingPage = () => {
               ].map((slide, index) => (
                 <CarouselItem key={index} className="basis-full md:basis-4/5">
                   <div className="px-2 md:px-4">
-                    <div className="bg-white rounded-2xl shadow-xl p-3 md:p-4 border border-gray-200">
+                    <div className="bg-gray-900/80 rounded-2xl shadow-[0_0_30px_rgba(21,162,73,0.2)] p-3 md:p-4 border border-[#15a249]/30">
                       <img 
                         src={slide.img} 
                         alt={slide.caption}
                         className="w-full h-auto rounded-xl"
                       />
-                      <p className="text-center mt-3 text-gray-700 font-medium text-sm md:text-base">
+                      <p className="text-center mt-3 text-white font-medium text-sm md:text-base">
                         {slide.caption}
                       </p>
                     </div>
@@ -301,29 +301,29 @@ const LandingPage = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12 bg-white border-gray-300 text-black hover:bg-gray-100 shadow-md" />
-            <CarouselNext className="hidden md:flex -right-12 bg-white border-gray-300 text-black hover:bg-gray-100 shadow-md" />
+            <CarouselPrevious className="hidden md:flex -left-12 bg-gray-900 border-[#15a249]/50 text-white hover:bg-gray-800 hover:border-[#15a249] shadow-md" />
+            <CarouselNext className="hidden md:flex -right-12 bg-gray-900 border-[#15a249]/50 text-white hover:bg-gray-800 hover:border-[#15a249] shadow-md" />
           </Carousel>
 
           {/* Dots indicator for mobile */}
           <div className="flex justify-center gap-2 mt-6 md:hidden">
-            <div className="w-2 h-2 rounded-full bg-[#3c83f6]" />
-            <div className="w-2 h-2 rounded-full bg-gray-300" />
-            <div className="w-2 h-2 rounded-full bg-gray-300" />
+            <div className="w-2 h-2 rounded-full bg-[#15a249]" />
+            <div className="w-2 h-2 rounded-full bg-white/40" />
+            <div className="w-2 h-2 rounded-full bg-white/40" />
           </div>
 
           {/* Persuasive Text */}
           <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">
-            <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-              Com o <strong className="text-black">Bateu a Meta</strong>, ter o controle do seu trabalho é mais fácil do que você imagina. 
-              Registre seus turnos em poucos segundos e veja o seu <strong className="text-brand-blue">lucro líquido real</strong>, 
+            <p className="text-white/90 text-base md:text-lg leading-relaxed font-medium">
+              Com o <strong className="text-[#15a249]">Bateu a Meta</strong>, ter o controle do seu trabalho é mais fácil do que você imagina. 
+              Registre seus turnos em poucos segundos e veja o seu <strong className="text-[#3c83f6]">lucro líquido real</strong>, 
               gastos e ganhos brutos na palma da sua mão. É simples, rápido e você merece.
             </p>
             
             <Button 
               size="lg" 
               onClick={scrollToPricing}
-              className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-lg hover:shadow-xl transition-all"
+              className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-[0_0_20px_rgba(21,162,73,0.4)] hover:shadow-[0_0_30px_rgba(21,162,73,0.6)] transition-all"
             >
               QUERO COMEÇAR MINHA JORNADA DE LUCRO
               <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />

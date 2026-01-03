@@ -32,6 +32,11 @@ import {
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 
+// App demo images
+import turnoForm1 from "@/assets/app-demo/turno-form-1.png";
+import turnoForm2 from "@/assets/app-demo/turno-form-2.png";
+import turnoMetricas from "@/assets/app-demo/turno-metricas.png";
+
 // Testimonial images
 import whatsapp1 from "@/assets/testimonials/whatsapp-1.jpeg";
 import whatsapp2 from "@/assets/testimonials/whatsapp-2.jpeg";
@@ -257,49 +262,72 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Problem Section - #000000 */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* App Demo Carousel Section */}
+      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="p-4 rounded-full bg-[#c41313]/20">
-                <CircleHelp className="h-12 w-12 text-[#c41313]" />
-              </div>
-            </div>
-            
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              Cansado de Rodar Sem Ver o <span className="text-brand-blue">Lucro</span>?{" "}
-              <span className="text-brand-red">Nós Entendemos Suas Dores.</span>
+          <div className="text-center space-y-6 mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              Sua Jornada para o <span className="text-brand-blue">Lucro Real</span> Começa Aqui.
             </h2>
+          </div>
 
-            <div className="grid md:grid-cols-3 gap-6 pt-8">
-              <Card className="border-zinc-700 bg-zinc-900">
-                <CardContent className="p-6 text-center space-y-3">
-                  <DollarSign className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
-                    Você realmente controla seus gastos com combustível e manutenção?
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-zinc-700 bg-zinc-900">
-                <CardContent className="p-6 text-center space-y-3">
-                  <Target className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
-                    Sabe quanto precisa rodar para bater sua meta de lucro diária?
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-zinc-700 bg-zinc-900">
-                <CardContent className="p-6 text-center space-y-3">
-                  <BarChart3 className="h-10 w-10 mx-auto text-[#c41313]" />
-                  <p className="text-lg font-medium text-white">
-                    A fatura do cartão não deixa você saber o lucro real?
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Carousel */}
+          <Carousel
+            opts={{
+              align: "center",
+              loop: true,
+            }}
+            className="w-full max-w-3xl mx-auto"
+          >
+            <CarouselContent>
+              {[
+                { img: turnoForm1, caption: "1. Registre seu turno" },
+                { img: turnoForm2, caption: "2. Adicione seus ganhos" },
+                { img: turnoMetricas, caption: "3. Veja seu lucro real" }
+              ].map((slide, index) => (
+                <CarouselItem key={index} className="basis-full md:basis-4/5">
+                  <div className="px-2 md:px-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-3 md:p-4 border border-gray-200">
+                      <img 
+                        src={slide.img} 
+                        alt={slide.caption}
+                        className="w-full h-auto rounded-xl"
+                      />
+                      <p className="text-center mt-3 text-gray-700 font-medium text-sm md:text-base">
+                        {slide.caption}
+                      </p>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex -left-12 bg-white border-gray-300 text-black hover:bg-gray-100 shadow-md" />
+            <CarouselNext className="hidden md:flex -right-12 bg-white border-gray-300 text-black hover:bg-gray-100 shadow-md" />
+          </Carousel>
+
+          {/* Dots indicator for mobile */}
+          <div className="flex justify-center gap-2 mt-6 md:hidden">
+            <div className="w-2 h-2 rounded-full bg-[#3c83f6]" />
+            <div className="w-2 h-2 rounded-full bg-gray-300" />
+            <div className="w-2 h-2 rounded-full bg-gray-300" />
+          </div>
+
+          {/* Persuasive Text */}
+          <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">
+            <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+              Com o <strong className="text-black">Bateu a Meta</strong>, ter o controle do seu trabalho é mais fácil do que você imagina. 
+              Registre seus turnos em poucos segundos e veja o seu <strong className="text-brand-blue">lucro líquido real</strong>, 
+              gastos e ganhos brutos na palma da sua mão. É simples, rápido e você merece.
+            </p>
+            
+            <Button 
+              size="lg" 
+              onClick={scrollToPricing}
+              className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-lg hover:shadow-xl transition-all"
+            >
+              QUERO COMEÇAR MINHA JORNADA DE LUCRO
+              <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
+            </Button>
           </div>
         </div>
       </section>

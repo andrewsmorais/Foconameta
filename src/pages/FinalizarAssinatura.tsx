@@ -54,7 +54,7 @@ const MP_PUBLIC_KEY = "APP_USR-0eb91d31-0f75-4e5d-bb89-ce5ed15a93b7";
 
 // Card Brand Logos - Larger and more visible
 const VisaLogo = () => (
-  <div className="h-8 w-12 flex items-center justify-center">
+  <div className="h-16 w-24 flex items-center justify-center">
     <svg viewBox="0 0 780 500" className="h-full w-full">
       <path fill="#1434CB" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7zM518.7 158.6c-10.5-4-27-8.3-47.6-8.3-52.3 0-89.2 26.3-89.5 64-0.3 27.9 26.3 43.4 46.4 52.7 20.7 9.5 27.6 15.5 27.5 24-0.1 13-16.5 18.9-31.8 18.9-21.3 0-32.6-3-50.1-10.2l-6.9-3.1-7.5 43.8c12.4 5.4 35.4 10.1 59.3 10.4 55.6 0 91.7-26 92.2-66.3 0.2-22.1-13.9-38.9-44.5-52.8-18.5-9-29.9-14.9-29.8-24 0-8 9.6-16.6 30.4-16.6 17.3-0.3 29.9 3.5 39.7 7.4l4.8 2.2 7.2-42.1zM609.5 153h-41c-12.7 0-22.2 3.5-27.8 16.2l-78.8 178.5h55.7s9.1-24 11.2-29.2c6.1 0 60.2 0.1 67.9 0.1 1.6 6.8 6.5 29.1 6.5 29.1h49.2l-42.9-194.7zm-65.2 125.9c4.4-11.2 21.2-54.3 21.2-54.3-0.3 0.5 4.4-11.3 7.1-18.6l3.6 16.8s10.2 46.6 12.3 56.1h-44.2zM248.5 153l-51.9 133.4-5.5-27c-9.6-30.8-39.5-64.2-73-81l47.4 169.9h56l83.4-195.3h-56.4z"/>
       <path fill="#F9A533" d="M146.9 153H60.9l-0.7 4.2c66.5 16.1 110.5 54.9 128.8 101.6l-18.5-89.1c-3.2-12.3-12.5-16.2-23.6-16.7z"/>
@@ -63,7 +63,7 @@ const VisaLogo = () => (
 );
 
 const MastercardLogo = () => (
-  <div className="h-8 w-12 flex items-center justify-center">
+  <div className="h-16 w-24 flex items-center justify-center">
     <svg viewBox="0 0 780 500" className="h-full w-full">
       <circle fill="#EB001B" cx="250" cy="250" r="150"/>
       <circle fill="#F79E1B" cx="530" cy="250" r="150"/>
@@ -72,35 +72,14 @@ const MastercardLogo = () => (
   </div>
 );
 
-const EloLogo = () => (
-  <div className="h-8 w-12 flex items-center justify-center bg-[#00A4E0] rounded-md px-1">
-    <span className="text-white font-bold text-sm">elo</span>
-  </div>
-);
-
-const AmexLogo = () => (
-  <div className="h-8 w-12 flex items-center justify-center">
-    <svg viewBox="0 0 780 500" className="h-full w-full">
-      <rect fill="#006FCF" width="780" height="500" rx="40"/>
-      <path fill="#FFF" d="M40 241h80l16-38 16 38h80v-82l-40 82h-32l-40-82v82h-80v-120h64l16 38 16-38h224v24l-24 36 24 36v24h-64l-16-38-16 38h-224z"/>
-    </svg>
-  </div>
-);
-
-const HipercardLogo = () => (
-  <div className="h-8 w-12 flex items-center justify-center bg-[#B3131B] rounded-md px-1">
-    <span className="text-white font-bold text-[10px]">Hipercard</span>
-  </div>
-);
-
 const MercadoPagoLogo = () => (
-  <div className="flex items-center gap-2">
-    <svg viewBox="0 0 40 40" className="h-7 w-7">
+  <div className="flex items-center gap-3">
+    <svg viewBox="0 0 40 40" className="h-12 w-12">
       <circle fill="#009EE3" cx="20" cy="20" r="20"/>
       <circle fill="#FFF" cx="20" cy="20" r="12"/>
       <circle fill="#009EE3" cx="20" cy="20" r="6"/>
     </svg>
-    <span className="text-[#00214B] font-semibold text-sm">Mercado Pago</span>
+    <span className="text-[#00214B] font-bold text-xl">Mercado Pago</span>
   </div>
 );
 
@@ -889,17 +868,14 @@ const FinalizarAssinatura = () => {
 
                 {/* Trust Badges Section */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                  {/* Card Brands - Colored Logos */}
-                  <div className="flex items-center justify-center gap-3 mb-6">
+                  {/* Card Brands - Large Visa and Mastercard Only */}
+                  <div className="flex items-center justify-center gap-6 mb-8">
                     <VisaLogo />
                     <MastercardLogo />
-                    <EloLogo />
-                    <AmexLogo />
-                    <HipercardLogo />
                   </div>
                   
-                  {/* Mercado Pago */}
-                  <div className="flex items-center justify-center mb-5">
+                  {/* Mercado Pago - Large */}
+                  <div className="flex items-center justify-center mb-6">
                     <MercadoPagoLogo />
                   </div>
                   

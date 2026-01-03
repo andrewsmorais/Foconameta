@@ -502,33 +502,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Solution/Features Section - #f9f9fa */}
-      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
-              A <span className="text-gradient-brand">Solução Completa</span> Para Suas Finanças
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Recursos desenvolvidos especialmente para motoristas de aplicativo
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <Card key={index} className="group hover:border-[#3c83f6]/50 transition-all hover:shadow-lg bg-white border-gray-200">
-                <CardContent className="p-6 space-y-4">
-                  <div className="p-3 rounded-xl bg-[#3c83f6] w-fit group-hover:bg-[#2a6ad9] transition-colors shadow-md">
-                    <feature.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-black">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Resources Carousel Section - #000000 */}
       <section className="py-16 md:py-24 px-4 bg-black">

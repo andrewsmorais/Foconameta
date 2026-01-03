@@ -495,9 +495,10 @@ const LandingPage = () => {
             <Button 
               size="lg" 
               onClick={scrollToPricing}
-              className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-[0_0_20px_rgba(21,162,73,0.4)] hover:shadow-[0_0_30px_rgba(21,162,73,0.6)] transition-all"
+              className="text-sm md:text-lg px-4 md:px-8 py-5 md:py-6 bg-[#15a249] hover:bg-[#128a3d] text-white font-bold shadow-[0_0_20px_rgba(21,162,73,0.4)] hover:shadow-[0_0_30px_rgba(21,162,73,0.6)] transition-all"
             >
-              QUERO COMEÇAR MINHA JORNADA DE LUCRO
+              <span className="md:hidden">QUERO COMEÇAR AGORA</span>
+              <span className="hidden md:inline">QUERO COMEÇAR MINHA JORNADA DE LUCRO</span>
               <ChevronDown className="ml-2 h-5 w-5 animate-bounce" />
             </Button>
           </div>

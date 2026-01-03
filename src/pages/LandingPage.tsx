@@ -485,9 +485,8 @@ const LandingPage = () => {
           {/* Persuasive Text */}
           <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">
             <p className="text-white/90 text-base md:text-lg leading-relaxed font-medium">
-              Com o <strong className="text-[#15a249]">Bateu a Meta</strong>, ter o controle do seu trabalho é mais fácil do que você imagina. 
-              Registre seus turnos em poucos segundos e veja o seu <strong className="text-[#3c83f6]">lucro líquido real</strong>, 
-              gastos e ganhos brutos na palma da sua mão. É simples, rápido e você merece.
+              Controle seus turnos, veja seu <strong className="text-[#3c83f6]">lucro real</strong> e domine suas finanças em segundos. 
+              A <strong className="text-[#15a249]">gestão profissional</strong> que você merece, com a simplicidade que você precisa.
             </p>
             
             <Button 

@@ -503,11 +503,11 @@ const FinalizarAssinatura = () => {
             {/* Personal Data Card */}
             <Card className="bg-white border border-[#e5e7eb] rounded-xl shadow-sm">
               <CardContent className="p-6 space-y-5">
-                <h2 className="font-semibold text-gray-900">Dados pessoais</h2>
+                <h2 className="text-xl font-bold text-gray-900">Dados pessoais</h2>
                 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="email" className="text-sm text-gray-500 font-normal">
+                    <Label htmlFor="email" className="text-sm text-gray-700 font-medium">
                       Seu e-mail
                     </Label>
                     <Input
@@ -525,7 +525,7 @@ const FinalizarAssinatura = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="confirmEmail" className="text-sm text-gray-500 font-normal">
+                    <Label htmlFor="confirmEmail" className="text-sm text-gray-700 font-medium">
                       Confirme seu e-mail
                     </Label>
                     <Input
@@ -543,7 +543,7 @@ const FinalizarAssinatura = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="fullName" className="text-sm text-gray-500 font-normal">
+                    <Label htmlFor="fullName" className="text-sm text-gray-700 font-medium">
                       Nome completo
                     </Label>
                     <Input
@@ -562,7 +562,7 @@ const FinalizarAssinatura = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="cpf" className="text-sm text-gray-500 font-normal">
+                      <Label htmlFor="cpf" className="text-sm text-gray-700 font-medium">
                         CPF
                       </Label>
                       <Input
@@ -581,7 +581,7 @@ const FinalizarAssinatura = () => {
                     </div>
                     
                     <div>
-                      <Label htmlFor="phone" className="text-sm text-gray-500 font-normal">
+                      <Label htmlFor="phone" className="text-sm text-gray-700 font-medium">
                         Celular
                       </Label>
                       <div className="flex mt-1.5">
@@ -637,7 +637,7 @@ const FinalizarAssinatura = () => {
             {/* Payment Method Card */}
             <Card className="bg-white border border-[#e5e7eb] rounded-xl shadow-sm">
               <CardContent className="p-6">
-                <h2 className="font-semibold text-gray-900 mb-5">Forma de pagamento</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-5">Forma de pagamento</h2>
                 
                 {/* Custom Tab Buttons */}
                 <div className="flex gap-3 mb-6">
@@ -669,7 +669,7 @@ const FinalizarAssinatura = () => {
                 {activeTab === "card" && (
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="cardNumber" className="text-sm text-gray-500 font-normal">
+                      <Label htmlFor="cardNumber" className="text-sm text-gray-700 font-medium">
                         Número do cartão
                       </Label>
                       <div className="relative mt-1.5">
@@ -696,7 +696,7 @@ const FinalizarAssinatura = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="expiry" className="text-sm text-gray-500 font-normal">
+                        <Label htmlFor="expiry" className="text-sm text-gray-700 font-medium">
                           Validade
                         </Label>
                         <Input
@@ -714,7 +714,7 @@ const FinalizarAssinatura = () => {
                         )}
                       </div>
                       <div>
-                        <Label htmlFor="cvv" className="text-sm text-gray-500 font-normal">
+                        <Label htmlFor="cvv" className="text-sm text-gray-700 font-medium">
                           CVV
                         </Label>
                         <Input
@@ -734,7 +734,7 @@ const FinalizarAssinatura = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="holderName" className="text-sm text-gray-500 font-normal">
+                      <Label htmlFor="holderName" className="text-sm text-gray-700 font-medium">
                         Nome impresso no cartão
                       </Label>
                       <Input
@@ -752,7 +752,7 @@ const FinalizarAssinatura = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="installments" className="text-sm text-gray-500 font-normal">
+                      <Label htmlFor="installments" className="text-sm text-gray-700 font-medium">
                         Parcelas
                       </Label>
                       <select
@@ -904,13 +904,13 @@ const FinalizarAssinatura = () => {
           <div className="hidden md:block md:col-span-2">
             <Card className="sticky top-4 bg-white border border-[#e5e7eb] rounded-xl shadow-sm">
               <CardContent className="p-6 space-y-5">
-                <h2 className="font-semibold text-gray-900">Resumo da compra</h2>
+                <h2 className="text-xl font-bold text-gray-900">Resumo da compra</h2>
                 
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <img src={logo} alt="Bateu a Meta" className="w-12 h-12 object-contain" />
                   <div>
-                    <p className="font-medium text-gray-900">{planName}</p>
-                    <p className="text-sm text-gray-500">Bateu a Meta</p>
+                    <p className="text-base font-semibold text-gray-800">{planName}</p>
+                    <p className="text-lg font-bold text-gray-900">Bateu a Meta</p>
                   </div>
                 </div>
 

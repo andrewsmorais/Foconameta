@@ -501,11 +501,11 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 3 Passos Section - White Background */}
-      <section className="py-16 md:py-24 px-4 bg-white">
+      {/* 3 Passos Section - Black Background */}
+      <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
+            <h2 className="text-2xl md:text-4xl font-bold text-white">
               <span className="text-brand-blue">3 Passos Simples</span> Para Começar
             </h2>
           </div>
@@ -519,8 +519,8 @@ const LandingPage = () => {
                 {index < steps.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
                 )}
-                <h3 className="text-xl font-bold text-black">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <h3 className="text-xl font-bold text-white">{step.title}</h3>
+                <p className="text-gray-400">{step.description}</p>
               </div>
             ))}
           </div>

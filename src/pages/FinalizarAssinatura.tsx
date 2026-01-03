@@ -516,7 +516,7 @@ const FinalizarAssinatura = () => {
                       placeholder="seu@email.com"
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.email ? "border-red-400" : ""}`}
+                      className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.email ? "border-red-400" : ""}`}
                     />
                     {formErrors.email && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.email}</p>
@@ -533,7 +533,7 @@ const FinalizarAssinatura = () => {
                       placeholder="seu@email.com"
                       value={formData.confirmEmail}
                       onChange={(e) => setFormData(prev => ({ ...prev, confirmEmail: e.target.value }))}
-                      className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.confirmEmail ? "border-red-400" : ""}`}
+                      className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.confirmEmail ? "border-red-400" : ""}`}
                     />
                     {formErrors.confirmEmail && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.confirmEmail}</p>
@@ -550,7 +550,7 @@ const FinalizarAssinatura = () => {
                       placeholder="João da Silva"
                       value={formData.fullName}
                       onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                      className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.fullName ? "border-red-400" : ""}`}
+                      className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.fullName ? "border-red-400" : ""}`}
                     />
                     {formErrors.fullName && (
                       <p className="text-xs text-red-500 mt-1">{formErrors.fullName}</p>
@@ -568,7 +568,7 @@ const FinalizarAssinatura = () => {
                         placeholder="000.000.000-00"
                         value={formData.cpf}
                         onChange={(e) => setFormData(prev => ({ ...prev, cpf: formatCPF(e.target.value) }))}
-                        className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.cpf ? "border-red-400" : ""}`}
+                        className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.cpf ? "border-red-400" : ""}`}
                         maxLength={14}
                       />
                       {formErrors.cpf && (
@@ -581,7 +581,7 @@ const FinalizarAssinatura = () => {
                         Celular
                       </Label>
                       <div className="flex mt-1.5">
-                        <div className="flex items-center bg-[#FFFFFF] border border-r-0 border-gray-300 rounded-l-md px-3">
+                        <div className="flex items-center !bg-white border border-r-0 border-gray-300 rounded-l-md px-3">
                           <Phone className="w-3.5 h-3.5 text-gray-400 mr-1" />
                           <span className="text-sm text-gray-500">+55</span>
                         </div>
@@ -591,7 +591,7 @@ const FinalizarAssinatura = () => {
                           placeholder="(00) 00000-0000"
                           value={formData.phone}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: formatPhone(e.target.value) }))}
-                          className={`rounded-l-none bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.phone ? "border-red-400" : ""}`}
+                          className={`rounded-l-none !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${formErrors.phone ? "border-red-400" : ""}`}
                           maxLength={15}
                         />
                       </div>
@@ -619,7 +619,7 @@ const FinalizarAssinatura = () => {
                           placeholder="Digite seu cupom"
                           value={formData.coupon}
                           onChange={(e) => setFormData(prev => ({ ...prev, coupon: e.target.value.toUpperCase() }))}
-                          className="bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366]"
+                          className="!bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366]"
                         />
                       </div>
                     )}
@@ -673,7 +673,7 @@ const FinalizarAssinatura = () => {
                           placeholder="0000 0000 0000 0000"
                           value={cardData.cardNumber}
                           onChange={(e) => handleCardNumberChange(e.target.value)}
-                          className={`pr-16 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.cardNumber ? "border-red-400" : ""}`}
+                          className={`pr-16 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.cardNumber ? "border-red-400" : ""}`}
                           maxLength={19}
                         />
                         {cardBrand && (
@@ -698,7 +698,7 @@ const FinalizarAssinatura = () => {
                           placeholder="MM/AA"
                           value={cardData.expiry}
                           onChange={(e) => setCardData(prev => ({ ...prev, expiry: formatExpiry(e.target.value) }))}
-                          className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.expiry ? "border-red-400" : ""}`}
+                          className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.expiry ? "border-red-400" : ""}`}
                           maxLength={5}
                         />
                         {cardErrors.expiry && (
@@ -715,7 +715,7 @@ const FinalizarAssinatura = () => {
                           placeholder="000"
                           value={cardData.cvv}
                           onChange={(e) => setCardData(prev => ({ ...prev, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))}
-                          className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.cvv ? "border-red-400" : ""}`}
+                          className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.cvv ? "border-red-400" : ""}`}
                           maxLength={4}
                         />
                         {cardErrors.cvv && (
@@ -734,7 +734,7 @@ const FinalizarAssinatura = () => {
                         placeholder="JOÃO DA SILVA"
                         value={cardData.holderName}
                         onChange={(e) => setCardData(prev => ({ ...prev, holderName: e.target.value.toUpperCase() }))}
-                        className={`mt-1.5 bg-[#FFFFFF] border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.holderName ? "border-red-400" : ""}`}
+                        className={`mt-1.5 !bg-white text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-[#25D366] focus:ring-[#25D366] ${cardErrors.holderName ? "border-red-400" : ""}`}
                       />
                       {cardErrors.holderName && (
                         <p className="text-xs text-red-500 mt-1">{cardErrors.holderName}</p>
@@ -749,7 +749,7 @@ const FinalizarAssinatura = () => {
                         id="installments"
                         value={cardData.installments}
                         onChange={(e) => setCardData(prev => ({ ...prev, installments: parseInt(e.target.value) }))}
-                        className="mt-1.5 w-full h-10 px-3 border border-gray-300 rounded-md bg-[#FFFFFF] text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:border-[#25D366]"
+                        className="mt-1.5 w-full h-10 px-3 border border-gray-300 rounded-md !bg-white text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:border-[#25D366]"
                       >
                         {getInstallmentOptions().map(opt => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>

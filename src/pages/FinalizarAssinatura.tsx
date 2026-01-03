@@ -91,6 +91,18 @@ const FinalizarAssinatura = () => {
   const planName = planType === "anual" ? "Plano Anual" : "Plano Mensal";
   const installmentValue = planType === "anual" ? (97.90 / 12).toFixed(2) : "12,90";
 
+  // Pre-populate email from query params
+  useEffect(() => {
+    const emailFromParams = searchParams.get("email");
+    if (emailFromParams) {
+      setFormData(prev => ({ 
+        ...prev, 
+        email: emailFromParams,
+        confirmEmail: emailFromParams 
+      }));
+    }
+  }, [searchParams]);
+
   // Initialize Mercado Pago SDK
   useEffect(() => {
     const script = document.createElement("script");

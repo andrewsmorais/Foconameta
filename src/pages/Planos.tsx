@@ -54,34 +54,8 @@ const Planos = () => {
   };
 
   const processCheckout = async (planType: "mensal" | "anual", email: string) => {
-    setLoading(planType);
-
-    try {
-      const { data, error } = await supabase.functions.invoke("create-mp-preference", {
-        body: { planType, email },
-      });
-
-      if (error) {
-        console.error("Checkout error:", error);
-        throw error;
-      }
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("URL de checkout não retornada");
-      }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Tente novamente mais tarde";
-      console.error("Error creating checkout:", error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao processar pagamento",
-        description: errorMessage,
-      });
-    } finally {
-      setLoading(null);
-    }
+    // Navegar para checkout customizado com email como parâmetro
+    navigate(`/finalizar-assinatura?planType=${planType}&email=${encodeURIComponent(email)}`);
   };
 
   const handleEmailSubmit = (email: string) => {

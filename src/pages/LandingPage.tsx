@@ -489,7 +489,7 @@ const LandingPage = () => {
           <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">
             <p className="text-gray-700 text-base md:text-lg leading-relaxed font-medium">
               Controle seus turnos, veja seu <strong className="text-[#3c83f6]">lucro real</strong> e domine suas finanças em segundos. 
-              A <strong className="text-[#15a249]">gestão profissional</strong> que você merece, com a simplicidade que você precisa.
+              A <strong className="text-[#c41313]">gestão profissional</strong> que você merece, com a simplicidade que você precisa.
             </p>
             
             <Button 
@@ -688,10 +688,10 @@ const LandingPage = () => {
                 Chega de '<span className="text-[#c41313]">bater lata</span>'. É hora de bater a meta com <span className="text-[#3c83f6]">inteligência</span>
               </h2>
               <p className="text-black text-base md:text-lg leading-relaxed font-medium">
-                Meu nome é Andrews Morais, eu também sou motorista e sei que o segredo do lucro está no controle. 
-                Criei o Bateu a Meta para ser nosso braço direito na gestão financeira: 
+                Meu nome é <span className="text-[#3c83f7]">Andrews Morais</span>, eu também sou motorista e sei que o segredo do lucro está no controle. 
+                Criei o <span className="text-[#3c83f7]">Bateu a Meta</span> para ser nosso braço direito na gestão financeira: 
                 prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
-                lucro real. Vamos juntos bater nossas metas com inteligência!
+                lucro real. Vamos juntos bater nossas metas com <span className="text-[#3c83f7]">inteligência!</span>
               </p>
             </div>
           </div>

@@ -9,9 +9,6 @@ verify_jwt = true
 [functions.create-checkout]
 verify_jwt = false
 
-[functions.stripe-webhook]
-verify_jwt = false
-
 [functions.check-subscription]
 verify_jwt = true
 
@@ -21,20 +18,11 @@ verify_jwt = false
 [functions.resend-welcome-email]
 verify_jwt = false
 
-[functions.get-stripe-metrics]
-verify_jwt = true
-
-[functions.get-user-payment-details]
-verify_jwt = true
-
 [functions.get-admin-users]
 verify_jwt = true
 
 [functions.get-pending-registration]
 verify_jwt = false
-
-[functions.refund-user]
-verify_jwt = true
 
 [functions.create-mp-checkout]
 verify_jwt = false

@@ -1,15 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-  apiVersion: "2023-10-16",
-});
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -136,7 +131,7 @@ serve(async (req) => {
         .insert({
           name: pendingReg.plan_type,
           price: isAnnual ? 97.90 : 12.90,
-          features: { stripe_price_id: pendingReg.price_id },
+          features: {},
         })
         .select("id")
         .single();
@@ -147,18 +142,9 @@ serve(async (req) => {
       plan = newPlan;
     }
 
-    // Get subscription expiration from Stripe
-    let expiresAt = new Date();
+    // Calculate subscription expiration based on plan type
+    const expiresAt = new Date();
     expiresAt.setMonth(expiresAt.getMonth() + (isAnnual ? 12 : 1));
-
-    if (pendingReg.stripe_subscription_id) {
-      try {
-        const stripeSubscription = await stripe.subscriptions.retrieve(pendingReg.stripe_subscription_id);
-        expiresAt = new Date(stripeSubscription.current_period_end * 1000);
-      } catch (e) {
-        console.error("Error fetching Stripe subscription:", e);
-      }
-    }
 
     // Create subscription
     if (plan) {

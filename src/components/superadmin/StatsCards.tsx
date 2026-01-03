@@ -3,40 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Users, 
-  DollarSign, 
   TrendingUp, 
   UserCheck, 
   UserX, 
   Activity,
-  Wifi,
-  WifiOff,
   Calendar,
   Gift,
-  RefreshCw,
-  Wallet,
-  Clock,
-  Receipt,
   Target,
   UserMinus,
   Percent
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface StripeMetrics {
-  grossRevenue: number;
-  netProfit: number;
-  totalRefunds: number;
-  totalFees: number;
-  monthlyPlanCount: number;
-  annualPlanCount: number;
-  webhookHealthy: boolean;
-  monthlyHistory: { month: string; lucro: number; receita: number }[];
-  totalCharges: number;
-  availableBalance: number;
-  pendingBalance: number;
-  ticketMedio: number;
-  mrr: number;
-}
 
 interface StatsCardsProps {
   startDate: Date;
@@ -44,42 +21,9 @@ interface StatsCardsProps {
 }
 
 export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
-  // Fetch Stripe metrics from edge function
-  const { data: stripeMetrics, isLoading: stripeLoading } = useQuery({
-    queryKey: ["admin-stripe-metrics", startDate.toISOString(), endDate.toISOString()],
-    queryFn: async (): Promise<StripeMetrics | null> => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          window.location.href = "/auth";
-          return null;
-        }
-
-        const { data, error } = await supabase.functions.invoke("get-stripe-metrics", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: { 
-            startDate: startDate.toISOString(), 
-            endDate: endDate.toISOString() 
-          },
-        });
-        if (error) {
-          console.error("Error fetching Stripe metrics:", error);
-          return null;
-        }
-        return data as StripeMetrics;
-      } catch (err) {
-        console.error("Failed to fetch Stripe metrics:", err);
-        return null;
-      }
-    },
-    refetchInterval: 60000,
-  });
-
   // Fetch user stats from Supabase
-  const { data: userStats, isLoading: userLoading } = useQuery({
-    queryKey: ["admin-user-stats"],
+  const { data: userStats, isLoading } = useQuery({
+    queryKey: ["admin-user-stats", startDate.toISOString(), endDate.toISOString()],
     queryFn: async () => {
       // Get total users
       const { count: totalUsers } = await supabase
@@ -98,21 +42,34 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
       // Calculate inactive users (not active in last 30 days)
       const inactiveUsers = (totalUsers || 0) - (activeUsersCount || 0);
 
-      // Get free users (users without active paid subscription)
-      const { data: paidSubscriptions } = await supabase
+      // Get subscriptions with plan info
+      const { data: allSubscriptions } = await supabase
         .from("subscriptions")
-        .select("user_id, plans(price)")
-        .eq("status", "active");
+        .select("user_id, status, started_at, expires_at, plans(name, price)");
 
-      const paidUserIds = paidSubscriptions?.filter((s: any) => s.plans?.price > 0).map(s => s.user_id) || [];
+      // Count monthly and annual active plans
+      const now = new Date();
+      const monthlyPlanCount = allSubscriptions?.filter((sub: any) => {
+        if (sub.status !== "active") return false;
+        if (!sub.expires_at || new Date(sub.expires_at) < now) return false;
+        return sub.plans?.name === "mensal" || sub.plans?.price === 12.9;
+      }).length || 0;
+
+      const annualPlanCount = allSubscriptions?.filter((sub: any) => {
+        if (sub.status !== "active") return false;
+        if (!sub.expires_at || new Date(sub.expires_at) < now) return false;
+        return sub.plans?.name === "anual" || sub.plans?.price === 97.9;
+      }).length || 0;
+
+      const paidUserIds = allSubscriptions?.filter((s: any) => {
+        if (s.status !== "active") return false;
+        if (!s.expires_at || new Date(s.expires_at) < now) return false;
+        return s.plans?.price > 0;
+      }).map(s => s.user_id) || [];
+
       const freeCount = (totalUsers || 0) - paidUserIds.length;
 
       // Calculate churn (expired subscriptions that weren't renewed)
-      const { data: allSubscriptions } = await supabase
-        .from("subscriptions")
-        .select("user_id, status, started_at, expires_at, plans(price)");
-
-      const now = new Date();
       const churned = allSubscriptions?.filter((sub: any) => {
         if (!sub.expires_at || sub.plans?.price === 0) return false;
         const expiresAt = new Date(sub.expires_at);
@@ -128,6 +85,10 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
         ? ((paidUserIds.length / totalUsers) * 100) 
         : 0;
 
+      // Calculate MRR (Monthly Recurring Revenue)
+      // Mensal: R$ 12,90/mês | Anual: R$ 97,90/12 = R$ 8,16/mês
+      const mrr = (monthlyPlanCount * 12.90) + (annualPlanCount * (97.90 / 12));
+
       return {
         totalUsers: totalUsers || 0,
         activeUsers: activeUsersCount || 0,
@@ -137,16 +98,17 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
         churnRate: churnRate.toFixed(1),
         paidUsers: paidUserIds.length,
         conversionRate: conversionRate.toFixed(1),
+        monthlyPlanCount,
+        annualPlanCount,
+        mrr,
       };
     },
   });
 
-  const isLoading = stripeLoading || userLoading;
-
   if (isLoading) {
     return (
       <div className="space-y-6">
-        {[1, 2, 3].map((section) => (
+        {[1, 2].map((section) => (
           <div key={section} className="space-y-3">
             <Skeleton className="h-6 w-40" />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
@@ -211,29 +173,11 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
     },
   ];
 
-  // Block 2: Financial and Subscriptions (Stripe)
-  const financialCards = [
-    {
-      title: "Receita Bruta",
-      value: `R$ ${(stripeMetrics?.grossRevenue || 0).toFixed(2).replace('.', ',')}`,
-      icon: DollarSign,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Total via Stripe",
-      highlight: true,
-    },
-    {
-      title: "Lucro Líquido",
-      value: `R$ ${(stripeMetrics?.netProfit || 0).toFixed(2).replace('.', ',')}`,
-      icon: TrendingUp,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Após taxas Stripe",
-      highlight: true,
-    },
+  // Block 2: Subscriptions and Management
+  const subscriptionCards = [
     {
       title: "Plano Mensal",
-      value: stripeMetrics?.monthlyPlanCount || 0,
+      value: userStats?.monthlyPlanCount || 0,
       icon: Calendar,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
@@ -241,27 +185,15 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
     },
     {
       title: "Plano Anual",
-      value: stripeMetrics?.annualPlanCount || 0,
+      value: userStats?.annualPlanCount || 0,
       icon: UserCheck,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
       description: "Ativos - R$ 97,90/ano",
     },
     {
-      title: "Reembolsos",
-      value: `R$ ${(stripeMetrics?.totalRefunds || 0).toFixed(2).replace('.', ',')}`,
-      icon: RefreshCw,
-      color: "text-destructive",
-      bgColor: "from-destructive/10",
-      description: "Devoluções processadas",
-    },
-  ];
-
-  // Block 3: Management Indicators
-  const managementCards = [
-    {
       title: "MRR",
-      value: `R$ ${(stripeMetrics?.mrr || 0).toFixed(2).replace('.', ',')}`,
+      value: `R$ ${(userStats?.mrr || 0).toFixed(2).replace('.', ',')}`,
       icon: Target,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
@@ -283,51 +215,6 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
       color: "text-destructive",
       bgColor: "from-destructive/10",
       description: "Não renovaram",
-    },
-    {
-      title: "Ticket Médio",
-      value: `R$ ${(stripeMetrics?.ticketMedio || 0).toFixed(2).replace('.', ',')}`,
-      icon: Receipt,
-      color: "text-[hsl(217,91%,60%)]",
-      bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Valor médio por venda",
-    },
-    {
-      title: "Total de Vendas",
-      value: stripeMetrics?.totalCharges || 0,
-      icon: Receipt,
-      color: "text-[hsl(217,91%,60%)]",
-      bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Transações no período",
-    },
-  ];
-
-  // Block 4: Balance and System Health
-  const systemCards = [
-    {
-      title: "Saldo Disponível",
-      value: `R$ ${(stripeMetrics?.availableBalance || 0).toFixed(2).replace('.', ',')}`,
-      icon: Wallet,
-      color: "text-[hsl(142,76%,36%)]",
-      bgColor: "from-[hsl(142,76%,36%)]/20",
-      description: "Disponível para saque",
-      highlight: true,
-    },
-    {
-      title: "Saldo Pendente",
-      value: `R$ ${(stripeMetrics?.pendingBalance || 0).toFixed(2).replace('.', ',')}`,
-      icon: Clock,
-      color: "text-[hsl(45,93%,47%)]",
-      bgColor: "from-[hsl(45,93%,47%)]/20",
-      description: "Em processamento",
-    },
-    {
-      title: "Status Webhook",
-      value: stripeMetrics?.webhookHealthy ? "Online" : stripeMetrics === null ? "Erro" : "Offline",
-      icon: stripeMetrics?.webhookHealthy ? Wifi : WifiOff,
-      color: stripeMetrics?.webhookHealthy ? "text-[hsl(142,76%,36%)]" : "text-destructive",
-      bgColor: stripeMetrics?.webhookHealthy ? "from-[hsl(142,76%,36%)]/10" : "from-destructive/10",
-      description: "Comunicação Stripe",
     },
   ];
 
@@ -369,9 +256,7 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
   return (
     <div className="space-y-6">
       {renderCardBlock("Usuários e Retenção", userCards)}
-      {renderCardBlock("Financeiro e Assinaturas", financialCards)}
-      {renderCardBlock("Indicadores de Gestão", managementCards)}
-      {renderCardBlock("Saldo e Sistema", systemCards)}
+      {renderCardBlock("Assinaturas e Gestão", subscriptionCards)}
     </div>
   );
 };

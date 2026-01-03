@@ -4,11 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp } from "lucide-react";
-import { format } from "date-fns";
-
-interface StripeMetrics {
-  monthlyHistory: { month: string; lucro: number; receita: number }[];
-}
+import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface RevenueChartProps {
   startDate: Date;
@@ -16,40 +13,49 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
-  // Fetch from Stripe metrics edge function with date filter
-  const { data: stripeMetrics, isLoading } = useQuery({
-    queryKey: ["admin-revenue-chart-stripe", startDate.toISOString(), endDate.toISOString()],
-    queryFn: async (): Promise<StripeMetrics | null> => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          window.location.href = "/auth";
-          return null;
-        }
+  // Fetch subscription data to calculate revenue
+  const { data: chartData, isLoading } = useQuery({
+    queryKey: ["admin-revenue-chart", startDate.toISOString(), endDate.toISOString()],
+    queryFn: async () => {
+      // Get all subscriptions with plan info
+      const { data: subscriptions } = await supabase
+        .from("subscriptions")
+        .select("started_at, plans(name, price)")
+        .gte("started_at", subMonths(startDate, 6).toISOString())
+        .lte("started_at", endDate.toISOString());
 
-        const { data, error } = await supabase.functions.invoke("get-stripe-metrics", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          },
-        });
-        if (error) {
-          console.error("Error fetching Stripe metrics for chart:", error);
-          return null;
-        }
-        return data as StripeMetrics;
-      } catch (err) {
-        console.error("Failed to fetch Stripe metrics:", err);
-        return null;
+      // Group by month
+      const monthlyData: Record<string, { receita: number; count: number }> = {};
+
+      // Initialize last 6 months
+      for (let i = 5; i >= 0; i--) {
+        const monthDate = subMonths(new Date(), i);
+        const monthKey = format(monthDate, "MMM/yy", { locale: ptBR });
+        monthlyData[monthKey] = { receita: 0, count: 0 };
       }
-    },
-    refetchInterval: 60000, // Refresh every minute
-  });
 
-  const chartData = stripeMetrics?.monthlyHistory || [];
+      // Calculate revenue per month
+      subscriptions?.forEach((sub: any) => {
+        if (!sub.started_at || !sub.plans?.price) return;
+        
+        const subDate = new Date(sub.started_at);
+        const monthKey = format(subDate, "MMM/yy", { locale: ptBR });
+        
+        if (monthlyData[monthKey]) {
+          monthlyData[monthKey].receita += sub.plans.price;
+          monthlyData[monthKey].count += 1;
+        }
+      });
+
+      // Convert to array format for chart
+      return Object.entries(monthlyData).map(([month, data]) => ({
+        month,
+        receita: data.receita,
+        // Estimate net profit (MP takes ~4.99% + R$ 0.49 per transaction)
+        lucro: Math.max(0, data.receita - (data.count * 0.49) - (data.receita * 0.0499)),
+      }));
+    },
+  });
 
   if (isLoading) {
     return (
@@ -69,17 +75,17 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-xl text-[hsl(217,91%,60%)]">
-            Evolução do Lucro Líquido
+            Evolução da Receita
           </CardTitle>
           <CardDescription>
-            {format(startDate, "dd/MM/yyyy")} - {format(endDate, "dd/MM/yyyy")} (após taxas 3.99% + R$ 0,39)
+            Últimos 6 meses - baseado em assinaturas criadas
           </CardDescription>
         </div>
         <TrendingUp className="h-6 w-6 text-[hsl(142,76%,36%)]" />
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
-          {chartData.length === 0 ? (
+          {!chartData || chartData.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted-foreground">
               Nenhum dado de receita disponível ainda
             </div>
@@ -106,8 +112,14 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   formatter={(value: number, name: string) => [
                     `R$ ${value.toFixed(2).replace('.', ',')}`, 
-                    name === 'lucro' ? 'Lucro Líquido' : 'Receita Bruta'
+                    name === 'lucro' ? 'Lucro Líquido (est.)' : 'Receita Bruta'
                   ]}
+                />
+                <Bar 
+                  dataKey="receita" 
+                  fill="hsl(217, 91%, 60%)" 
+                  radius={[4, 4, 0, 0]}
+                  name="receita"
                 />
                 <Bar 
                   dataKey="lucro" 

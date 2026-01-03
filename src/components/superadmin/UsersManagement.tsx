@@ -11,10 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, AlertTriangle, Copy, Eye, MessageCircle, StickyNote, Download, Undo2 } from "lucide-react";
+import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, Copy, Eye, MessageCircle, StickyNote, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface UserData {
   id: string;
@@ -31,9 +30,6 @@ interface UserData {
   renewal_status?: "active" | "expired" | "churned" | "free";
   expires_at?: string | null;
   started_at?: string | null;
-  lastPaymentDate?: string | null;
-  paymentMethod?: string | null;
-  netAmount?: number | null;
   daysRemaining?: number | null;
   admin_notes?: string | null;
 }
@@ -47,8 +43,6 @@ export const UsersManagement = () => {
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
-  const [isRefundOpen, setIsRefundOpen] = useState(false);
-  const [refundReason, setRefundReason] = useState("");
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   
@@ -113,46 +107,6 @@ export const UsersManagement = () => {
       }
     },
   });
-
-  // Fetch payment details from Stripe for all users with valid emails
-  const { data: paymentDetails } = useQuery({
-    queryKey: ["admin-payment-details", users?.map(u => u.email).filter(Boolean)],
-    queryFn: async () => {
-      if (!users || users.length === 0) return {};
-      
-      const emails = users.map(u => u.email).filter(Boolean) as string[];
-      if (emails.length === 0) return {};
-
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return {};
-
-        const { data, error } = await supabase.functions.invoke("get-user-payment-details", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: { emails },
-        });
-        if (error) {
-          console.error("Error fetching payment details:", error);
-          return {};
-        }
-        return data || {};
-      } catch (err) {
-        console.error("Failed to fetch payment details:", err);
-        return {};
-      }
-    },
-    enabled: !!users && users.length > 0 && users.some(u => u.email),
-  });
-
-  // Merge payment details with users
-  const usersWithPayments = users?.map(user => ({
-    ...user,
-    lastPaymentDate: paymentDetails?.[user.email || ""]?.lastPaymentDate || null,
-    paymentMethod: paymentDetails?.[user.email || ""]?.paymentMethod || null,
-    netAmount: paymentDetails?.[user.email || ""]?.netAmount || null,
-  }));
 
   // Update user mutation
   const updateUserMutation = useMutation({
@@ -256,61 +210,6 @@ export const UsersManagement = () => {
     },
   });
 
-  // Refund user mutation
-  const refundUserMutation = useMutation({
-    mutationFn: async ({ email, userId, motivo }: { email: string; userId: string; motivo: string }) => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Sessão expirada. Redirecionando para login...");
-        window.location.href = "/auth";
-        throw new Error("Sessão expirada");
-      }
-
-      const { data, error } = await supabase.functions.invoke("refund-user", {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: { email, userId, motivo },
-      });
-
-      // Check if response contains an error message (even with 404 status)
-      if (data?.error) {
-        throw new Error(data.error);
-      }
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      queryClient.invalidateQueries({ queryKey: ["admin-payment-details"] });
-      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      toast.success(data.message || "Reembolso processado com sucesso!");
-      setIsRefundOpen(false);
-      setRefundReason("");
-      setSelectedUser(null);
-    },
-    onError: (error: Error) => {
-      const message = error.message;
-      // Check if it's the "already refunded" case
-      if (message.includes("já foram reembolsados") || message.includes("reembolsados anteriormente")) {
-        toast.warning("Este pagamento já foi reembolsado anteriormente", {
-          description: message,
-        });
-      } else if (message.includes("Cliente não encontrado")) {
-        toast.error("Cliente não encontrado no Stripe", {
-          description: "Este usuário não possui registro de pagamento no Stripe.",
-        });
-      } else {
-        toast.error("Erro ao processar reembolso", {
-          description: message,
-        });
-      }
-      setIsRefundOpen(false);
-      setRefundReason("");
-    },
-  });
-
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -385,7 +284,7 @@ export const UsersManagement = () => {
     },
   });
 
-  const filteredUsers = usersWithPayments?.filter((user) =>
+  const filteredUsers = users?.filter((user: UserData) =>
     user.nome_completo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.cpf?.includes(searchTerm) ||
     user.telefone?.includes(searchTerm) ||
@@ -422,12 +321,6 @@ export const UsersManagement = () => {
     setIsNotesOpen(true);
   };
 
-  const handleRefundClick = (user: UserData) => {
-    setSelectedUser(user);
-    setRefundReason("");
-    setIsRefundOpen(true);
-  };
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copiado para a área de transferência!");
@@ -444,23 +337,17 @@ export const UsersManagement = () => {
       "Email",
       "Telefone",
       "CPF",
-      "Último Pagamento",
-      "Forma Pagamento",
-      "Valor Líquido",
       "Plano",
       "Dias Restantes",
       "Status",
       "Notas Admin"
     ];
 
-    const rows = filteredUsers.map(user => [
+    const rows = filteredUsers.map((user: UserData) => [
       user.nome_completo || "",
       user.email || "",
       user.telefone || "",
       user.cpf || "",
-      user.lastPaymentDate ? new Date(user.lastPaymentDate).toLocaleDateString('pt-BR') : "",
-      user.paymentMethod || "",
-      user.netAmount !== null ? `R$ ${user.netAmount.toFixed(2).replace('.', ',')}` : "",
       user.planPrice === 12.9 ? "Mensal R$ 12,90" : user.planPrice === 97.9 ? "Anual R$ 97,90" : "Free",
       user.daysRemaining !== null && user.daysRemaining !== undefined ? String(user.daysRemaining) : "",
       user.status === "active" ? "Ativo" : "Bloqueado",
@@ -637,9 +524,6 @@ export const UsersManagement = () => {
                   <TableHead>Email</TableHead>
                   <TableHead>Telefone</TableHead>
                   <TableHead>CPF</TableHead>
-                  <TableHead>Último Pag.</TableHead>
-                  <TableHead>Forma</TableHead>
-                  <TableHead>Valor Líq.</TableHead>
                   <TableHead>Plano</TableHead>
                   <TableHead>Dias Restantes</TableHead>
                   <TableHead>Status</TableHead>
@@ -649,12 +533,12 @@ export const UsersManagement = () => {
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={11} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       Nenhum usuário encontrado
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers?.map((user) => (
+                  filteredUsers?.map((user: UserData) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
                         {user.nome_completo || "Não informado"}
@@ -676,27 +560,6 @@ export const UsersManagement = () => {
                         ) : "-"}
                       </TableCell>
                       <TableCell>{user.cpf || "-"}</TableCell>
-                      <TableCell className="text-sm">
-                        {user.lastPaymentDate 
-                          ? new Date(user.lastPaymentDate).toLocaleDateString('pt-BR')
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        {user.paymentMethod ? (
-                          <Badge variant="outline" className={
-                            user.paymentMethod === "PIX" 
-                              ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30"
-                              : "bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30"
-                          }>
-                            {user.paymentMethod}
-                          </Badge>
-                        ) : "-"}
-                      </TableCell>
-                      <TableCell className="text-sm font-medium text-[hsl(142,76%,36%)]">
-                        {user.netAmount !== null 
-                          ? `R$ ${user.netAmount.toFixed(2).replace('.', ',')}`
-                          : "-"}
-                      </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={user.planPrice > 0 ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30" : ""}>
                           {user.planPrice === 12.9 ? "Mensal" : user.planPrice === 97.9 ? "Anual" : "Free"}
@@ -715,15 +578,6 @@ export const UsersManagement = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleRefundClick(user)}
-                            title="Reembolsar"
-                            disabled={!user.netAmount}
-                          >
-                            <Undo2 className={`h-4 w-4 ${user.netAmount ? "text-orange-500" : "text-muted-foreground"}`} />
-                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -792,97 +646,6 @@ export const UsersManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Refund User Dialog */}
-      <Dialog open={isRefundOpen} onOpenChange={setIsRefundOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Undo2 className="h-5 w-5 text-orange-500" />
-              Reembolsar Usuário
-            </DialogTitle>
-            <DialogDescription>
-              Processar reembolso para {selectedUser?.nome_completo || "o usuário"}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {/* Payment Summary */}
-          <div className="bg-muted p-4 rounded-lg space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Email:</span>
-              <span className="font-medium">{selectedUser?.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Último Pagamento:</span>
-              <span className="font-medium">
-                {selectedUser?.lastPaymentDate 
-                  ? new Date(selectedUser.lastPaymentDate).toLocaleDateString('pt-BR')
-                  : "-"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Método:</span>
-              <span className="font-medium">{selectedUser?.paymentMethod || "-"}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Valor Líquido:</span>
-              <span className="font-medium text-[hsl(142,76%,36%)]">
-                {selectedUser?.netAmount !== null && selectedUser?.netAmount !== undefined
-                  ? `R$ ${selectedUser.netAmount.toFixed(2).replace('.', ',')}`
-                  : "-"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Plano:</span>
-              <span className="font-medium">
-                {selectedUser?.planPrice === 12.9 ? "Mensal R$ 12,90" : 
-                 selectedUser?.planPrice === 97.9 ? "Anual R$ 97,90" : "Free"}
-              </span>
-            </div>
-          </div>
-
-          {/* Refund Reason */}
-          <div className="space-y-2">
-            <Label htmlFor="refund-reason">Motivo do Reembolso *</Label>
-            <Textarea
-              id="refund-reason"
-              value={refundReason}
-              onChange={(e) => setRefundReason(e.target.value)}
-              placeholder="Descreva o motivo do reembolso..."
-              rows={4}
-            />
-          </div>
-
-          {/* Warning Alert */}
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              Esta ação irá reembolsar o valor total e cancelar a assinatura do usuário. O motivo será registrado nas notas do admin.
-            </AlertDescription>
-          </Alert>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsRefundOpen(false)}>
-              Cancelar
-            </Button>
-            <Button
-              variant="destructive"
-              disabled={!refundReason.trim() || refundUserMutation.isPending}
-              onClick={() => {
-                if (selectedUser?.email && selectedUser?.id) {
-                  refundUserMutation.mutate({
-                    email: selectedUser.email,
-                    userId: selectedUser.id,
-                    motivo: refundReason,
-                  });
-                }
-              }}
-            >
-              {refundUserMutation.isPending ? "Processando..." : "Confirmar Reembolso"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* Edit User Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent className="max-w-md">
@@ -899,7 +662,8 @@ export const UsersManagement = () => {
                 id="edit-email"
                 type="email"
                 value={editForm.email}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                disabled
+                className="bg-muted"
               />
             </div>
             <div className="space-y-2">
@@ -929,21 +693,6 @@ export const UsersManagement = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-role">Função</Label>
-              <Select
-                value={editForm.role}
-                onValueChange={(value) => setEditForm({ ...editForm, role: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">Free</SelectItem>
-                  <SelectItem value="pago">Pago</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="edit-plan">Plano</Label>
               <Select
                 value={editForm.plan_id}
@@ -955,7 +704,7 @@ export const UsersManagement = () => {
                 <SelectContent>
                   {plans?.map((plan) => (
                     <SelectItem key={plan.id} value={plan.id}>
-                      {plan.price === 12.9 ? "Mensal R$ 12,90" : plan.price === 97.9 ? "Anual R$ 97,90" : plan.name}
+                      {plan.name} - R$ {plan.price.toFixed(2).replace('.', ',')}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -977,7 +726,6 @@ export const UsersManagement = () => {
                         telefone: editForm.telefone,
                         cpf: editForm.cpf,
                       },
-                      role: editForm.role,
                       plan_id: editForm.plan_id || undefined,
                     },
                   });
@@ -995,9 +743,12 @@ export const UsersManagement = () => {
       <Dialog open={isNotesOpen} onOpenChange={setIsNotesOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Notas do Admin</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <StickyNote className="h-5 w-5 text-yellow-500" />
+              Notas do Admin
+            </DialogTitle>
             <DialogDescription>
-              Adicione anotações sobre {selectedUser?.nome_completo || "o usuário"}
+              Anotações internas sobre {selectedUser?.nome_completo || "o usuário"}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -1031,19 +782,23 @@ export const UsersManagement = () => {
 
       {/* Reset Password Dialog */}
       <Dialog open={isResetPasswordOpen} onOpenChange={setIsResetPasswordOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Resetar Senha</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Key className="h-5 w-5" />
+              Resetar Senha
+            </DialogTitle>
             <DialogDescription>
-              Gerar uma nova senha provisória para {selectedUser?.nome_completo || "o usuário"}
+              Gerar nova senha para {selectedUser?.nome_completo || "o usuário"}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            {generatedPassword ? (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p className="text-sm font-medium">Nova Senha Provisória:</p>
+          
+          {generatedPassword ? (
+            <div className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">Nova senha gerada:</p>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-background p-2 rounded text-lg font-mono">
+                  <code className="flex-1 text-lg font-mono bg-background px-3 py-2 rounded">
                     {generatedPassword}
                   </code>
                   <Button
@@ -1054,51 +809,48 @@ export const UsersManagement = () => {
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Envie esta senha para o usuário. Ele deverá trocar no primeiro acesso.
-                </p>
               </div>
-            ) : (
-              <div className="text-center py-4">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Isso irá redefinir a senha do usuário para uma senha provisória (1234).
-                </p>
-                <Button
-                  onClick={() => {
-                    if (selectedUser) {
-                      resetPasswordMutation.mutate(selectedUser.id);
-                    }
-                  }}
-                  disabled={resetPasswordMutation.isPending}
-                >
-                  {resetPasswordMutation.isPending ? "Resetando..." : "Resetar Senha"}
-                </Button>
-              </div>
-            )}
-          </div>
+              <p className="text-sm text-muted-foreground">
+                Envie esta senha para o usuário. Ela foi salva no sistema.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Ao resetar a senha, uma nova senha será gerada automaticamente.
+                Você precisará compartilhar esta nova senha com o usuário.
+              </p>
+            </div>
+          )}
+          
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsResetPasswordOpen(false)}>
               Fechar
             </Button>
+            {!generatedPassword && (
+              <Button
+                onClick={() => {
+                  if (selectedUser) {
+                    resetPasswordMutation.mutate(selectedUser.id);
+                  }
+                }}
+                disabled={resetPasswordMutation.isPending}
+              >
+                {resetPasswordMutation.isPending ? "Gerando..." : "Gerar Nova Senha"}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete User Confirmation */}
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              Confirmar Exclusão
-            </AlertDialogTitle>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir permanentemente o usuário{" "}
-              <strong>{selectedUser?.nome_completo || "selecionado"}</strong>?
-              <br />
-              <br />
-              Esta ação não pode ser desfeita. Todos os dados associados a este
-              usuário serão removidos permanentemente.
+              Tem certeza que deseja excluir o usuário "{selectedUser?.nome_completo}"?
+              Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1111,7 +863,7 @@ export const UsersManagement = () => {
                 }
               }}
             >
-              {deleteUserMutation.isPending ? "Excluindo..." : "Excluir Permanentemente"}
+              {deleteUserMutation.isPending ? "Excluindo..." : "Excluir"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

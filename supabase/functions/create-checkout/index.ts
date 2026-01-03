@@ -7,12 +7,6 @@ const corsHeaders = {
 
 const MP_ACCESS_TOKEN = Deno.env.get("MP_ACCESS_TOKEN");
 
-// Mapeamento dos antigos priceId do Stripe para planType do Mercado Pago
-const STRIPE_TO_MP_MAP: Record<string, string> = {
-  "price_1SdmK9K6aMDv1DOlgCL7bq41": "mensal",
-  "price_1SdmJnK6aMDv1DOlafIvA9GC": "anual",
-};
-
 // Preços dos planos no Mercado Pago
 const PLANS = {
   mensal: {
@@ -42,19 +36,16 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    console.log("[create-checkout -> MP] Received body:", JSON.stringify(body));
+    console.log("[create-checkout] Received body:", JSON.stringify(body));
     
-    const { priceId, email } = body;
+    const { planType, email } = body;
 
-    // Mapear priceId do Stripe para planType do Mercado Pago
-    const planType = STRIPE_TO_MP_MAP[priceId];
-    
-    if (!planType) {
-      console.log("[create-checkout -> MP] Error: Unknown priceId:", priceId);
+    if (!planType || !PLANS[planType as keyof typeof PLANS]) {
+      console.log("[create-checkout] Error: Invalid planType:", planType);
       return new Response(
         JSON.stringify({ 
-          error: "Plano inválido. Stripe desativado - use Mercado Pago.",
-          details: `priceId '${priceId}' não reconhecido`
+          error: "Plano inválido. Use 'mensal' ou 'anual'.",
+          details: `planType '${planType}' não reconhecido`
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -63,10 +54,10 @@ serve(async (req) => {
       );
     }
 
-    console.log("[create-checkout -> MP] Mapped to planType:", planType);
+    console.log("[create-checkout] Processing planType:", planType);
 
     if (!MP_ACCESS_TOKEN) {
-      console.error("[create-checkout -> MP] MP_ACCESS_TOKEN not configured");
+      console.error("[create-checkout] MP_ACCESS_TOKEN not configured");
       return new Response(
         JSON.stringify({ error: "Mercado Pago não configurado" }),
         {
@@ -80,7 +71,6 @@ serve(async (req) => {
     const plan = PLANS[planType as keyof typeof PLANS];
 
     // Criar PreApproval (assinatura) no Mercado Pago
-    // Email é opcional - se não tiver, o MP vai coletar no checkout
     const preapprovalData: Record<string, unknown> = {
       reason: plan.reason,
       auto_recurring: plan.auto_recurring,
@@ -92,7 +82,7 @@ serve(async (req) => {
       preapprovalData.payer_email = email;
     }
 
-    console.log("[create-checkout -> MP] Creating preapproval:", JSON.stringify(preapprovalData));
+    console.log("[create-checkout] Creating preapproval:", JSON.stringify(preapprovalData));
 
     const response = await fetch("https://api.mercadopago.com/preapproval", {
       method: "POST",
@@ -106,7 +96,7 @@ serve(async (req) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("[create-checkout -> MP] Mercado Pago API error:", JSON.stringify(data));
+      console.error("[create-checkout] Mercado Pago API error:", JSON.stringify(data));
       return new Response(
         JSON.stringify({ 
           error: data.message || "Erro ao criar checkout", 
@@ -119,17 +109,16 @@ serve(async (req) => {
       );
     }
 
-    console.log("[create-checkout -> MP] PreApproval created:", data.id);
-    console.log("[create-checkout -> MP] Redirecting to Mercado Pago:", data.init_point);
+    console.log("[create-checkout] PreApproval created:", data.id);
+    console.log("[create-checkout] Redirecting to Mercado Pago:", data.init_point);
 
-    // Retorna no mesmo formato que o Stripe retornava para compatibilidade
     return new Response(JSON.stringify({ url: data.init_point }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("[create-checkout -> MP] Error:", errorMessage);
+    console.error("[create-checkout] Error:", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

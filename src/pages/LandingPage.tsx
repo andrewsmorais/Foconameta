@@ -688,7 +688,7 @@ const LandingPage = () => {
                 Chega de '<span className="text-[#3c83f6]">bater lata</span>'. É hora de bater a meta com <span className="text-[#3c83f6]">inteligência</span>
               </h2>
               <p className="text-black text-base md:text-lg leading-relaxed font-medium">
-                Eu também sou motorista e sei que o segredo do lucro está no controle. 
+                Meu nome é Andrews Morais, eu também sou motorista e sei que o segredo do lucro está no controle. 
                 Criei o Bateu a Meta para ser nosso braço direito na gestão financeira: 
                 prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
                 lucro real. Vamos juntos bater nossas metas com inteligência!

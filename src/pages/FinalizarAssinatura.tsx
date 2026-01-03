@@ -874,9 +874,15 @@ const FinalizarAssinatura = () => {
                   </div>
                   
                   {/* Site Protegido Badge */}
-                  <div className="flex items-center justify-center gap-2 text-gray-500">
-                    <Lock className="h-5 w-5" />
-                    <span className="text-sm font-medium">Site Protegido</span>
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="h-8 w-8 text-[#25D366]" />
+                      <div className="flex flex-col">
+                        <span className="text-xs text-[#25D366] font-medium uppercase">Compra Segura</span>
+                        <span className="text-base font-bold text-[#25D366]">SITE PROTEGIDO</span>
+                        <span className="text-xs text-[#25D366] font-medium">Certificado SSL</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>

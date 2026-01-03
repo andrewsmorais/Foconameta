@@ -92,25 +92,8 @@ const LandingPage = () => {
   };
 
   const processCheckout = async (planType: PlanType, email: string) => {
-    setLoadingPlan(planType);
-
-    try {
-      const { data, error } = await supabase.functions.invoke("create-mp-preference", {
-        body: { planType, email },
-      });
-
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("URL de checkout não retornada");
-      }
-    } catch (error: unknown) {
-      console.error("Checkout error:", error);
-      toast.error("Erro ao processar. Tente novamente.");
-    } finally {
-      setLoadingPlan(null);
-    }
+    // Navegar para checkout customizado com email como parâmetro
+    navigate(`/finalizar-assinatura?planType=${planType}&email=${encodeURIComponent(email)}`);
   };
 
   const handleEmailSubmit = (email: string) => {

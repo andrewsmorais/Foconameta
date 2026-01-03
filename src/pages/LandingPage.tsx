@@ -213,18 +213,18 @@ const LandingPage = () => {
   const steps = [
     {
       number: "1",
-      title: "Crie sua conta",
-      description: "Faça o cadastro e comece seu período de avaliação gratuita."
+      title: "Escolha seu Plano",
+      description: "Selecione o plano ideal para você e realize o pagamento de forma rápida e segura."
     },
     {
       number: "2",
-      title: "Registre seus Turnos",
-      description: "Anote seus ganhos e despesas rapidamente, sem complicação."
+      title: "Receba suas Credenciais",
+      description: "Confira seu e-mail e receba seu login e senha de acesso ao aplicativo."
     },
     {
       number: "3",
-      title: "Acompanhe seu Lucro",
-      description: "Dashboard atualizado em tempo real para bater a meta e ver seu dinheiro crescer!"
+      title: "Acesse e Baixe o App",
+      description: "Entre na área 'Já sou Cliente', faça login e instale o aplicativo no seu celular."
     }
   ];
 

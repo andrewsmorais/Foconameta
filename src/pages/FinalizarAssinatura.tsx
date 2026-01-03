@@ -865,14 +865,10 @@ const FinalizarAssinatura = () => {
 
                 {/* Trust Badges Section */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                  {/* Card Brands - Large Visa and Mastercard Only */}
-                  <div className="flex items-center justify-center gap-6 mb-8">
+                  {/* All Payment Logos - Side by Side */}
+                  <div className="flex items-center justify-center gap-6 mb-6">
                     <VisaLogo />
                     <MastercardLogo />
-                  </div>
-                  
-                  {/* Mercado Pago - Large */}
-                  <div className="flex items-center justify-center mb-6">
                     <MercadoPagoLogo />
                   </div>
                   

@@ -208,14 +208,22 @@ serve(async (req) => {
     console.log("[MP Payment Webhook] Parsed data:", JSON.stringify(data));
 
     // Mercado Pago envia notificações em diferentes formatos
-    const topic = data.topic || data.type;
-    const resourceId = data.id || data.data?.id;
+    // topic pode vir como: "payment", type como "payment", action como "payment.created", "payment.updated"
+    const topic = data.topic || data.type || data.action;
+    const resourceId = data.data?.id || data.id;
 
-    console.log("[MP Payment Webhook] Topic:", topic, "Resource ID:", resourceId);
+    console.log("[MP Payment Webhook] Topic:", topic, "Action:", data.action, "Resource ID:", resourceId);
 
-    // Processar apenas eventos de payment
-    if (topic !== "payment") {
-      console.log("[MP Payment Webhook] Ignoring non-payment event:", topic);
+    // Aceitar múltiplos formatos de evento de pagamento
+    const isPaymentEvent = topic === "payment" || 
+                           topic === "payment.created" || 
+                           topic === "payment.updated" ||
+                           data.action === "payment.created" ||
+                           data.action === "payment.updated" ||
+                           (typeof data.action === "string" && data.action.startsWith("payment."));
+
+    if (!isPaymentEvent) {
+      console.log("[MP Payment Webhook] Ignoring non-payment event:", topic, "action:", data.action);
       return new Response(JSON.stringify({ received: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

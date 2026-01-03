@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.mercadopago-payment-webhook]
 verify_jwt = false
+
+[functions.create-mp-pix-payment]
+verify_jwt = false

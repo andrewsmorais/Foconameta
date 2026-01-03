@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { toast } from "sonner";
@@ -28,7 +28,10 @@ import {
   CalendarX,
   ShieldCheck,
   Play,
-  X
+  X,
+  Expand,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 
@@ -55,10 +58,24 @@ import whatsapp13 from "@/assets/testimonials/whatsapp-13.jpeg";
 // Mercado Pago plan types
 type PlanType = "mensal" | "anual";
 
+// Slides data for carousel
+const carouselSlides = [
+  { img: turnoForm1, caption: "1. Registre seu turno" },
+  { img: turnoForm2, caption: "2. Adicione seus ganhos" },
+  { img: turnoMetricas, caption: "3. Veja seu lucro real" }
+];
+
 const LandingPage = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [videoOpen, setVideoOpen] = useState(false);
+  
+  // Carousel API for dynamic dots
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Lightbox state
+  const [selectedImage, setSelectedImage] = useState<{ img: string; caption: string; index: number } | null>(null);
   
   // Facebook Pixel - inicializa e dispara PageView automaticamente
   const { trackLead, trackInitiateCheckout, trackViewContent, trackContact } = useFacebookPixel();
@@ -66,6 +83,31 @@ const LandingPage = () => {
   useEffect(() => {
     setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
   }, []);
+
+  // Update current slide when carousel changes
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap());
+    };
+
+    carouselApi.on("select", onSelect);
+    onSelect(); // Set initial state
+
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
+
+  // Navigate lightbox
+  const navigateLightbox = useCallback((direction: 'prev' | 'next') => {
+    if (!selectedImage) return;
+    const newIndex = direction === 'next' 
+      ? (selectedImage.index + 1) % carouselSlides.length
+      : (selectedImage.index - 1 + carouselSlides.length) % carouselSlides.length;
+    setSelectedImage({ ...carouselSlides[newIndex], index: newIndex });
+  }, [selectedImage]);
 
   // Scroll para preços + dispara evento Lead
   const scrollToPricing = () => {
@@ -277,24 +319,36 @@ const LandingPage = () => {
               align: "center",
               loop: true,
             }}
+            setApi={setCarouselApi}
             className="w-full max-w-3xl mx-auto"
           >
             <CarouselContent>
-              {[
-                { img: turnoForm1, caption: "1. Registre seu turno" },
-                { img: turnoForm2, caption: "2. Adicione seus ganhos" },
-                { img: turnoMetricas, caption: "3. Veja seu lucro real" }
-              ].map((slide, index) => (
+              {carouselSlides.map((slide, index) => (
                 <CarouselItem key={index} className="basis-full md:basis-4/5">
                   <div className="px-2 md:px-4">
-                    <div className="bg-gray-900/80 rounded-2xl shadow-[0_0_30px_rgba(21,162,73,0.2)] p-3 md:p-4 border border-[#15a249]/30">
-                      <img 
-                        src={slide.img} 
-                        alt={slide.caption}
-                        className="w-full h-auto rounded-xl"
-                      />
+                    <div 
+                      className="bg-gray-900/80 rounded-2xl shadow-[0_0_30px_rgba(21,162,73,0.2)] p-3 md:p-4 border border-[#15a249]/30 cursor-pointer group relative"
+                      onClick={() => setSelectedImage({ ...slide, index })}
+                    >
+                      <div className="relative overflow-hidden rounded-xl">
+                        <img 
+                          src={slide.img} 
+                          alt={slide.caption}
+                          className="w-full h-auto rounded-xl transition-transform duration-300 group-hover:scale-105"
+                        />
+                        {/* Hover overlay with expand icon */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-xl">
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                            <Expand className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                          </div>
+                        </div>
+                      </div>
                       <p className="text-center mt-3 text-white font-medium text-sm md:text-base">
                         {slide.caption}
+                      </p>
+                      {/* Mobile tap hint */}
+                      <p className="text-center text-white/50 text-xs mt-1 md:hidden">
+                        Toque para ampliar
                       </p>
                     </div>
                   </div>
@@ -305,12 +359,84 @@ const LandingPage = () => {
             <CarouselNext className="hidden md:flex -right-12 bg-gray-900 border-[#15a249]/50 text-white hover:bg-gray-800 hover:border-[#15a249] shadow-md" />
           </Carousel>
 
-          {/* Dots indicator for mobile */}
-          <div className="flex justify-center gap-2 mt-6 md:hidden">
-            <div className="w-2 h-2 rounded-full bg-[#15a249]" />
-            <div className="w-2 h-2 rounded-full bg-white/40" />
-            <div className="w-2 h-2 rounded-full bg-white/40" />
+          {/* Dynamic dots indicator */}
+          <div className="flex justify-center gap-3 mt-6">
+            {carouselSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => carouselApi?.scrollTo(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  currentSlide === index 
+                    ? 'bg-[#15a249] scale-125 shadow-[0_0_8px_rgba(21,162,73,0.6)]' 
+                    : 'bg-white/40 hover:bg-white/60'
+                }`}
+                aria-label={`Ir para slide ${index + 1}`}
+              />
+            ))}
           </div>
+
+          {/* Swipe hint for mobile */}
+          <p className="text-center text-white/50 text-sm mt-3 md:hidden">
+            ← Arraste para ver mais →
+          </p>
+
+          {/* Image Lightbox Dialog */}
+          <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+            <DialogContent className="max-w-[95vw] md:max-w-4xl p-0 bg-black/95 border-[#15a249]/30 overflow-hidden">
+              {selectedImage && (
+                <div className="relative">
+                  {/* Close button */}
+                  <button
+                    onClick={() => setSelectedImage(null)}
+                    className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 rounded-full p-2 transition-colors"
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </button>
+
+                  {/* Navigation arrows */}
+                  <button
+                    onClick={() => navigateLightbox('prev')}
+                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-[#15a249]/80 rounded-full p-2 md:p-3 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </button>
+                  <button
+                    onClick={() => navigateLightbox('next')}
+                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-[#15a249]/80 rounded-full p-2 md:p-3 transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </button>
+
+                  {/* Image */}
+                  <div className="p-4 pt-12 md:p-6 md:pt-8">
+                    <img
+                      src={selectedImage.img}
+                      alt={selectedImage.caption}
+                      className="w-full h-auto max-h-[75vh] object-contain rounded-lg"
+                    />
+                    <p className="text-center mt-4 text-white font-medium text-base md:text-lg">
+                      {selectedImage.caption}
+                    </p>
+                    
+                    {/* Dots in lightbox */}
+                    <div className="flex justify-center gap-3 mt-4">
+                      {carouselSlides.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImage({ ...carouselSlides[index], index })}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            selectedImage.index === index 
+                              ? 'bg-[#15a249] scale-125' 
+                              : 'bg-white/40'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
 
           {/* Persuasive Text */}
           <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">

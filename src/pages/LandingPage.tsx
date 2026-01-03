@@ -353,7 +353,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6 mb-12">
             <h2 className="text-2xl md:text-4xl font-bold text-black">
-              Sua Jornada para o <span className="text-[#15a249]">Lucro Real</span> Começa Aqui.
+              Sua Jornada para o <span className="text-[#3c83f6]">Lucro Real</span> Começa Aqui.
             </h2>
           </div>
 
@@ -532,7 +532,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-2xl md:text-4xl font-bold text-black">
-              Veja os <span className="text-[#15a249]">Recursos</span> na Prática
+              Veja os <span className="text-[#3c83f6]">Recursos</span> na Prática
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Conheça cada funcionalidade do app

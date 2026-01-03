@@ -224,7 +224,7 @@ const LandingPage = () => {
     {
       number: "3",
       title: "Acesse e Baixe o App",
-      description: "Entre na área 'Já sou Cliente', faça login e instale o aplicativo no seu celular."
+      description: "Entre na área 'Já sou Cliente', faça login e instale o aplicativo no seu Iphone (IOS), Android, tablet ou computador."
     }
   ];
 
@@ -502,6 +502,31 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* 3 Passos Section - White Background */}
+      <section className="py-16 md:py-24 px-4 bg-white">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              <span className="text-brand-blue">3 Passos Simples</span> Para Começar
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {steps.map((step, index) => (
+              <div key={index} className="relative text-center space-y-4">
+                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-[#c41313] to-[#3c83f6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                  {step.number}
+                </div>
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
+                )}
+                <h3 className="text-xl font-bold text-black">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Resources Carousel Section - #000000 */}
       <section className="py-16 md:py-24 px-4 bg-black">
@@ -642,30 +667,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 px-4 bg-black">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              <span className="text-brand-blue">3 Passos Simples</span> Para Começar
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {steps.map((step, index) => (
-              <div key={index} className="relative text-center space-y-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-[#c41313] to-[#3c83f6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                  {step.number}
-                </div>
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
-                )}
-                <h3 className="text-xl font-bold text-white">{step.title}</h3>
-                <p className="text-gray-400">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Testimonials Section - #f9f9fa */}
       <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">

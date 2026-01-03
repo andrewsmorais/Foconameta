@@ -319,7 +319,7 @@ const LandingPage = () => {
               <DialogContent className="max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw] w-full p-0 bg-black border-none">
                 <button
                   onClick={() => setVideoOpen(false)}
-                  className="absolute -top-12 right-0 md:top-2 md:right-2 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-3 right-3 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                 >
                   <X className="w-6 h-6 text-white" />
                 </button>
@@ -718,9 +718,9 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-6">
             {/* Annual Plan */}
-            <Card className="relative border-2 border-[#3c83f6] shadow-xl scale-105 bg-white">
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl md:scale-105 bg-white">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                 <span className="bg-gradient-to-r from-[#c41313] to-[#3c83f6] text-white px-4 py-1 rounded-full text-sm font-bold">
                   MAIS POPULAR
@@ -730,7 +730,7 @@ const LandingPage = () => {
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                    <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
                     <span className="text-gray-500">/ano</span>
                   </div>
                   <p className="text-sm text-gray-500">Equivale a R$ 8,16/mês</p>
@@ -773,7 +773,7 @@ const LandingPage = () => {
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-black">Plano Mensal</h3>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold text-black">R$ 12,90</span>
+                    <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-black">R$ 12,90</span>
                     <span className="text-gray-500">/mês</span>
                   </div>
                   <p className="text-sm text-gray-500">Flexibilidade total</p>
@@ -806,9 +806,9 @@ const LandingPage = () => {
           </div>
 
           <div className="text-center mt-10">
-            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-xl bg-green-600">
-              <ShieldCheck className="h-6 w-6 md:h-8 md:w-8 text-white" />
-              <span className="text-base md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            <div className="inline-flex items-center gap-2 md:gap-3 px-4 py-3 md:px-8 md:py-5 rounded-xl bg-green-600">
+              <ShieldCheck className="h-5 w-5 md:h-8 md:w-8 text-white flex-shrink-0" />
+              <span className="text-sm md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia ou Seu Dinheiro de Volta</span>
             </div>
           </div>
         </div>
@@ -858,9 +858,9 @@ const LandingPage = () => {
           </Button>
 
           <div className="pt-6">
-            <div className="inline-flex items-center gap-3 px-6 py-4 md:px-8 md:py-5 rounded-xl bg-green-600">
-              <ShieldCheck className="h-6 w-6 md:h-8 md:w-8 text-white" />
-              <span className="text-base md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia de Satisfação ou Seu Dinheiro de Volta</span>
+            <div className="inline-flex items-center gap-2 md:gap-3 px-4 py-3 md:px-8 md:py-5 rounded-xl bg-green-600">
+              <ShieldCheck className="h-5 w-5 md:h-8 md:w-8 text-white flex-shrink-0" />
+              <span className="text-sm md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia ou Seu Dinheiro de Volta</span>
             </div>
           </div>
 

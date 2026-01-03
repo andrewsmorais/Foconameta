@@ -484,7 +484,7 @@ const LandingPage = () => {
 
           {/* Persuasive Text */}
           <div className="text-center mt-10 space-y-6 max-w-3xl mx-auto">
-            <p className="text-white/90 text-base md:text-lg leading-relaxed font-medium">
+            <p className="text-gray-700 text-base md:text-lg leading-relaxed font-medium">
               Controle seus turnos, veja seu <strong className="text-[#3c83f6]">lucro real</strong> e domine suas finanças em segundos. 
               A <strong className="text-[#15a249]">gestão profissional</strong> que você merece, com a simplicidade que você precisa.
             </p>
@@ -527,14 +527,14 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Resources Carousel Section - #000000 */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* Resources Carousel Section - White Background */}
+      <section className="py-16 md:py-24 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              Veja os <span className="text-[#15a249] drop-shadow-[0_0_10px_rgba(21,162,73,0.5)]">Recursos</span> na Prática
+            <h2 className="text-2xl md:text-4xl font-bold text-black">
+              Veja os <span className="text-[#15a249]">Recursos</span> na Prática
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Conheça cada funcionalidade do app
             </p>
           </div>
@@ -553,7 +553,7 @@ const LandingPage = () => {
                 <CarouselItem key={index} className="basis-full md:basis-4/5">
                   <div className="px-2 md:px-4">
                     <div 
-                      className="bg-gray-900/80 rounded-2xl shadow-[0_0_30px_rgba(21,162,73,0.2)] p-3 md:p-4 border border-[#15a249]/30 cursor-pointer group relative"
+                      className="bg-white rounded-2xl shadow-lg p-3 md:p-4 border border-gray-200 cursor-pointer group relative"
                       onClick={() => setSelectedResourceImage({ ...slide, index })}
                     >
                       <div className="relative overflow-hidden rounded-xl">
@@ -569,11 +569,11 @@ const LandingPage = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="text-center mt-3 text-white font-medium text-sm md:text-base">
+                      <p className="text-center mt-3 text-black font-medium text-sm md:text-base">
                         {slide.caption}
                       </p>
                       {/* Mobile tap hint */}
-                      <p className="text-center text-white/50 text-xs mt-1 md:hidden">
+                      <p className="text-center text-gray-500 text-xs mt-1 md:hidden">
                         Toque para ampliar
                       </p>
                     </div>
@@ -581,8 +581,8 @@ const LandingPage = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12 bg-gray-900 border-[#15a249]/50 text-white hover:bg-gray-800 hover:border-[#15a249] shadow-md" />
-            <CarouselNext className="hidden md:flex -right-12 bg-gray-900 border-[#15a249]/50 text-white hover:bg-gray-800 hover:border-[#15a249] shadow-md" />
+            <CarouselPrevious className="hidden md:flex -left-12 bg-white border-gray-300 text-black hover:bg-gray-100 hover:border-gray-400 shadow-md" />
+            <CarouselNext className="hidden md:flex -right-12 bg-white border-gray-300 text-black hover:bg-gray-100 hover:border-gray-400 shadow-md" />
           </Carousel>
 
           {/* Dynamic dots indicator */}
@@ -594,7 +594,7 @@ const LandingPage = () => {
                 className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                   resourcesCurrentSlide === index 
                     ? 'bg-[#15a249] scale-125 shadow-[0_0_8px_rgba(21,162,73,0.6)]' 
-                    : 'bg-white/40 hover:bg-white/60'
+                    : 'bg-gray-300 hover:bg-gray-400'
                 }`}
                 aria-label={`Ir para slide ${index + 1}`}
               />
@@ -602,7 +602,7 @@ const LandingPage = () => {
           </div>
 
           {/* Swipe hint for mobile */}
-          <p className="text-center text-white/50 text-sm mt-3 md:hidden">
+          <p className="text-center text-gray-500 text-sm mt-3 md:hidden">
             ← Arraste para ver mais →
           </p>
 

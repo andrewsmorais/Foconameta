@@ -684,8 +684,8 @@ const LandingPage = () => {
             
             {/* Right - Text */}
             <div className="space-y-6 order-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#3c83f6]">
-                Chega de 'bater lata'. É hora de bater a meta com inteligência
+              <h2 className="text-2xl md:text-3xl font-bold text-black">
+                Chega de '<span className="text-[#3c83f6]">bater lata</span>'. É hora de bater a meta com <span className="text-[#3c83f6]">inteligência</span>
               </h2>
               <p className="text-black text-base md:text-lg leading-relaxed font-medium">
                 Eu também sou motorista e sei que o segredo do lucro está no controle. 

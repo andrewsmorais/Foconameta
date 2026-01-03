@@ -884,17 +884,6 @@ const FinalizarAssinatura = () => {
                     <MercadoPagoLogo />
                   </div>
                   
-                  {/* Site Protegido Badge */}
-                  <div className="flex items-center justify-center">
-                    <div className="flex items-center gap-2 border border-[#25D366] rounded-md px-4 py-2">
-                      <ShieldCheck className="h-10 w-10 text-[#25D366]" />
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-[#25D366] font-medium uppercase tracking-wide">Compra Segura</span>
-                        <span className="text-sm font-bold text-[#25D366] leading-tight">SITE PROTEGIDO</span>
-                        <span className="text-[10px] text-[#25D366] font-medium uppercase tracking-wide">Certificado SSL</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </CardContent>
             </Card>

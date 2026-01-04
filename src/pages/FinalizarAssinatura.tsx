@@ -270,9 +270,15 @@ const FinalizarAssinatura = () => {
     setLoading(true);
 
     try {
+      console.log("[Checkout] === INICIANDO PAGAMENTO COM CARTÃO ===");
+      console.log("[Checkout] MP_PUBLIC_KEY:", MP_PUBLIC_KEY);
+      console.log("[Checkout] Card brand detected:", cardBrand);
+      console.log("[Checkout] MP Ready:", mpReady);
+      
       // Initialize MercadoPago
       // @ts-expect-error MercadoPago is loaded from SDK
       const mp = new window.MercadoPago(MP_PUBLIC_KEY);
+      console.log("[Checkout] MercadoPago SDK inicializado");
       
       // Parse expiry date
       const [expMonth, expYear] = cardData.expiry.split("/");
@@ -289,15 +295,33 @@ const FinalizarAssinatura = () => {
         identificationNumber: formData.cpf.replace(/\D/g, ""),
       };
 
-      console.log("[Checkout] Creating card token...");
+      console.log("[Checkout] Card token data (parcial):", {
+        cardNumber: cardTokenData.cardNumber.slice(0, 6) + "******" + cardTokenData.cardNumber.slice(-4),
+        cardholderName: cardTokenData.cardholderName,
+        cardExpirationMonth: cardTokenData.cardExpirationMonth,
+        cardExpirationYear: cardTokenData.cardExpirationYear,
+        securityCode: "***",
+        identificationType: cardTokenData.identificationType,
+        identificationNumber: cardTokenData.identificationNumber.slice(0, 3) + "***" + cardTokenData.identificationNumber.slice(-2),
+      });
+
+      console.log("[Checkout] Criando card token via SDK...");
       
-      const tokenResponse = await mp.createCardToken(cardTokenData);
+      let tokenResponse;
+      try {
+        tokenResponse = await mp.createCardToken(cardTokenData);
+        console.log("[Checkout] Token response completo:", JSON.stringify(tokenResponse, null, 2));
+      } catch (tokenError) {
+        console.error("[Checkout] ERRO ao criar token:", tokenError);
+        throw new Error(`Erro ao validar cartão: ${tokenError instanceof Error ? tokenError.message : String(tokenError)}`);
+      }
       
-      if (tokenResponse.error) {
-        throw new Error(tokenResponse.error);
+      if (tokenResponse.error || !tokenResponse.id) {
+        console.error("[Checkout] Token criado com erro:", tokenResponse);
+        throw new Error(tokenResponse.message || tokenResponse.error || "Dados do cartão inválidos. Verifique e tente novamente.");
       }
 
-      console.log("[Checkout] Card token created:", tokenResponse.id);
+      console.log("[Checkout] ✓ Card token criado com sucesso:", tokenResponse.id);
 
       // Split name for API
       const nameParts = formData.fullName.trim().split(" ");
@@ -337,8 +361,22 @@ const FinalizarAssinatura = () => {
         toast.error(data.error || "Pagamento não aprovado. Tente novamente.");
       }
     } catch (error: unknown) {
-      console.error("[Checkout] Card payment error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Erro ao processar pagamento";
+      console.error("[Checkout] === ERRO NO PAGAMENTO COM CARTÃO ===");
+      console.error("[Checkout] Erro completo:", error);
+      
+      let errorMessage = "Erro ao processar pagamento";
+      
+      if (error instanceof Error) {
+        console.error("[Checkout] Mensagem do erro:", error.message);
+        if (error.message.includes("token") || error.message.includes("cartão") || error.message.includes("validar")) {
+          errorMessage = error.message;
+        } else if (error.message.includes("network") || error.message.includes("fetch") || error.message.includes("Failed to fetch")) {
+          errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast.error(errorMessage);
     } finally {
       setLoading(false);

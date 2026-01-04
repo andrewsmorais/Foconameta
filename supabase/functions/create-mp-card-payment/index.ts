@@ -111,6 +111,8 @@ serve(async (req) => {
       external_reference: JSON.stringify({
         planType,
         fullName,
+        phone: payer.phone || "",
+        cpf: payer.identification?.number || "",
         timestamp: Date.now(),
       }),
       notification_url: "https://grfyoqsbypvvuzdudtgu.supabase.co/functions/v1/mercadopago-payment-webhook",

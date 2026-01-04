@@ -293,7 +293,7 @@ serve(async (req) => {
     console.log("[MP Payment Webhook] Status:", status, "Email:", payerEmail, "Amount:", transactionAmount);
 
     // Parse external_reference como JSON para obter dados do cliente
-    let refData = { planType: "", fullName: "", phone: "" };
+    let refData = { planType: "", fullName: "", phone: "", cpf: "" };
     try {
       refData = JSON.parse(externalReference);
       console.log("[MP Payment Webhook] Parsed external_reference:", refData);
@@ -365,6 +365,8 @@ serve(async (req) => {
         .upsert({
           id: user.id,
           nome_completo: customerName,
+          telefone: refData.phone || null,
+          cpf: refData.cpf || null,
           status: "active",
           updated_at: new Date().toISOString(),
         }, { onConflict: "id" });

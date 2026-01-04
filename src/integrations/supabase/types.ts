@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_checkouts: {
+        Row: {
+          converted_at: string | null
+          coupon_code: string | null
+          created_at: string | null
+          email: string
+          id: string
+          plan_type: string
+          preapproval_id: string | null
+          reminder_sent_at: string | null
+          status: string
+        }
+        Insert: {
+          converted_at?: string | null
+          coupon_code?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          plan_type?: string
+          preapproval_id?: string | null
+          reminder_sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          converted_at?: string | null
+          coupon_code?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          plan_type?: string
+          preapproval_id?: string | null
+          reminder_sent_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      discount_coupons: {
+        Row: {
+          code: string
+          created_at: string | null
+          discount_percent: number
+          discounted_price: number
+          email: string
+          id: string
+          original_price: number
+          plan_type: string
+          used_at: string | null
+          valid_until: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          discount_percent?: number
+          discounted_price: number
+          email: string
+          id?: string
+          original_price: number
+          plan_type: string
+          used_at?: string | null
+          valid_until: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          discount_percent?: number
+          discounted_price?: number
+          email?: string
+          id?: string
+          original_price?: number
+          plan_type?: string
+          used_at?: string | null
+          valid_until?: string
+        }
+        Relationships: []
+      }
       ganhos_despesas: {
         Row: {
           categoria: string

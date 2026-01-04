@@ -511,6 +511,22 @@ serve(async (req) => {
       const purchaseValue = isAnnual ? 97.90 : 12.90;
       await sendFacebookConversionEvent("Purchase", payerEmail, purchaseValue, "BRL");
 
+      // Mark abandoned checkout as converted
+      await supabaseAdmin
+        .from("abandoned_checkouts")
+        .update({ 
+          status: "converted", 
+          converted_at: new Date().toISOString() 
+        })
+        .eq("email", payerEmail);
+
+      // Mark coupon as used (if any)
+      await supabaseAdmin
+        .from("discount_coupons")
+        .update({ used_at: new Date().toISOString() })
+        .eq("email", payerEmail)
+        .is("used_at", null);
+
       console.log("[MP Webhook] User setup completed for:", payerEmail, "Plan:", planType, "New user:", isNewUser);
 
     } else if (status === "paused" || status === "cancelled") {

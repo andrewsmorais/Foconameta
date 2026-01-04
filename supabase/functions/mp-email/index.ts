@@ -1,6 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const MP_ACCESS_TOKEN = Deno.env.get("MP_ACCESS_TOKEN");
+
+const supabaseAdmin = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 const ALLOWED_ORIGINS = [
   "https://bateuameta.com",
@@ -12,6 +19,7 @@ const PLANS = {
   mensal: {
     name: "Plano Mensal",
     price: "R$ 12,90/mês",
+    discountedPrice: "R$ 11,61/mês",
     reason: "Bateu a Meta - Plano Mensal",
     auto_recurring: {
       frequency: 1,
@@ -19,15 +27,28 @@ const PLANS = {
       transaction_amount: 12.90,
       currency_id: "BRL",
     },
+    discounted_auto_recurring: {
+      frequency: 1,
+      frequency_type: "months",
+      transaction_amount: 11.61,
+      currency_id: "BRL",
+    },
   },
   anual: {
     name: "Plano Anual",
     price: "R$ 97,90/ano (economia de 37%)",
+    discountedPrice: "R$ 88,11/ano (economia de 44%)",
     reason: "Bateu a Meta - Plano Anual",
     auto_recurring: {
       frequency: 12,
       frequency_type: "months",
       transaction_amount: 97.90,
+      currency_id: "BRL",
+    },
+    discounted_auto_recurring: {
+      frequency: 12,
+      frequency_type: "months",
+      transaction_amount: 88.11,
       currency_id: "BRL",
     },
   },
@@ -41,8 +62,9 @@ function sanitizeOrigin(origin: string | null): string {
 }
 
 // Gera o HTML do formulário de email diretamente
-function generateEmailFormHTML(planType: string, origin: string, error?: string): string {
+function generateEmailFormHTML(planType: string, origin: string, error?: string, coupon?: string, hasDiscount?: boolean): string {
   const plan = PLANS[planType as keyof typeof PLANS] || PLANS.mensal;
+  const displayPrice = hasDiscount ? plan.discountedPrice : plan.price;
   const errorHtml = error 
     ? `<div class="error-message show">${error}</div>` 
     : '<div class="error-message" id="errorMessage"></div>';
@@ -218,7 +240,13 @@ function generateEmailFormHTML(planType: string, origin: string, error?: string)
     
     <div class="plan-info">
       <div class="plan-name">${plan.name}</div>
-      <div class="plan-price">${plan.price}</div>
+      ${hasDiscount ? `
+        <div class="plan-price" style="text-decoration: line-through; opacity: 0.6; font-size: 12px;">${plan.price}</div>
+        <div class="plan-price" style="color: #22c55e; font-weight: bold;">${displayPrice}</div>
+        <div style="background: #22c55e; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; margin-top: 8px; display: inline-block;">🎉 CUPOM 10% OFF APLICADO!</div>
+      ` : `
+        <div class="plan-price">${displayPrice}</div>
+      `}
     </div>
     
     ${errorHtml}
@@ -226,6 +254,7 @@ function generateEmailFormHTML(planType: string, origin: string, error?: string)
     <form id="checkoutForm" method="POST" action="https://grfyoqsbypvvuzdudtgu.supabase.co/functions/v1/mp-email">
       <input type="hidden" name="planType" value="${planType}">
       <input type="hidden" name="origin" value="${origin}">
+      ${coupon ? `<input type="hidden" name="coupon" value="${coupon}">` : ''}
       
       <label for="email">Seu e-mail</label>
       <input 
@@ -291,10 +320,30 @@ serve(async (req) => {
     const planType = url.searchParams.get("planType") || "mensal";
     const origin = sanitizeOrigin(url.searchParams.get("origin"));
     const error = url.searchParams.get("error") || undefined;
+    const coupon = url.searchParams.get("coupon") || undefined;
     
-    console.log("[mp-email] GET - Serving HTML directly for planType:", planType, "origin:", origin);
+    console.log("[mp-email] GET - Serving HTML directly for planType:", planType, "origin:", origin, "coupon:", coupon);
     
-    const html = generateEmailFormHTML(planType, origin, error);
+    // Check if coupon is valid
+    let hasDiscount = false;
+    if (coupon) {
+      const { data: couponData } = await supabaseAdmin
+        .from("discount_coupons")
+        .select("*")
+        .eq("code", coupon)
+        .is("used_at", null)
+        .gt("valid_until", new Date().toISOString())
+        .maybeSingle();
+      
+      if (couponData) {
+        hasDiscount = true;
+        console.log("[mp-email] Valid coupon found:", coupon);
+      } else {
+        console.log("[mp-email] Invalid or expired coupon:", coupon);
+      }
+    }
+    
+    const html = generateEmailFormHTML(planType, origin, error, coupon, hasDiscount);
     
     return new Response(html, {
       headers: {
@@ -311,13 +360,14 @@ serve(async (req) => {
       const email = formData.get("email")?.toString().trim();
       const planType = formData.get("planType")?.toString() || "mensal";
       const origin = sanitizeOrigin(formData.get("origin")?.toString() || null);
+      const coupon = formData.get("coupon")?.toString() || undefined;
       
-      console.log("[mp-email] POST - email:", email, "planType:", planType, "origin:", origin);
+      console.log("[mp-email] POST - email:", email, "planType:", planType, "origin:", origin, "coupon:", coupon);
       
       // Validate email
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         console.log("[mp-email] Invalid email, returning form with error");
-        const html = generateEmailFormHTML(planType, origin, "Por favor, insira um e-mail válido.");
+        const html = generateEmailFormHTML(planType, origin, "Por favor, insira um e-mail válido.", coupon, false);
         return new Response(html, {
           headers: { "Content-Type": "text/html; charset=utf-8" },
         });
@@ -326,18 +376,49 @@ serve(async (req) => {
       // Check MP token
       if (!MP_ACCESS_TOKEN) {
         console.error("[mp-email] MP_ACCESS_TOKEN not configured");
-        const html = generateEmailFormHTML(planType, origin, "Erro de configuração. Tente novamente mais tarde.");
+        const html = generateEmailFormHTML(planType, origin, "Erro de configuração. Tente novamente mais tarde.", coupon, false);
         return new Response(html, {
           headers: { "Content-Type": "text/html; charset=utf-8" },
         });
       }
       
+      // Save to abandoned_checkouts (before redirect)
+      await supabaseAdmin
+        .from("abandoned_checkouts")
+        .upsert({
+          email: email,
+          plan_type: planType,
+          status: "pending",
+          created_at: new Date().toISOString(),
+        }, { onConflict: "email", ignoreDuplicates: false });
+      
+      console.log("[mp-email] Saved email to abandoned_checkouts:", email);
+      
       const plan = PLANS[planType as keyof typeof PLANS] || PLANS.mensal;
       
-      // Create PreApproval
+      // Check if coupon is valid and apply discount
+      let useDiscountedPrice = false;
+      if (coupon) {
+        const { data: couponData, error: couponError } = await supabaseAdmin
+          .from("discount_coupons")
+          .select("*")
+          .eq("code", coupon)
+          .is("used_at", null)
+          .gt("valid_until", new Date().toISOString())
+          .maybeSingle();
+        
+        if (couponData && !couponError) {
+          useDiscountedPrice = true;
+          console.log("[mp-email] Applying coupon discount:", coupon);
+        } else {
+          console.log("[mp-email] Invalid or expired coupon:", coupon);
+        }
+      }
+      
+      // Create PreApproval with or without discount
       const preapprovalData = {
-        reason: plan.reason,
-        auto_recurring: plan.auto_recurring,
+        reason: useDiscountedPrice ? `${plan.reason} (10% OFF)` : plan.reason,
+        auto_recurring: useDiscountedPrice ? plan.discounted_auto_recurring : plan.auto_recurring,
         back_url: `${origin}/auth?payment_success=true`,
         payer_email: email,
       };
@@ -357,11 +438,17 @@ serve(async (req) => {
       
       if (!response.ok) {
         console.error("[mp-email] Mercado Pago error:", JSON.stringify(data));
-        const html = generateEmailFormHTML(planType, origin, "Erro ao processar. Tente novamente.");
+        const html = generateEmailFormHTML(planType, origin, "Erro ao processar. Tente novamente.", coupon, useDiscountedPrice);
         return new Response(html, {
           headers: { "Content-Type": "text/html; charset=utf-8" },
         });
       }
+      
+      // Update abandoned_checkout with preapproval_id
+      await supabaseAdmin
+        .from("abandoned_checkouts")
+        .update({ preapproval_id: data.id })
+        .eq("email", email);
       
       console.log("[mp-email] PreApproval created:", data.id);
       console.log("[mp-email] Redirecting to Mercado Pago:", data.init_point);

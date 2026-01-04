@@ -210,22 +210,30 @@ export const UsersManagement = () => {
     },
   });
 
-  // Delete user mutation
+  // Delete user mutation - COMPLETO via Edge Function
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .delete()
-        .eq("id", userId);
-      
-      if (profileError) {
-        throw profileError;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Sessão expirada. Redirecionando para login...");
+        window.location.href = "/auth";
+        throw new Error("Sessão expirada");
       }
+
+      const { data, error } = await supabase.functions.invoke("delete-user", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: { user_id: userId },
+      });
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      toast.success("Usuário excluído com sucesso!");
+      toast.success("Usuário excluído completamente!");
       setIsDeleteOpen(false);
       setSelectedUser(null);
     },

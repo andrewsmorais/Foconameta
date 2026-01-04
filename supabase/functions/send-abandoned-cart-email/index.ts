@@ -39,95 +39,117 @@ async function sendAbandonedCartEmail(
   }
 
   const prices = PLANS[planType as keyof typeof PLANS] || PLANS.mensal;
-  const checkoutUrl = `https://grfyoqsbypvvuzdudtgu.supabase.co/functions/v1/mp-email?planType=${planType}&coupon=${couponCode}`;
+  const checkoutUrl = `https://bateuameta.com/checkout?coupon=${couponCode}`;
+
+  // Extract name from email (before @)
+  const userName = email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1);
 
   const emailContent = `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Esqueceu algo? Seu cupom de 10% OFF está aqui!</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Ficou parado no semáforo? Garanta seu desconto!</title>
     </head>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5;">
-      <!-- Header Verde -->
-      <div style="background: linear-gradient(135deg, #15a249 0%, #0d7a35 100%); padding: 30px; text-align: center;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Bateu A Meta</h1>
-      </div>
-      
-      <!-- Conteúdo Principal -->
-      <div style="background: #ffffff; padding: 30px;">
-        <!-- Título -->
-        <h2 style="color: #333; margin-top: 0; font-size: 24px; text-align: center;">Esqueceu algo? 🤔</h2>
+      <!-- Container Principal -->
+      <div style="background: #ffffff; margin: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         
-        <!-- Mensagem -->
-        <p style="font-size: 16px; color: #333; line-height: 1.8;">
-          Vi que você estava prestes a assinar o <strong>Bateu a Meta</strong>, mas não finalizou. Sem problemas! Para te ajudar a tomar essa decisão, preparei algo especial:
-        </p>
+        <!-- Header com Logo -->
+        <div style="background: #ffffff; padding: 30px; text-align: center; border-bottom: 3px solid #25D366;">
+          <h1 style="color: #25D366; margin: 0; font-size: 32px; font-weight: bold;">🚗 Bateu A Meta</h1>
+        </div>
         
-        <!-- Box do Cupom -->
-        <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center; border: 2px dashed #f5a623;">
-          <h3 style="color: #333; margin: 0 0 10px 0; font-size: 16px;">🎁 CUPOM DE 10% DE DESCONTO</h3>
-          <div style="background: #333; color: #fff; padding: 15px 25px; border-radius: 8px; display: inline-block; font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 10px 0;">
-            ${couponCode}
+        <!-- Conteúdo Principal -->
+        <div style="padding: 30px;">
+          
+          <!-- Saudação Pessoal -->
+          <p style="font-size: 18px; color: #333; margin: 0 0 20px 0;">
+            Olá, <strong>${userName}</strong>!
+          </p>
+          
+          <!-- Mensagem do Andrews -->
+          <p style="font-size: 16px; color: #333; line-height: 1.8; margin: 0 0 15px 0;">
+            Aqui é o <strong>Andrews Morais</strong>. Notei que você começou a preencher seu acesso ao <strong>Bateu a Meta</strong>, mas não finalizou.
+          </p>
+          
+          <p style="font-size: 16px; color: #333; line-height: 1.8; margin: 0 0 15px 0;">
+            Eu sei como é a correria no trecho — às vezes entra uma corrida boa ou o sinal cai, né?
+          </p>
+          
+          <p style="font-size: 16px; color: #333; line-height: 1.8; margin: 0 0 25px 0;">
+            Para te ajudar a começar a ver seu <strong>lucro real</strong>, gerei um cupom especial para você.
+          </p>
+          
+          <!-- Bloco do Cupom com Borda Tracejada -->
+          <div style="border: 3px dashed #25D366; padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center; background: #f8fff8;">
+            <p style="font-size: 16px; color: #333; margin: 0 0 10px 0;">🎁</p>
+            <h2 style="color: #333; margin: 0 0 10px 0; font-size: 22px; font-weight: bold;">
+              CUPOM: META10
+            </h2>
+            <p style="color: #25D366; font-size: 20px; font-weight: bold; margin: 0 0 15px 0;">
+              (10% de DESCONTO)
+            </p>
+            <p style="color: #d32f2f; margin: 0; font-weight: bold; font-size: 14px;">
+              ⏰ Válido apenas pelas próximas 24 horas.
+            </p>
           </div>
-          <p style="color: #d32f2f; margin: 15px 0 0 0; font-weight: bold; font-size: 16px;">
-            ⏰ Válido por apenas 24 HORAS!
-          </p>
-        </div>
-        
-        <!-- Preços com Desconto -->
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 25px 0;">
-          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">💰 Com esse cupom, seu plano fica assim:</h3>
-          <p style="font-size: 16px; margin: 8px 0; color: #333;">
-            • <strong>Plano Mensal:</strong> <span style="text-decoration: line-through; color: #999;">R$ ${PLANS.mensal.original.toFixed(2).replace('.', ',')}</span> por <span style="color: #15a249; font-weight: bold;">R$ ${PLANS.mensal.discounted.toFixed(2).replace('.', ',')}</span>
-          </p>
-          <p style="font-size: 16px; margin: 8px 0; color: #333;">
-            • <strong>Plano Anual:</strong> <span style="text-decoration: line-through; color: #999;">R$ ${PLANS.anual.original.toFixed(2).replace('.', ',')}</span> por <span style="color: #15a249; font-weight: bold;">R$ ${PLANS.anual.discounted.toFixed(2).replace('.', ',')}</span>
-          </p>
-        </div>
-        
-        <!-- Botão Principal -->
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${checkoutUrl}" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 18px 40px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
-            🎯 USAR MEU CUPOM AGORA
-          </a>
-        </div>
-        
-        <!-- Aviso de Urgência -->
-        <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 25px 0; text-align: center; border-left: 4px solid #d32f2f;">
-          <p style="font-size: 14px; color: #c62828; margin: 0; font-weight: bold;">
-            ⚠️ Este cupom expira em 24 horas. Depois disso, o desconto não estará mais disponível!
-          </p>
-        </div>
-        
-        <!-- Benefícios -->
-        <div style="margin: 25px 0;">
-          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">✅ O que você ganha com o Bateu a Meta:</h3>
-          <ul style="font-size: 15px; color: #333; line-height: 2;">
-            <li>Controle total dos seus ganhos e despesas</li>
-            <li>Acompanhamento de metas diárias, semanais e mensais</li>
-            <li>Relatórios completos de performance</li>
-            <li>Controle de combustível e manutenção</li>
-            <li>Suporte via WhatsApp</li>
-          </ul>
-        </div>
-        
-        <!-- Assinatura -->
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-          <p style="font-size: 16px; color: #333; margin: 0; font-weight: bold;">
-            Tamo junto no trecho! 🚗
-          </p>
-          <p style="font-size: 16px; color: #666; margin: 5px 0 0 0;">
-            Andrews Morais & Equipe Bateu a Meta
-          </p>
-        </div>
-        
-        <!-- Links Úteis -->
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 25px; text-align: center;">
-          <p style="font-size: 13px; color: #666; margin: 0;">
-            Dúvidas? <a href="https://wa.me/5512981796135" style="color: #25D366;">Chama no WhatsApp</a> • 
-            <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C;">@bateu_meta</a>
-          </p>
+          
+          <!-- Preços com Desconto -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 25px 0;">
+            <p style="font-size: 16px; margin: 8px 0; color: #333;">
+              • <strong>Plano Mensal:</strong> <span style="text-decoration: line-through; color: #999;">R$ ${PLANS.mensal.original.toFixed(2).replace('.', ',')}</span> por <span style="color: #25D366; font-weight: bold;">R$ ${PLANS.mensal.discounted.toFixed(2).replace('.', ',')}</span>
+            </p>
+            <p style="font-size: 16px; margin: 8px 0; color: #333;">
+              • <strong>Plano Anual:</strong> <span style="text-decoration: line-through; color: #999;">R$ ${PLANS.anual.original.toFixed(2).replace('.', ',')}</span> por <span style="color: #25D366; font-weight: bold;">R$ ${PLANS.anual.discounted.toFixed(2).replace('.', ',')}</span>
+            </p>
+          </div>
+          
+          <!-- Botão CTA Verde -->
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${checkoutUrl}" style="display: inline-block; background: #25D366; color: white; padding: 18px 40px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold; text-transform: uppercase;">
+              RESGATAR MEU DESCONTO AGORA
+            </a>
+          </div>
+          
+          <!-- Link do Manual -->
+          <div style="text-align: center; margin: 25px 0;">
+            <p style="font-size: 15px; color: #666; margin: 0;">
+              Ainda tem dúvidas? 
+              <a href="https://www.youtube.com/watch?v=8mqtvi0tvsU" style="color: #1976d2; text-decoration: underline; font-weight: bold;">
+                Veja como o app funciona
+              </a>
+            </p>
+          </div>
+          
+          <!-- Assinatura -->
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="font-size: 18px; color: #333; margin: 0; font-weight: bold;">
+              Tamo junto no trecho! 🚗
+            </p>
+            <p style="font-size: 16px; color: #666; margin: 10px 0 0 0;">
+              Andrews Morais & Equipe Bateu a Meta
+            </p>
+          </div>
+          
+          <!-- Rodapé com Contatos -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 25px; text-align: center;">
+            <p style="font-size: 14px; color: #666; margin: 0 0 10px 0;">
+              <strong>Precisa de ajuda?</strong>
+            </p>
+            <p style="font-size: 14px; color: #666; margin: 0;">
+              <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none; font-weight: bold;">
+                📱 WhatsApp: (12) 98179-6135
+              </a>
+            </p>
+            <p style="font-size: 14px; color: #666; margin: 8px 0 0 0;">
+              <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none; font-weight: bold;">
+                📸 Instagram: @bateu_meta
+              </a>
+            </p>
+          </div>
+          
         </div>
       </div>
     </body>
@@ -144,11 +166,11 @@ async function sendAbandonedCartEmail(
       },
       body: JSON.stringify({
         sender: {
-          name: "Bateu A Meta",
+          name: "Andrews Morais | Bateu a Meta",
           email: "suporte@bateuameta.com",
         },
         to: [{ email }],
-        subject: "🎁 Esqueceu algo? Aqui está um cupom de 10% OFF válido por 24h!",
+        subject: `🏁 Ficou parado no semáforo, ${email.split("@")[0]}? Garanta seu desconto!`,
         htmlContent: emailContent,
       }),
     });

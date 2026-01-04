@@ -11,8 +11,6 @@ const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 async function sendWelcomeEmail(email: string, name: string, password: string) {
   console.log(`Sending welcome email to ${email}`);
   
-  const appUrl = "https://bateuameta.com";
-  
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -20,50 +18,85 @@ async function sendWelcomeEmail(email: string, name: string, password: string) {
       <meta charset="utf-8">
       <title>Bem-vindo ao Bateu A Meta!</title>
     </head>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <div style="background: linear-gradient(135deg, #15a249 0%, #0d7a35 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5;">
+      <!-- Header Verde -->
+      <div style="background: linear-gradient(135deg, #15a249 0%, #0d7a35 100%); padding: 30px; text-align: center;">
         <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Bateu A Meta</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Sua assinatura foi aprovada!</p>
       </div>
       
-      <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-        <h2 style="color: #15a249; margin-top: 0;">Olá, ${name || 'Motorista'}!</h2>
+      <!-- Conteúdo Principal -->
+      <div style="background: #ffffff; padding: 30px;">
+        <!-- Saudação -->
+        <h2 style="color: #333; margin-top: 0; font-size: 24px;">Olá, ${name}! 🎉</h2>
         
-        <p>Parabéns! Sua assinatura do <strong>Bateu A Meta</strong> foi aprovada com sucesso. Agora você tem acesso completo ao dashboard financeiro mais completo para motoristas de aplicativo.</p>
-        
-        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #15a249;">
-          <h3 style="margin-top: 0; color: #333;">📧 Seus dados de acesso:</h3>
-          <p style="margin: 5px 0;"><strong>Usuário:</strong> ${email}</p>
-          <p style="margin: 5px 0;"><strong>Senha:</strong> ${password}</p>
-        </div>
-        
-        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p style="margin: 0; color: #856404;"><strong>⚠️ Importante:</strong> Recomendamos que você altere sua senha após o primeiro acesso nas configurações do aplicativo.</p>
-        </div>
-        
-        <h3 style="color: #15a249;">🎯 O QUE FAZER AGORA:</h3>
-        <ol style="padding-left: 20px;">
-          <li style="margin-bottom: 10px;">Clique no botão abaixo para acessar o aplicativo</li>
-          <li style="margin-bottom: 10px;">Cadastre seu veículo e registre seu primeiro turno</li>
-          <li style="margin-bottom: 10px;">Acompanhe seu lucro líquido real no Dashboard</li>
-        </ol>
-        
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${appUrl}/auth?payment_success=true" style="background: #15a249; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px;">ENTRAR NO APLICATIVO</a>
-        </div>
-        
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-        
-        <p style="color: #666; font-size: 14px;">
-          <strong>Precisa de ajuda?</strong><br>
-          📱 WhatsApp: (12) 98179-6135<br>
-          📸 Instagram: @bateu_meta
+        <!-- Mensagem do Andrews -->
+        <p style="font-size: 16px; color: #333; line-height: 1.8;">
+          Aqui é o <strong>Andrews Morais</strong>. Fico feliz em ter você conosco! A partir de agora, você não vai mais "bater lata" sem saber o seu lucro. Você tem em mãos a ferramenta certa para dominar suas finanças e bater suas metas com inteligência.
         </p>
         
-        <p style="color: #999; font-size: 12px; margin-top: 20px;">
-          Este email foi enviado automaticamente pelo sistema Bateu A Meta.<br>
-          © 2024 Bateu A Meta - Todos os direitos reservados.
-        </p>
+        <!-- Box de Dados de Acesso -->
+        <div style="background: #ffffff; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #15a249; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">🔑 SEUS DADOS DE ACESSO:</h3>
+          <p style="font-size: 16px; margin: 8px 0; color: #333;">
+            <strong>Usuário:</strong> ${email}
+          </p>
+          <p style="font-size: 16px; margin: 8px 0; color: #333;">
+            <strong>Senha:</strong> ${password}
+          </p>
+          <p style="font-size: 14px; color: #666; margin: 15px 0 0 0; font-style: italic;">
+            (Dica: Guarde este e-mail ou tire um print para consultas futuras)
+          </p>
+        </div>
+        
+        <!-- Seção Manual do App -->
+        <div style="margin: 25px 0;">
+          <h3 style="color: #333; margin: 0 0 10px 0; font-size: 18px;">📺 PASSO A PASSO (MANUAL DO APP):</h3>
+          <p style="font-size: 16px; color: #333; margin: 0 0 15px 0;">
+            Antes de começar, assista ao vídeo rápido que preparei explicando como funciona cada detalhe do aplicativo:
+          </p>
+          <div style="text-align: center;">
+            <a href="https://www.youtube.com/watch?v=8mqtvi0tvsU" style="display: inline-block; background-color: #FF0000; color: white; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
+              ▶️ Assistir ao Manual no YouTube
+            </a>
+          </div>
+        </div>
+        
+        <!-- Botão Principal -->
+        <div style="margin: 30px 0;">
+          <h3 style="color: #333; margin: 0 0 10px 0; font-size: 18px;">🚀 COMECE AGORA:</h3>
+          <p style="font-size: 16px; color: #333; margin: 0 0 15px 0;">
+            Clique no botão abaixo para acessar a área de login e cadastrar seu primeiro turno:
+          </p>
+          <div style="text-align: center;">
+            <a href="https://bateuameta.com/auth?payment_success=true" style="display: inline-block; background-color: #25D366; color: white; padding: 18px 40px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
+              👉 ENTRAR NO APLICATIVO AGORA
+            </a>
+          </div>
+        </div>
+        
+        <!-- Links Úteis -->
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 25px 0;">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">📌 LINKS ÚTEIS:</h3>
+          <p style="font-size: 15px; margin: 8px 0; color: #333;">
+            • Nosso Site: <a href="https://bateuameta.com" style="color: #15a249; text-decoration: none;">bateuameta.com</a>
+          </p>
+          <p style="font-size: 15px; margin: 8px 0; color: #333;">
+            • Dúvidas ou Suporte: <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none;">Chamar no WhatsApp</a>
+          </p>
+          <p style="font-size: 15px; margin: 8px 0; color: #333;">
+            • Instagram: <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none;">@bateu_meta</a>
+          </p>
+        </div>
+        
+        <!-- Assinatura -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="font-size: 16px; color: #333; margin: 0; font-weight: bold;">
+            Tamo junto no trecho! 🚗
+          </p>
+          <p style="font-size: 16px; color: #666; margin: 5px 0 0 0;">
+            Andrews Morais & Equipe Bateu a Meta
+          </p>
+        </div>
       </div>
     </body>
     </html>
@@ -82,7 +115,7 @@ async function sendWelcomeEmail(email: string, name: string, password: string) {
         email: "suporte@bateuameta.com",
       },
       to: [{ email }],
-      subject: "🚗 Acesso Liberado! Sua assinatura foi aprovada - Bateu A Meta",
+      subject: "Bem-vindo ao Bateu a Meta, " + name + "! 🎉 Seus dados de acesso estão aqui",
       htmlContent: emailHtml,
     }),
   });

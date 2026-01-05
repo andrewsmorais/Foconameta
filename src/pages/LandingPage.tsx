@@ -884,9 +884,9 @@ const LandingPage = () => {
               <CardContent className="p-8 space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-lg text-gray-400 line-through">de R$ 147</span>
-                    <span className="text-lg text-gray-600">por</span>
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
+                    <span className="text-xl md:text-2xl font-medium text-gray-700">por</span>
                   </div>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>

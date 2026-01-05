@@ -32,14 +32,14 @@ const Obrigado = () => {
           {/* Card de Boas-vindas Humanizado */}
           <Card className="border-gray-100 shadow-lg overflow-hidden bg-white">
             <CardContent className="p-6">
-              <div className="flex items-start gap-5">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-5">
                 <img 
                   src={fundadorImage} 
                   alt="Andrews Morais" 
-                  className="h-32 w-32 rounded-full object-cover flex-shrink-0 border-2 border-primary/20"
+                  className="h-28 w-28 md:h-32 md:w-32 rounded-full object-cover flex-shrink-0 border-2 border-primary/20"
                 />
-                <div>
-                  <p className="text-gray-700 text-lg leading-relaxed">
+                <div className="text-center md:text-left">
+                  <p className="text-gray-700 text-base md:text-lg leading-relaxed">
                     <strong className="text-gray-900">Fala, parceiro!</strong> Sou o Andrews Morais. 
                     Também sou motorista de aplicativo e sei que o nosso tempo vale ouro. 
                     Criei o <strong className="text-primary">Bateu a Meta</strong> para a gente ter controle real do lucro. 

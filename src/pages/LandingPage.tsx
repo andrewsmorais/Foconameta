@@ -69,8 +69,8 @@ import motoristaCacheado from "@/assets/testimonials/motorista-cacheado.png";
 // Founder image
 import fundadorImg from "@/assets/fundador.png";
 
-// Mercado Pago plan types
-type PlanType = "mensal" | "anual";
+// Cakto checkout URL
+const CAKTO_CHECKOUT_URL = "https://app.cakto.com.br/checkout-builder/669077";
 
 // Slides data for carousel
 const carouselSlides = [
@@ -227,17 +227,20 @@ const LandingPage = () => {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSelectPlan = async (planType: PlanType) => {
+  const handleSelectPlan = async () => {
     // Facebook Pixel - InitiateCheckout
-    const valor = planType === "anual" ? 97.90 : 12.90;
-    trackInitiateCheckout(planType === "anual" ? "Anual" : "Mensal", valor);
+    trackInitiateCheckout("Anual", 97.90);
 
     // Verificar se já tem email (usuário logado)
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
 
-    // Ir direto para o checkout (email pode ser vazio, será preenchido lá)
-    navigate(`/finalizar-assinatura?planType=${planType}${email ? `&email=${encodeURIComponent(email)}` : ''}`);
+    // Redirecionar para checkout da Cakto
+    const checkoutUrl = email 
+      ? `${CAKTO_CHECKOUT_URL}?email=${encodeURIComponent(email)}`
+      : CAKTO_CHECKOUT_URL;
+    
+    window.location.href = checkoutUrl;
   };
 
   // Rastreia cliques em contato (WhatsApp/Instagram)
@@ -303,7 +306,7 @@ const LandingPage = () => {
     },
     {
       question: "Por quanto tempo terei acesso ao Bateu A Meta?",
-      answer: "Seu acesso é conforme o plano escolhido. Ao adquirir o Plano Anual, você terá acesso por um ano completo. O Plano Mensal é renovado a cada 30 dias."
+      answer: "Ao adquirir o plano, você terá acesso por um ano completo. Após esse período, basta renovar para continuar usando."
     },
     {
       question: "Quais são as formas de pagamento aceitas?",
@@ -917,44 +920,7 @@ const LandingPage = () => {
 
                 <Button 
                   className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                  onClick={() => handleSelectPlan("anual")}
-                >
-                  COMEÇAR AGORA
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Monthly Plan */}
-            <Card className="border border-gray-200 bg-white">
-              <CardContent className="p-8 space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold text-black">Plano Mensal</h3>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-black">R$ 12,90</span>
-                    <span className="text-gray-500">/mês</span>
-                  </div>
-                  <p className="text-sm text-gray-500">Flexibilidade total</p>
-                </div>
-
-                <ul className="space-y-3">
-                  {[
-                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo" },
-                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado" },
-                    { icon: Target, text: "Metas", bold: "personalizadas" },
-                    { icon: FileText, text: "Relatórios em", bold: "PDF" },
-                    { icon: Wrench, text: "Gestão de", bold: "manutenções" },
-                    { icon: CalendarX, text: "Cancele", bold: "quando quiser" }
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-black">
-                      <item.icon className="h-5 w-5 stroke-green-600 text-green-600" strokeWidth={2} />
-                      <span>{item.text} <strong className="text-black">{item.bold}</strong></span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button 
-                  className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                  onClick={() => handleSelectPlan("mensal")}
+                  onClick={() => handleSelectPlan()}
                 >
                   COMEÇAR AGORA
                 </Button>

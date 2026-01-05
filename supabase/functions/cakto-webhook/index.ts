@@ -304,17 +304,42 @@ serve(async (req) => {
   }
 
   try {
-    // Verificar secret do webhook
-    const authHeader = req.headers.get("x-webhook-secret") || req.headers.get("authorization");
+    // Verificar secret do webhook - aceita múltiplos formatos de header
+    const possibleHeaders = [
+      req.headers.get("x-webhook-secret"),
+      req.headers.get("authorization"),
+      req.headers.get("x-cakto-secret"),
+      req.headers.get("webhook-secret"),
+      req.headers.get("x-secret"),
+    ];
+    
+    const authHeader = possibleHeaders.find(h => h !== null);
+    
+    console.log("[Cakto Webhook] Headers recebidos:", {
+      "x-webhook-secret": req.headers.get("x-webhook-secret") ? "presente" : "ausente",
+      "authorization": req.headers.get("authorization") ? "presente" : "ausente",
+      "x-cakto-secret": req.headers.get("x-cakto-secret") ? "presente" : "ausente",
+      "webhook-secret": req.headers.get("webhook-secret") ? "presente" : "ausente",
+      "authHeader usado": authHeader ? authHeader.substring(0, 10) + "..." : "nenhum",
+    });
+    
     if (CAKTO_WEBHOOK_SECRET) {
-      if (authHeader !== CAKTO_WEBHOOK_SECRET && authHeader !== `Bearer ${CAKTO_WEBHOOK_SECRET}`) {
-        console.error("[Cakto Webhook] Invalid webhook secret");
+      const secretValue = authHeader?.replace(/^Bearer\s+/i, "").trim();
+      const isValid = secretValue === CAKTO_WEBHOOK_SECRET || 
+                      authHeader === CAKTO_WEBHOOK_SECRET ||
+                      authHeader === `Bearer ${CAKTO_WEBHOOK_SECRET}`;
+      
+      if (!isValid) {
+        console.error("[Cakto Webhook] Invalid webhook secret. Recebido:", authHeader ? authHeader.substring(0, 15) + "..." : "nenhum");
+        console.error("[Cakto Webhook] Esperado começa com:", CAKTO_WEBHOOK_SECRET.substring(0, 5) + "...");
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      console.log("[Cakto Webhook] Secret verified");
+      console.log("[Cakto Webhook] Secret verificado com sucesso");
+    } else {
+      console.log("[Cakto Webhook] CAKTO_WEBHOOK_SECRET não configurado, pulando validação");
     }
 
     const body = await req.text();

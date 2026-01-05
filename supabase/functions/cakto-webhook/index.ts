@@ -304,59 +304,8 @@ serve(async (req) => {
   }
 
   try {
-    // DEBUG: Log de TODOS os headers para descobrir qual a Cakto usa
-    const allHeaders: Record<string, string> = {};
-    req.headers.forEach((value, key) => {
-      // Mascarar valores sensíveis mas mostrar o nome do header
-      allHeaders[key] = key.toLowerCase().includes('secret') || key.toLowerCase().includes('auth') || key.toLowerCase().includes('key')
-        ? `${value.substring(0, 15)}... (${value.length} chars)`
-        : value;
-    });
-    console.log("[Cakto Webhook] TODOS OS HEADERS:", JSON.stringify(allHeaders, null, 2));
-    
-    // Verificar secret do webhook - aceita múltiplos formatos de header
-    const possibleHeaders = [
-      req.headers.get("x-webhook-secret"),
-      req.headers.get("authorization"),
-      req.headers.get("x-cakto-secret"),
-      req.headers.get("webhook-secret"),
-      req.headers.get("x-secret"),
-    ];
-    
-    const authHeader = possibleHeaders.find(h => h !== null);
-    
-    console.log("[Cakto Webhook] Headers específicos:", {
-      "x-webhook-secret": req.headers.get("x-webhook-secret") ? "presente" : "ausente",
-      "authorization": req.headers.get("authorization") ? "presente" : "ausente",
-      "x-cakto-secret": req.headers.get("x-cakto-secret") ? "presente" : "ausente",
-      "webhook-secret": req.headers.get("webhook-secret") ? "presente" : "ausente",
-      "authHeader usado": authHeader ? authHeader.substring(0, 10) + "..." : "nenhum",
-    });
-    
-    // DEBUG TEMPORÁRIO: Validação desativada para testar fluxo completo
-    // Após descobrir o header correto, reativar validação
-    console.log("[Cakto Webhook] ⚠️ DEBUG MODE: Validação de secret DESATIVADA temporariamente");
-    /*
-    if (CAKTO_WEBHOOK_SECRET) {
-      const secretValue = authHeader?.replace(/^Bearer\s+/i, "").trim();
-      const isValid = secretValue === CAKTO_WEBHOOK_SECRET || 
-                      authHeader === CAKTO_WEBHOOK_SECRET ||
-                      authHeader === `Bearer ${CAKTO_WEBHOOK_SECRET}`;
-      
-      if (!isValid) {
-        console.error("[Cakto Webhook] Invalid webhook secret");
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      console.log("[Cakto Webhook] Secret verificado com sucesso");
-    }
-    */
-
     const body = await req.text();
-    console.log("[Cakto Webhook] Received:", body);
-
+    
     let data;
     try {
       data = JSON.parse(body);
@@ -368,7 +317,20 @@ serve(async (req) => {
       });
     }
 
-    console.log("[Cakto Webhook] Parsed:", JSON.stringify(data));
+    // Validar secret que vem no body (padrão da Cakto)
+    if (CAKTO_WEBHOOK_SECRET) {
+      const receivedSecret = data.secret;
+      if (!receivedSecret || receivedSecret !== CAKTO_WEBHOOK_SECRET) {
+        console.error("[Cakto Webhook] Secret inválido ou ausente");
+        return new Response(
+          JSON.stringify({ error: "Unauthorized" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      console.log("[Cakto Webhook] Secret verificado com sucesso");
+    }
+
+    console.log("[Cakto Webhook] Evento recebido:", data.event);
 
     // Cakto envia diferentes eventos
     // Estrutura típica: { event, data: { customer, sale, ... } }

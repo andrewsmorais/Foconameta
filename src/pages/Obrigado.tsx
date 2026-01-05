@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { CheckCircle2, Mail, Download, LogIn, Play, MessageCircle } from "lucide-react";
+import { Mail, Download, LogIn, Play, MessageCircle } from "lucide-react";
+import mascoteImage from "@/assets/mascote-cachorro.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
@@ -47,9 +48,11 @@ const Obrigado = () => {
           {/* Success Message */}
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="bg-blue-500 rounded-full p-4">
-                <CheckCircle2 className="h-12 w-12 text-white" />
-              </div>
+              <img 
+                src={mascoteImage} 
+                alt="Mascote Bateu a Meta" 
+                className="h-24 w-24 rounded-full object-cover shadow-lg"
+              />
             </div>
             <h1 className="text-3xl font-bold text-gray-900">
               Pagamento Confirmado!

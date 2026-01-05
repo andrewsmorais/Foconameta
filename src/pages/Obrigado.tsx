@@ -3,6 +3,7 @@ import fundadorImage from "@/assets/fundador.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
+import cachorroImage from "@/assets/cachorro-praia.jpeg";
 
 const Obrigado = () => {
   return (
@@ -10,7 +11,7 @@ const Obrigado = () => {
       {/* Header */}
       <header className="py-6 px-4">
         <div className="max-w-lg mx-auto flex justify-center">
-          <img src={logoImage} alt="Bateu a Meta" className="h-12 w-auto" />
+          <img src={cachorroImage} alt="Cachorro na praia" className="h-16 w-16 rounded-full object-cover" />
         </div>
       </header>
 

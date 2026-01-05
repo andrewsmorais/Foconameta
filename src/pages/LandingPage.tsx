@@ -878,17 +878,16 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-6">
+          <div className="flex justify-center mt-6">
             {/* Annual Plan */}
-            <Card className="relative border-2 border-[#3c83f6] shadow-xl md:scale-105 bg-white">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-[#c41313] to-[#3c83f6] text-white px-4 py-1 rounded-full text-sm font-bold">
-                  MAIS POPULAR
-                </span>
-              </div>
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-white max-w-md w-full">
               <CardContent className="p-8 space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-lg text-gray-400 line-through">de R$ 147</span>
+                    <span className="text-lg text-gray-600">por</span>
+                  </div>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
                     <span className="text-gray-500">/ano</span>

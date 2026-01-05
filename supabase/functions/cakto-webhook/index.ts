@@ -323,15 +323,7 @@ serve(async (req) => {
       "authHeader usado": authHeader ? authHeader.substring(0, 10) + "..." : "nenhum",
     });
     
-    // DEBUG TEMPORÁRIO: Validação desativada para testar fluxo completo
-    // TODO: Reativar após confirmar que o email está sendo enviado
-    console.log("[Cakto Webhook] ⚠️ DEBUG MODE: Validação de secret DESATIVADA temporariamente");
-    console.log("[Cakto Webhook] Headers recebidos para referência:", {
-      authHeader: authHeader ? authHeader.substring(0, 20) + "..." : "nenhum",
-      secretConfigurado: CAKTO_WEBHOOK_SECRET ? "sim" : "não"
-    });
-    
-    /*
+    // Validação do secret reativada
     if (CAKTO_WEBHOOK_SECRET) {
       const secretValue = authHeader?.replace(/^Bearer\s+/i, "").trim();
       const isValid = secretValue === CAKTO_WEBHOOK_SECRET || 
@@ -347,7 +339,6 @@ serve(async (req) => {
       }
       console.log("[Cakto Webhook] Secret verificado com sucesso");
     }
-    */
 
     const body = await req.text();
     console.log("[Cakto Webhook] Received:", body);

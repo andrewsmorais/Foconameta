@@ -39,7 +39,7 @@ async function sendAbandonedCartEmail(
     return false;
   }
 
-  const checkoutUrl = `https://app.cakto.com.br/checkout-builder/669077?email=${encodeURIComponent(email)}`;
+  const checkoutUrl = `https://pay.cakto.com.br/pxje8kx_669077?email=${encodeURIComponent(email)}`;
 
   // Extract name from email (before @)
   const userName = email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1);

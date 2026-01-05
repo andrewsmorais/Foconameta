@@ -70,7 +70,7 @@ import motoristaCacheado from "@/assets/testimonials/motorista-cacheado.png";
 import fundadorImg from "@/assets/fundador.png";
 
 // Cakto checkout URL
-const CAKTO_CHECKOUT_URL = "https://app.cakto.com.br/checkout-builder/669077";
+const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/pxje8kx_669077";
 
 // Slides data for carousel
 const carouselSlides = [

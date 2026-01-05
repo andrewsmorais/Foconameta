@@ -7,7 +7,7 @@ import { Check, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 
-const CAKTO_CHECKOUT_URL = "https://app.cakto.com.br/checkout-builder/669077";
+const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/pxje8kx_669077";
 
 const Planos = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

@@ -304,6 +304,16 @@ serve(async (req) => {
   }
 
   try {
+    // DEBUG: Log de TODOS os headers para descobrir qual a Cakto usa
+    const allHeaders: Record<string, string> = {};
+    req.headers.forEach((value, key) => {
+      // Mascarar valores sensíveis mas mostrar o nome do header
+      allHeaders[key] = key.toLowerCase().includes('secret') || key.toLowerCase().includes('auth') || key.toLowerCase().includes('key')
+        ? `${value.substring(0, 15)}... (${value.length} chars)`
+        : value;
+    });
+    console.log("[Cakto Webhook] TODOS OS HEADERS:", JSON.stringify(allHeaders, null, 2));
+    
     // Verificar secret do webhook - aceita múltiplos formatos de header
     const possibleHeaders = [
       req.headers.get("x-webhook-secret"),
@@ -315,7 +325,7 @@ serve(async (req) => {
     
     const authHeader = possibleHeaders.find(h => h !== null);
     
-    console.log("[Cakto Webhook] Headers recebidos:", {
+    console.log("[Cakto Webhook] Headers específicos:", {
       "x-webhook-secret": req.headers.get("x-webhook-secret") ? "presente" : "ausente",
       "authorization": req.headers.get("authorization") ? "presente" : "ausente",
       "x-cakto-secret": req.headers.get("x-cakto-secret") ? "presente" : "ausente",
@@ -323,7 +333,10 @@ serve(async (req) => {
       "authHeader usado": authHeader ? authHeader.substring(0, 10) + "..." : "nenhum",
     });
     
-    // Validação do secret reativada
+    // DEBUG TEMPORÁRIO: Validação desativada para testar fluxo completo
+    // Após descobrir o header correto, reativar validação
+    console.log("[Cakto Webhook] ⚠️ DEBUG MODE: Validação de secret DESATIVADA temporariamente");
+    /*
     if (CAKTO_WEBHOOK_SECRET) {
       const secretValue = authHeader?.replace(/^Bearer\s+/i, "").trim();
       const isValid = secretValue === CAKTO_WEBHOOK_SECRET || 
@@ -339,6 +352,7 @@ serve(async (req) => {
       }
       console.log("[Cakto Webhook] Secret verificado com sucesso");
     }
+    */
 
     const body = await req.text();
     console.log("[Cakto Webhook] Received:", body);

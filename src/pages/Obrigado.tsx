@@ -33,7 +33,7 @@ const Obrigado = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
       {/* Header */}
       <header className="py-6 px-4">
         <div className="max-w-lg mx-auto flex justify-center">
@@ -47,7 +47,7 @@ const Obrigado = () => {
           {/* Success Message */}
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="bg-green-500 rounded-full p-4">
+              <div className="bg-blue-500 rounded-full p-4">
                 <CheckCircle2 className="h-12 w-12 text-white" />
               </div>
             </div>
@@ -71,13 +71,13 @@ const Obrigado = () => {
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <div className="bg-green-100 rounded-full h-10 w-10 flex items-center justify-center">
-                          <span className="text-green-600 font-bold">{passo.numero}</span>
+                        <div className="bg-blue-100 rounded-full h-10 w-10 flex items-center justify-center">
+                          <span className="text-blue-600 font-bold">{passo.numero}</span>
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <passo.icone className="h-4 w-4 text-green-600" />
+                          <passo.icone className="h-4 w-4 text-blue-600" />
                           <h3 className="font-semibold text-gray-900">{passo.titulo}</h3>
                         </div>
                         <p className="text-sm text-gray-600">{passo.descricao}</p>
@@ -91,14 +91,14 @@ const Obrigado = () => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white h-12 text-lg">
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 text-lg">
               <Link to="/auth">
                 <LogIn className="mr-2 h-5 w-5" />
                 Acessar o App
               </Link>
             </Button>
             
-            <Button asChild variant="outline" className="w-full h-12 text-lg border-green-600 text-green-700 hover:bg-green-50">
+            <Button asChild variant="outline" className="w-full h-12 text-lg border-blue-600 text-blue-700 hover:bg-blue-50">
               <Link to="/instalar">
                 <Download className="mr-2 h-5 w-5" />
                 Como Instalar
@@ -115,7 +115,7 @@ const Obrigado = () => {
               href="https://wa.me/5511999999999?text=Olá! Acabei de assinar o Bateu a Meta e preciso de ajuda."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
             >
               <MessageCircle className="h-4 w-4" />
               Falar no WhatsApp

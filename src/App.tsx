@@ -20,7 +20,6 @@ import Instalar from "./pages/Instalar";
 import Planos from "./pages/Planos";
 import PagamentoSucesso from "./pages/PagamentoSucesso";
 import LandingPage from "./pages/LandingPage";
-import FinalizarAssinatura from "./pages/FinalizarAssinatura";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { OfflineProvider } from "./contexts/OfflineContext";
 import { usePWAUpdate } from "./hooks/usePWAUpdate";
@@ -142,7 +141,6 @@ const AppContent = () => {
           }
         />
         <Route path="/instalar" element={<Instalar />} />
-        <Route path="/finalizar-assinatura" element={<FinalizarAssinatura />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

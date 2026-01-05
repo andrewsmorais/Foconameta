@@ -9,9 +9,6 @@ verify_jwt = true
 [functions.delete-user]
 verify_jwt = true
 
-[functions.create-checkout]
-verify_jwt = false
-
 [functions.check-subscription]
 verify_jwt = true
 
@@ -27,29 +24,11 @@ verify_jwt = true
 [functions.get-pending-registration]
 verify_jwt = false
 
-[functions.create-mp-checkout]
-verify_jwt = false
-
-[functions.mercadopago-webhook]
-verify_jwt = false
-
-[functions.mp-email]
-verify_jwt = false
-
-[functions.create-mp-preference]
-verify_jwt = false
-
-[functions.mercadopago-payment-webhook]
-verify_jwt = false
-
-[functions.create-mp-pix-payment]
-verify_jwt = false
-
-[functions.create-mp-card-payment]
-verify_jwt = false
-
 [functions.send-abandoned-cart-email]
 verify_jwt = false
 
 [functions.checkout-debug-log]
+verify_jwt = false
+
+[functions.cakto-webhook]
 verify_jwt = false

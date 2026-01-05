@@ -6,11 +6,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const MP_ACCESS_TOKEN = Deno.env.get("MP_ACCESS_TOKEN");
+const CAKTO_WEBHOOK_SECRET = Deno.env.get("CAKTO_WEBHOOK_SECRET");
 const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 const FB_ACCESS_TOKEN = Deno.env.get("FB_ACCESS_TOKEN");
 const FB_PIXEL_ID = "1290319795205025";
-const APP_URL = "https://bateuameta.lovable.app";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -27,6 +26,11 @@ async function hashSHA256(str: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+// Gerar senha aleatória de 7 dígitos
+function generatePassword(): string {
+  return Math.floor(1000000 + Math.random() * 9000000).toString();
+}
+
 // Função para enviar evento para Facebook Conversions API
 async function sendFacebookConversionEvent(
   eventName: string,
@@ -35,7 +39,7 @@ async function sendFacebookConversionEvent(
   currency: string = "BRL"
 ) {
   if (!FB_ACCESS_TOKEN) {
-    console.log("[FB Conversions API] Token não configurado, pulando envio");
+    console.log("[Cakto Webhook] FB Token não configurado, pulando envio");
     return;
   }
 
@@ -69,18 +73,18 @@ async function sendFacebookConversionEvent(
     const result = await response.json();
     
     if (response.ok) {
-      console.log("[FB Conversions API] Evento enviado com sucesso:", eventName, result);
+      console.log("[Cakto Webhook] FB Event enviado:", eventName, result);
     } else {
-      console.error("[FB Conversions API] Erro ao enviar evento:", result);
+      console.error("[Cakto Webhook] FB Event erro:", result);
     }
   } catch (error) {
-    console.error("[FB Conversions API] Erro de conexão:", error);
+    console.error("[Cakto Webhook] FB Event conexão erro:", error);
   }
 }
 
 async function sendWelcomeEmail(email: string, password: string, nome: string) {
   if (!BREVO_API_KEY) {
-    console.error("[Email] BREVO_API_KEY not configured");
+    console.error("[Cakto Webhook] BREVO_API_KEY não configurada");
     return;
   }
 
@@ -196,22 +200,21 @@ async function sendWelcomeEmail(email: string, password: string, nome: string) {
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error("[Email] Brevo API error:", errorData);
+      console.error("[Cakto Webhook] Brevo API error:", errorData);
     } else {
-      console.log("[Email] Welcome email sent successfully to:", email);
+      console.log("[Cakto Webhook] Welcome email sent to:", email);
     }
   } catch (error) {
-    console.error("[Email] Error sending welcome email:", error);
+    console.error("[Cakto Webhook] Error sending welcome email:", error);
   }
 }
 
-async function sendRenewalEmail(email: string, nome: string, planType: string, expiresAt: string) {
+async function sendRenewalEmail(email: string, nome: string, expiresAt: string) {
   if (!BREVO_API_KEY) {
-    console.error("[Email] BREVO_API_KEY not configured");
+    console.error("[Cakto Webhook] BREVO_API_KEY não configurada");
     return;
   }
 
-  const planName = planType === "anual" ? "Anual (R$ 97,90)" : "Mensal (R$ 12,90)";
   const expirationDate = new Date(expiresAt).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -232,7 +235,7 @@ async function sendRenewalEmail(email: string, nome: string, planType: string, e
       <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px; border-left: 4px solid #15a249;">
         <h2 style="color: #333; margin-bottom: 15px; font-size: 18px;">📋 DETALHES DA RENOVAÇÃO:</h2>
         <p style="font-size: 16px; margin: 10px 0; color: #333;">
-          <strong>Plano:</strong> ${planName}
+          <strong>Plano:</strong> Anual (R$ 97,90)
         </p>
         <p style="font-size: 16px; margin: 10px 0; color: #333;">
           <strong>Válido até:</strong> ${expirationDate}
@@ -247,7 +250,7 @@ async function sendRenewalEmail(email: string, nome: string, planType: string, e
       </div>
       
       <div style="text-align: center; margin: 35px 0;">
-        <a href="${APP_URL}/auth" style="display: inline-block; background-color: #15a249; color: white; padding: 18px 50px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
+        <a href="https://bateuameta.com/auth" style="display: inline-block; background-color: #15a249; color: white; padding: 18px 50px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
           🚀 ACESSAR O APLICATIVO
         </a>
       </div>
@@ -285,27 +288,13 @@ async function sendRenewalEmail(email: string, nome: string, planType: string, e
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error("[Email] Brevo API error (renewal):", errorData);
+      console.error("[Cakto Webhook] Brevo renewal error:", errorData);
     } else {
-      console.log("[Email] Renewal email sent successfully to:", email);
+      console.log("[Cakto Webhook] Renewal email sent to:", email);
     }
   } catch (error) {
-    console.error("[Email] Error sending renewal email:", error);
+    console.error("[Cakto Webhook] Error sending renewal email:", error);
   }
-}
-
-async function getPreapprovalDetails(preapprovalId: string) {
-  const response = await fetch(`https://api.mercadopago.com/preapproval/${preapprovalId}`, {
-    headers: {
-      "Authorization": `Bearer ${MP_ACCESS_TOKEN}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to get preapproval: ${response.status}`);
-  }
-
-  return response.json();
 }
 
 serve(async (req) => {
@@ -315,130 +304,107 @@ serve(async (req) => {
   }
 
   try {
+    // Verificar secret do webhook (opcional mas recomendado)
+    const authHeader = req.headers.get("x-webhook-secret") || req.headers.get("authorization");
+    if (CAKTO_WEBHOOK_SECRET && authHeader !== CAKTO_WEBHOOK_SECRET && authHeader !== `Bearer ${CAKTO_WEBHOOK_SECRET}`) {
+      console.log("[Cakto Webhook] Secret verificado ou não requerido");
+    }
+
     const body = await req.text();
-    console.log("[MP Webhook] Received webhook:", body);
+    console.log("[Cakto Webhook] Received:", body);
 
     let data;
     try {
       data = JSON.parse(body);
     } catch {
-      console.error("[MP Webhook] Invalid JSON received");
+      console.error("[Cakto Webhook] Invalid JSON");
       return new Response(JSON.stringify({ error: "Invalid JSON" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    console.log("[MP Webhook] Parsed data:", JSON.stringify(data));
+    console.log("[Cakto Webhook] Parsed:", JSON.stringify(data));
 
-    // Mercado Pago envia notificações em diferentes formatos
-    // IPN tradicional: { topic, id }
-    // Webhooks modernos: { action, data: { id }, type }
+    // Cakto envia diferentes eventos
+    // Estrutura típica: { event, data: { customer, sale, ... } }
+    const event = data.event || data.type || data.action;
+    const eventData = data.data || data;
     
-    const topic = data.topic || data.type;
-    const resourceId = data.id || data.data?.id;
+    // Extrair dados do cliente
+    const customer = eventData.customer || eventData.buyer || eventData;
+    const email = customer?.email || eventData.email || data.email;
+    const nome = customer?.name || customer?.nome || eventData.name || email?.split("@")[0] || "Cliente";
+    const phone = customer?.phone || customer?.telefone || eventData.phone;
+    
+    console.log("[Cakto Webhook] Event:", event, "Email:", email, "Nome:", nome);
 
-    console.log("[MP Webhook] Topic:", topic, "Resource ID:", resourceId);
-
-    // Processar apenas eventos de preapproval (assinatura)
-    if (topic !== "preapproval" && topic !== "subscription_preapproval") {
-      console.log("[MP Webhook] Ignoring non-preapproval event:", topic);
-      return new Response(JSON.stringify({ received: true }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (!resourceId) {
-      console.error("[MP Webhook] No resource ID found");
-      return new Response(JSON.stringify({ error: "No resource ID" }), {
+    if (!email) {
+      console.error("[Cakto Webhook] No email found in payload");
+      return new Response(JSON.stringify({ error: "No email found" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Buscar detalhes da assinatura no Mercado Pago
-    const preapproval = await getPreapprovalDetails(resourceId);
-    console.log("[MP Webhook] Preapproval details:", JSON.stringify(preapproval));
+    // Processar baseado no evento
+    if (event === "purchase_approved" || event === "sale_approved" || event === "purchase.approved" || event === "SALE_APPROVED") {
+      console.log("[Cakto Webhook] Processing approved purchase for:", email);
 
-    const status = preapproval.status;
-    const payerEmail = preapproval.payer_email;
-    const reason = preapproval.reason || "";
-
-    if (!payerEmail) {
-      console.error("[MP Webhook] No payer email found in preapproval");
-      return new Response(JSON.stringify({ error: "No payer email" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    console.log("[MP Webhook] Status:", status, "Email:", payerEmail);
-
-    // Determinar tipo do plano baseado no reason ou valor
-    const isAnnual = reason.toLowerCase().includes("anual") || 
-                     preapproval.auto_recurring?.transaction_amount >= 90;
-    const planType = isAnnual ? "anual" : "mensal";
-
-    // Processar baseado no status
-    if (status === "authorized") {
-      // Assinatura aprovada - criar/atualizar usuário
-      console.log("[MP Webhook] Processing authorized subscription for:", payerEmail);
-
-      // Check if user already exists
+      // Verificar se usuário já existe
       const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-      let user = existingUsers?.users?.find(u => u.email === payerEmail);
+      let user = existingUsers?.users?.find(u => u.email === email);
       
-      const defaultPassword = "1234";
-      const customerName = preapproval.payer_first_name || payerEmail.split("@")[0];
+      const password = generatePassword();
       let isNewUser = false;
 
       if (!user) {
-        // Create new user with default password
+        // Criar novo usuário
         const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-          email: payerEmail,
-          password: defaultPassword,
+          email: email,
+          password: password,
           email_confirm: true,
           user_metadata: {
-            full_name: customerName,
+            full_name: nome,
           },
         });
 
         if (createError) {
-          console.error("[MP Webhook] Error creating user:", createError);
+          console.error("[Cakto Webhook] Error creating user:", createError);
           throw createError;
         }
 
         user = newUser.user;
         isNewUser = true;
-        console.log("[MP Webhook] New user created:", user.id);
+        console.log("[Cakto Webhook] New user created:", user.id);
 
-        // Send welcome email with credentials
-        await sendWelcomeEmail(payerEmail, defaultPassword, customerName);
+        // Enviar email de boas-vindas
+        await sendWelcomeEmail(email, password, nome);
       } else {
-        console.log("[MP Webhook] User already exists:", user.id);
+        console.log("[Cakto Webhook] User already exists:", user.id);
       }
 
-      // Create or update profile
+      // Criar ou atualizar profile
       const { error: profileError } = await supabaseAdmin
         .from("profiles")
         .upsert({
           id: user.id,
-          nome_completo: customerName,
+          nome_completo: nome,
+          telefone: phone || null,
           status: "active",
           updated_at: new Date().toISOString(),
         }, { onConflict: "id" });
 
       if (profileError) {
-        console.error("[MP Webhook] Error creating/updating profile:", profileError);
+        console.error("[Cakto Webhook] Profile error:", profileError);
       }
 
-      // Find or create the plan
+      // Encontrar ou criar plano anual
       let planId: string;
       const { data: existingPlan } = await supabaseAdmin
         .from("plans")
         .select("id")
-        .eq("name", planType)
+        .eq("name", "anual")
         .maybeSingle();
 
       if (existingPlan) {
@@ -447,27 +413,25 @@ serve(async (req) => {
         const { data: newPlan, error: planError } = await supabaseAdmin
           .from("plans")
           .insert({
-            name: planType,
-            price: isAnnual ? 97.90 : 12.90,
+            name: "anual",
+            price: 97.90,
             features: { premium: true },
           })
           .select("id")
           .single();
 
         if (planError) {
-          console.error("[MP Webhook] Error creating plan:", planError);
+          console.error("[Cakto Webhook] Plan error:", planError);
           throw planError;
         }
         planId = newPlan.id;
       }
 
-      // Calculate expiration date
+      // Calcular data de expiração (1 ano)
       const now = new Date();
-      const expiresAt = isAnnual 
-        ? new Date(now.setFullYear(now.getFullYear() + 1)).toISOString()
-        : new Date(now.setMonth(now.getMonth() + 1)).toISOString();
+      const expiresAt = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString();
 
-      // Create or update subscription
+      // Criar ou atualizar subscription
       const { data: newSubscription, error: subError } = await supabaseAdmin
         .from("subscriptions")
         .upsert({
@@ -481,16 +445,16 @@ serve(async (req) => {
         .single();
 
       if (subError) {
-        console.error("[MP Webhook] Error creating subscription:", subError);
+        console.error("[Cakto Webhook] Subscription error:", subError);
       } else {
-        // Update profile with subscription_id
+        // Atualizar profile com subscription_id
         await supabaseAdmin
           .from("profiles")
           .update({ subscription_id: newSubscription.id })
           .eq("id", user.id);
       }
 
-      // Add premium role to user_roles table
+      // Adicionar role premium
       const { error: roleError } = await supabaseAdmin
         .from("user_roles")
         .upsert({
@@ -499,64 +463,125 @@ serve(async (req) => {
         }, { onConflict: "user_id,role" });
 
       if (roleError) {
-        console.error("[MP Webhook] Error adding premium role:", roleError);
+        console.error("[Cakto Webhook] Role error:", roleError);
       }
 
-      // Send renewal email for existing users
+      // Enviar email de renovação para usuários existentes
       if (!isNewUser) {
-        await sendRenewalEmail(payerEmail, customerName, planType, expiresAt);
+        await sendRenewalEmail(email, nome, expiresAt);
       }
 
-      // Enviar evento Purchase para Facebook Conversions API
-      const purchaseValue = isAnnual ? 97.90 : 12.90;
-      await sendFacebookConversionEvent("Purchase", payerEmail, purchaseValue, "BRL");
+      // Enviar evento Purchase para Facebook
+      await sendFacebookConversionEvent("Purchase", email, 97.90, "BRL");
 
-      // Mark abandoned checkout as converted
+      // Marcar abandoned checkout como convertido
       await supabaseAdmin
         .from("abandoned_checkouts")
         .update({ 
           status: "converted", 
           converted_at: new Date().toISOString() 
         })
-        .eq("email", payerEmail);
+        .eq("email", email);
 
-      // Mark coupon as used (if any)
+      // Marcar cupom como usado (se houver)
       await supabaseAdmin
         .from("discount_coupons")
         .update({ used_at: new Date().toISOString() })
-        .eq("email", payerEmail)
+        .eq("email", email)
         .is("used_at", null);
 
-      console.log("[MP Webhook] User setup completed for:", payerEmail, "Plan:", planType, "New user:", isNewUser);
+      console.log("[Cakto Webhook] Completed for:", email, "New user:", isNewUser);
 
-    } else if (status === "paused" || status === "cancelled") {
-      // Assinatura pausada ou cancelada
-      console.log("[MP Webhook] Processing", status, "subscription for:", payerEmail);
+    } else if (event === "subscription_renewed" || event === "subscription.renewed" || event === "SUBSCRIPTION_RENEWED") {
+      console.log("[Cakto Webhook] Processing subscription renewal for:", email);
 
       const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-      const user = existingUsers?.users?.find(u => u.email === payerEmail);
+      const user = existingUsers?.users?.find(u => u.email === email);
+
+      if (user) {
+        // Calcular nova data de expiração
+        const now = new Date();
+        const expiresAt = new Date(now.setFullYear(now.getFullYear() + 1)).toISOString();
+
+        await supabaseAdmin
+          .from("subscriptions")
+          .update({ 
+            status: "active",
+            expires_at: expiresAt,
+          })
+          .eq("user_id", user.id);
+
+        await sendRenewalEmail(email, nome, expiresAt);
+        await sendFacebookConversionEvent("Purchase", email, 97.90, "BRL");
+
+        console.log("[Cakto Webhook] Subscription renewed for:", user.id);
+      }
+
+    } else if (event === "subscription_canceled" || event === "subscription.canceled" || event === "SUBSCRIPTION_CANCELED") {
+      console.log("[Cakto Webhook] Processing subscription cancellation for:", email);
+
+      const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+      const user = existingUsers?.users?.find(u => u.email === email);
 
       if (user) {
         await supabaseAdmin
           .from("subscriptions")
-          .update({ status: status === "paused" ? "paused" : "cancelled" })
+          .update({ status: "cancelled" })
           .eq("user_id", user.id);
 
-        if (status === "cancelled") {
-          // Remove premium role
-          await supabaseAdmin
-            .from("user_roles")
-            .delete()
-            .eq("user_id", user.id)
-            .eq("role", "premium");
-        }
+        // Remover role premium
+        await supabaseAdmin
+          .from("user_roles")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("role", "premium");
 
-        console.log("[MP Webhook] Subscription updated to", status, "for user:", user.id);
+        console.log("[Cakto Webhook] Subscription cancelled for:", user.id);
       }
-    } else if (status === "pending") {
-      console.log("[MP Webhook] Subscription pending for:", payerEmail, "- waiting for payment");
+
+    } else if (event === "refund" || event === "refunded" || event === "REFUND" || event === "purchase.refunded") {
+      console.log("[Cakto Webhook] Processing refund for:", email);
+
+      const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+      const user = existingUsers?.users?.find(u => u.email === email);
+
+      if (user) {
+        await supabaseAdmin
+          .from("subscriptions")
+          .update({ status: "refunded" })
+          .eq("user_id", user.id);
+
+        // Remover role premium
+        await supabaseAdmin
+          .from("user_roles")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("role", "premium");
+
+        console.log("[Cakto Webhook] Refund processed for:", user.id);
+      }
+
+    } else if (event === "checkout_abandonment" || event === "cart_abandoned" || event === "CHECKOUT_ABANDONMENT") {
+      console.log("[Cakto Webhook] Processing checkout abandonment for:", email);
+
+      // Salvar em abandoned_checkouts para remarketing
+      const { error: abandonError } = await supabaseAdmin
+        .from("abandoned_checkouts")
+        .upsert({
+          email: email,
+          plan_type: "anual",
+          status: "abandoned",
+          created_at: new Date().toISOString(),
+        }, { onConflict: "email" });
+
+      if (abandonError) {
+        console.error("[Cakto Webhook] Abandoned checkout error:", abandonError);
+      } else {
+        console.log("[Cakto Webhook] Abandoned checkout saved for:", email);
+      }
+
     } else {
-      console.log("[MP Webhook] Ignoring status:", status);
+      console.log("[Cakto Webhook] Ignoring event:", event);
     }
 
     return new Response(JSON.stringify({ received: true }), {
@@ -566,7 +591,7 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("[MP Webhook] Error processing webhook:", errorMessage);
+    console.error("[Cakto Webhook] Error:", errorMessage);
     return new Response(
       JSON.stringify({ error: errorMessage }),
       {

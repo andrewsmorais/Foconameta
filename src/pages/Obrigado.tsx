@@ -28,6 +28,9 @@ const Obrigado = () => {
             <h1 className="text-2xl font-bold text-gray-900">
               Pagamento Confirmado!
             </h1>
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-600">
+              Parabéns Motorista pela compra realizada!
+            </h2>
           </div>
 
           {/* Card de Boas-vindas Humanizado */}
@@ -37,10 +40,10 @@ const Obrigado = () => {
                 <img 
                   src={fundadorImage} 
                   alt="Andrews Morais" 
-                  className="h-24 w-24 rounded-full object-cover flex-shrink-0 border-2 border-blue-100"
+                  className="h-32 w-32 rounded-full object-cover flex-shrink-0 border-2 border-blue-100"
                 />
                 <div>
-                  <p className="text-gray-700 text-base leading-relaxed">
+                  <p className="text-gray-700 text-lg leading-relaxed">
                     <strong className="text-gray-900">Fala, parceiro!</strong> Sou o Andrews Morais. 
                     Também sou motorista de aplicativo e sei que o nosso tempo vale ouro. 
                     Criei o <strong>Bateu a Meta</strong> para a gente ter controle real do lucro. 

@@ -620,20 +620,12 @@ const Relatorios = () => {
                       <p className="text-xl font-bold text-[#15a249]">R$ {resultado.preco_combustivel?.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground">Ganhos Brutos</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.ganhoBruto.toFixed(2)}</p>
+                      <p className="text-sm font-bold text-foreground">Ganho Bruto/KM</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {(metricasTurno.kmRodados > 0 ? metricasTurno.ganhoBruto / metricasTurno.kmRodados : 0).toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground">Despesa Combustível</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.despesaCombustivel.toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">Outras Despesas</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.outrasDespesas.toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">Lucro Líquido</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurno.lucroLiquido.toFixed(2)}</p>
+                      <p className="text-sm font-bold text-foreground">Custo Combustível/KM</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {(metricasTurno.kmRodados > 0 ? metricasTurno.despesaCombustivel / metricasTurno.kmRodados : 0).toFixed(2)}</p>
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground">Lucro/KM</p>
@@ -1056,7 +1048,7 @@ const Relatorios = () => {
                   <CardTitle>Métricas Calculadas</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div>
                       <p className="text-sm font-bold text-foreground mb-1">KM Rodados Total</p>
                       <p className="text-xl font-bold text-[#15a249]">{metricasTurnos.kmRodadosTotal.toFixed(2)} km</p>
@@ -1074,20 +1066,12 @@ const Relatorios = () => {
                       <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurnos.precoMedioCombustivel.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Ganhos Brutos Total</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurnos.ganhosBrutosTotal.toFixed(2)}</p>
+                      <p className="text-sm font-bold text-foreground mb-1">Ganho Bruto/KM Médio</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {(metricasTurnos.kmRodadosTotal > 0 ? metricasTurnos.ganhosBrutosTotal / metricasTurnos.kmRodadosTotal : 0).toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Despesa Combustível Total</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurnos.despesaCombustivelTotal.toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Outras Despesas Total</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurnos.outrasDespesasTotal.toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido Total</p>
-                      <p className="text-xl font-bold text-[#15a249]">R$ {metricasTurnos.lucroLiquidoTotal.toFixed(2)}</p>
+                      <p className="text-sm font-bold text-foreground mb-1">Custo Combustível/KM Médio</p>
+                      <p className="text-xl font-bold text-[#15a249]">R$ {(metricasTurnos.kmRodadosTotal > 0 ? metricasTurnos.despesaCombustivelTotal / metricasTurnos.kmRodadosTotal : 0).toFixed(2)}</p>
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground mb-1">Lucro/KM Médio</p>

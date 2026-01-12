@@ -3,11 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddTurnoDialog } from "@/components/dialogs/AddTurnoDialog";
 import { EditTurnoDialog } from "@/components/dialogs/EditTurnoDialog";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, CalendarIcon, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +62,7 @@ const KM = () => {
   const [turnos, setTurnos] = useState<Turno[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTurno, setEditingTurno] = useState<Turno | null>(null);
+  const [filtroData, setFiltroData] = useState<Date | undefined>(undefined);
   const { toast } = useToast();
 
   const loadTurnos = async () => {
@@ -63,7 +71,7 @@ const KM = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      let query = supabase
         .from("turnos_km")
         .select(`
           *,
@@ -78,16 +86,21 @@ const KM = () => {
         .eq("user_id", user.id)
         .order("data", { ascending: false })
         .order("hora_fim", { ascending: false })
-        .order("created_at", { ascending: false })
-        .range(0, 0);
+        .order("created_at", { ascending: false });
+
+      // Apply date filter if selected
+      if (filtroData) {
+        const dataFormatada = format(filtroData, 'yyyy-MM-dd');
+        query = query.eq("data", dataFormatada);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       
-      // BLINDAGEM: Sempre pegar apenas o primeiro item, mesmo se vier mais
-      const latestTurno = data?.[0] ?? null;
-      setTurnos(latestTurno ? [latestTurno] : []);
+      setTurnos(data || []);
       
-      console.log('[KM Debug] Turnos retornados:', data?.length, 'Exibindo:', latestTurno?.id);
+      console.log('[KM Debug] Turnos retornados:', data?.length, 'Filtro:', filtroData ? format(filtroData, 'dd/MM/yyyy') : 'nenhum');
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -101,11 +114,7 @@ const KM = () => {
 
   useEffect(() => {
     loadTurnos();
-  }, []);
-
-  if (loading) {
-    return <div className="text-center py-8">Carregando...</div>;
-  }
+  }, [filtroData]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -131,17 +140,25 @@ const KM = () => {
     }
   };
 
+  const limparFiltro = () => {
+    setFiltroData(undefined);
+  };
+
   // Calculate individual shift metrics
   const calcularMetricasTurno = (turno: Turno) => {
     const kmRodados = turno.km_final - turno.km_inicial;
-    const despesaCombustivel = (kmRodados / turno.consumo_combustivel) * turno.preco_combustivel;
+    const despesaCombustivel = turno.consumo_combustivel > 0 
+      ? (kmRodados / turno.consumo_combustivel) * turno.preco_combustivel 
+      : 0;
     const outrasDespesas = turno.outras_despesas || 0;
     const despesaTotal = despesaCombustivel + outrasDespesas;
-    // Lucro Líquido = Ganhos Brutos - Despesas Totais (combustível + outras despesas)
     const lucroLiquido = turno.valor_ganho - despesaTotal;
     const lucroPorKm = kmRodados > 0 ? lucroLiquido / kmRodados : 0;
     const ganhosPorHora = turno.total_horas > 0 ? turno.valor_ganho / turno.total_horas : 0;
     const totalHoras = turno.total_horas || 0;
+    const totalLitros = turno.consumo_combustivel > 0 ? kmRodados / turno.consumo_combustivel : 0;
+    const ganhoBrutoPorKm = kmRodados > 0 ? turno.valor_ganho / kmRodados : 0;
+    const custoCombustivelPorKm = kmRodados > 0 ? despesaCombustivel / kmRodados : 0;
     
     return {
       kmRodados,
@@ -152,286 +169,249 @@ const KM = () => {
       lucroPorKm,
       ganhosPorHora,
       totalHoras,
-      ganhoBruto: turno.valor_ganho
+      ganhoBruto: turno.valor_ganho,
+      totalLitros,
+      ganhoBrutoPorKm,
+      custoCombustivelPorKm
     };
   };
 
-  // Calculate consolidated metrics for the single displayed shift
-  const calcularMetricasConsolidadas = () => {
-    if (turnos.length === 0) return null;
-    const dados = [turnos[0]];
-
-    const kmRodadosTotal = dados.reduce((sum, t) => sum + (t.km_final - t.km_inicial), 0);
-    const horasTrabalhadasTotal = dados.reduce((sum, t) => sum + (t.total_horas || 0), 0);
-    const totalLitros = dados.reduce((sum, t) => sum + ((t.km_final - t.km_inicial) / t.consumo_combustivel), 0);
-    const consumoMedio = totalLitros > 0 ? kmRodadosTotal / totalLitros : 0;
-    const precoMedioCombustivel = dados.reduce((sum, t) => sum + t.preco_combustivel, 0) / dados.length;
-    const ganhosBrutosTotal = dados.reduce((sum, t) => sum + t.valor_ganho, 0);
-    const despesaCombustivelTotal = dados.reduce((sum, t) => sum + (((t.km_final - t.km_inicial) / t.consumo_combustivel) * t.preco_combustivel), 0);
-    const outrasDespesasTotal = dados.reduce((sum, t) => sum + (t.outras_despesas || 0), 0);
-    const despesaTotalGeral = despesaCombustivelTotal + outrasDespesasTotal;
-    // Lucro Líquido = Ganhos Brutos - Despesas Totais (combustível + outras despesas)
-    const lucroLiquidoTotal = ganhosBrutosTotal - despesaTotalGeral;
-    const lucroPorKmMedio = kmRodadosTotal > 0 ? lucroLiquidoTotal / kmRodadosTotal : 0;
-    const ganhosPorHoraMedio = horasTrabalhadasTotal > 0 ? ganhosBrutosTotal / horasTrabalhadasTotal : 0;
-    const custoCombustivelPorKm = kmRodadosTotal > 0 ? despesaCombustivelTotal / kmRodadosTotal : 0;
-    const ganhoBrutoPorKm = kmRodadosTotal > 0 ? ganhosBrutosTotal / kmRodadosTotal : 0;
-
-    return {
-      kmRodadosTotal,
-      horasTrabalhadasTotal,
-      consumoMedio,
-      precoMedioCombustivel,
-      ganhosBrutosTotal,
-      despesaCombustivelTotal,
-      outrasDespesasTotal,
-      despesaTotalGeral,
-      lucroLiquidoTotal,
-      lucroPorKmMedio,
-      ganhosPorHoraMedio,
-      custoCombustivelPorKm,
-      ganhoBrutoPorKm
-    };
-  };
-
-  const metricas = calcularMetricasConsolidadas();
+  if (loading) {
+    return <div className="text-center py-8">Carregando...</div>;
+  }
 
   return (
     <div className="space-y-6">
+      {/* Header com botão de adicionar */}
       <div className="flex justify-center mb-6">
         <AddTurnoDialog onSuccess={loadTurnos} />
       </div>
 
+      {/* Filtro por Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Filtrar por Data</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full sm:w-[280px] justify-start text-left font-normal",
+                    !filtroData && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {filtroData ? format(filtroData, "PPP", { locale: ptBR }) : "Selecione uma data"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={filtroData}
+                  onSelect={setFiltroData}
+                  initialFocus
+                  locale={ptBR}
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+            {filtroData && (
+              <Button variant="ghost" onClick={limparFiltro} className="gap-2">
+                <X className="h-4 w-4" />
+                Limpar Filtro
+              </Button>
+            )}
+          </div>
+          {filtroData && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Exibindo turnos de {format(filtroData, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Lista de Turnos */}
       {turnos.length === 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Registros de Turnos</CardTitle>
+            <CardTitle>Histórico de Turnos</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Nenhum turno registrado ainda. Clique em "Novo Turno" para começar.
+              {filtroData 
+                ? `Nenhum turno encontrado para ${format(filtroData, "dd/MM/yyyy", { locale: ptBR })}.`
+                : "Nenhum turno registrado ainda. Clique em \"Novo Turno\" para começar."
+              }
             </p>
           </CardContent>
         </Card>
       ) : (
-        <>
-        {(() => {
-          const turno = turnos[0];
-          const metricasTurno = calcularMetricasTurno(turno);
-          return (
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-start">
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-foreground">
+            Histórico de Turnos {filtroData ? `(${format(filtroData, "dd/MM/yyyy", { locale: ptBR })})` : ""}
+          </h2>
+          
+          {turnos.map((turno) => {
+            const metricas = calcularMetricasTurno(turno);
+            
+            return (
+              <Card key={turno.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">
+                        {format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })} - {turno.veiculos.modelo} ({turno.veiculos.placa})
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Horário: {turno.hora_inicio} - {turno.hora_fim}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-10 w-10"
+                        onClick={() => setEditingTurno(turno)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-10 w-10">
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Tem certeza que deseja excluir este turno?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta ação não pode ser desfeita. O turno de {format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })} será permanentemente excluído.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => handleDelete(turno.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Excluir
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Fontes de Ganho */}
                   <div>
-                    <CardTitle className="text-lg">
-                      {turno.veiculos.modelo} - {turno.veiculos.placa}
-                    </CardTitle>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-8 w-8"
-                      onClick={() => setEditingTurno(turno)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Excluir turno?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. O turno será permanentemente excluído.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(turno.id)}>
-                            Excluir
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {/* Dados de Entrada */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Data</p>
-                    <p className="text-xl font-bold text-[#15a249]">{format(parseISO(turno.data), "dd/MM/yyyy", { locale: ptBR })}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Outras Despesas</p>
-                    <p className="text-xl font-bold text-[#15a249]">R$ {(turno.outras_despesas || 0).toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">KM Inicial</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.km_inicial.toFixed(2)} km</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">KM Final</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.km_final.toFixed(2)} km</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Hora Início</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.hora_inicio}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Hora Fim</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.hora_fim}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Tipo Combustível</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.tipo_combustivel}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Preço Combustível</p>
-                    <p className="text-xl font-bold text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
-                    <p className="text-xl font-bold text-[#15a249]">{turno.consumo_combustivel.toFixed(1)} km/L</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-foreground mb-1">Valor Ganho</p>
-                    <p className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</p>
-                  </div>
-                  <div className="col-span-full mt-2">
                     <p className="text-sm font-bold text-foreground mb-2">Fontes de Ganho</p>
-                    <div className="ml-4 space-y-2">
+                    <div className="space-y-2">
                       {turno.turno_fontes_ganho && turno.turno_fontes_ganho.length > 0 ? (
                         turno.turno_fontes_ganho.map((fonte) => (
                           <div key={fonte.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                            <span className="text-xl font-bold text-primary capitalize">{fonte.fonte_ganho}</span>
-                            <span className="text-xl font-bold text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
-                            <span className="text-xl font-bold text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
+                            <span className="text-lg font-bold text-primary capitalize">{fonte.fonte_ganho}</span>
+                            <span className="text-lg font-bold text-muted-foreground">{fonte.quantidade_corridas} corridas</span>
+                            <span className="text-lg font-bold text-[#15a249]">R$ {fonte.valor_ganho.toFixed(2)}</span>
                           </div>
                         ))
                       ) : (
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-1 border-l-2 border-primary/30 pl-3">
-                          <span className="text-xl font-bold text-primary capitalize">{turno.fonte_ganho}</span>
-                          <span className="text-xl font-bold text-muted-foreground">{turno.quantidade_corridas} corridas</span>
-                          <span className="text-xl font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
+                          <span className="text-lg font-bold text-primary capitalize">{turno.fonte_ganho}</span>
+                          <span className="text-lg font-bold text-muted-foreground">{turno.quantidade_corridas} corridas</span>
+                          <span className="text-lg font-bold text-[#15a249]">R$ {turno.valor_ganho.toFixed(2)}</span>
                         </div>
                       )}
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })()}
 
-      {/* Métricas Calculadas Consolidadas */}
-      {metricas && (
-        <>
-          <Card className="mt-6">
-          <CardHeader>
-              <CardTitle>Métricas do Turno</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">KM Rodados</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    {metricas.kmRodadosTotal.toFixed(2)} km
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Horas Trabalhadas</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    {metricas.horasTrabalhadasTotal.toFixed(1)} h
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Consumo</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    {metricas.consumoMedio.toFixed(2)} km/L
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Total de Litros Gasto</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    {(metricas.consumoMedio > 0 ? metricas.kmRodadosTotal / metricas.consumoMedio : 0).toFixed(1)} L
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Preço Combustível/Litro</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    R$ {metricas.precoMedioCombustivel.toFixed(2)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Ganho Bruto/KM</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    R$ {metricas.ganhoBrutoPorKm.toFixed(2)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Custo de Combustível/KM</p>
-                  <p className="text-xl font-bold text-red-500">
-                    R$ {metricas.custoCombustivelPorKm.toFixed(2)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Lucro Líquido/KM</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    R$ {metricas.lucroPorKmMedio.toFixed(2)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground mb-1">Ganhos/Hora</p>
-                  <p className="text-xl font-bold text-[#15a249]">
-                    R$ {metricas.ganhosPorHoraMedio.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                  {/* Métricas do Turno */}
+                  <div className="pt-4 border-t border-border">
+                    <h4 className="text-sm font-bold text-foreground mb-4">Métricas do Turno</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">KM Rodados</p>
+                        <p className="text-lg font-bold text-[#15a249]">{metricas.kmRodados.toFixed(2)} km</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Horas Trabalhadas</p>
+                        <p className="text-lg font-bold text-[#15a249]">{metricas.totalHoras.toFixed(1)} h</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Consumo</p>
+                        <p className="text-lg font-bold text-[#15a249]">{turno.consumo_combustivel.toFixed(2)} km/L</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Total de Litros Gasto</p>
+                        <p className="text-lg font-bold text-[#15a249]">{metricas.totalLitros.toFixed(1)} L</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Preço Combustível/Litro</p>
+                        <p className="text-lg font-bold text-[#15a249]">R$ {turno.preco_combustivel.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Ganho Bruto/KM</p>
+                        <p className="text-lg font-bold text-[#15a249]">R$ {metricas.ganhoBrutoPorKm.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Custo Combustível/KM</p>
+                        <p className="text-lg font-bold text-red-500">R$ {metricas.custoCombustivelPorKm.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Lucro Líquido/KM</p>
+                        <p className="text-lg font-bold text-[#15a249]">R$ {metricas.lucroPorKm.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground">Ganhos/Hora</p>
+                        <p className="text-lg font-bold text-[#15a249]">R$ {metricas.ganhosPorHora.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
 
-          {/* Destaque dos Totais - 3 Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <Card className="bg-blue-500/10 border-blue-500/30">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">Ganhos Brutos</p>
-                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                    R$ {metricas.ganhosBrutosTotal.toFixed(2)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-red-500/10 border-red-500/30">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-sm font-bold text-red-600 dark:text-red-400 mb-2">Despesas</p>
-                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">
-                    R$ {metricas.despesaTotalGeral.toFixed(2)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-green-500/10 border-green-500/30">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-sm font-bold text-green-600 dark:text-green-400 mb-2">Lucro Líquido</p>
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-                    R$ {metricas.lucroLiquidoTotal.toFixed(2)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </>
-      )}
-      </>
+                  {/* Cards de Resumo: Ganhos, Despesas, Lucro */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                    <Card className="bg-blue-500/10 border-blue-500/30">
+                      <CardContent className="py-4">
+                        <div className="text-center">
+                          <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Ganhos Brutos</p>
+                          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                            R$ {metricas.ganhoBruto.toFixed(2)}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-red-500/10 border-red-500/30">
+                      <CardContent className="py-4">
+                        <div className="text-center">
+                          <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Despesas</p>
+                          <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                            R$ {metricas.despesaTotal.toFixed(2)}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Comb: R$ {metricas.despesaCombustivel.toFixed(2)} | Outras: R$ {metricas.outrasDespesas.toFixed(2)}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-green-500/10 border-green-500/30">
+                      <CardContent className="py-4">
+                        <div className="text-center">
+                          <p className="text-xs font-bold text-green-600 dark:text-green-400 mb-1">Lucro Líquido</p>
+                          <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                            R$ {metricas.lucroLiquido.toFixed(2)}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       )}
       
       {editingTurno && (

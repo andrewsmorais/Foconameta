@@ -410,7 +410,7 @@ const LandingPage = () => {
               {/* Card de Preço abaixo do VSL */}
               <div className="w-full max-w-md mx-auto mt-8">
                 <Card className="border-2 border-[#3c83f6] rounded-2xl shadow-lg bg-white">
-                  <CardContent className="pt-6 pb-6 text-center">
+                  <CardContent className="p-8 space-y-6 text-center">
                     <h3 className="text-2xl font-bold text-black mb-2">Plano Anual</h3>
                     
                     <div className="flex items-center justify-center gap-2 mb-1">

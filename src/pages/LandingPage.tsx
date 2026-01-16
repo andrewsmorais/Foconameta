@@ -901,23 +901,7 @@ const LandingPage = () => {
                   </p>
                 </div>
 
-                <ul className="space-y-3">
-                  {[
-                    { icon: LayoutDashboard, text: "Dashboard", bold: "completo" },
-                    { icon: Clock, text: "Controle de turnos", bold: "ilimitado" },
-                    { icon: Target, text: "Metas", bold: "personalizadas" },
-                    { icon: FileText, text: "Relatórios em", bold: "PDF" },
-                    { icon: Wrench, text: "Gestão de", bold: "manutenções" },
-                    { icon: Headphones, text: "Suporte", bold: "prioritário" }
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-black">
-                      <item.icon className="h-5 w-5 stroke-green-600 text-green-600" strokeWidth={2} />
-                      <span>{item.text} <strong className="text-black">{item.bold}</strong></span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button 
+                <Button
                   className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                   onClick={() => handleSelectPlan()}
                 >

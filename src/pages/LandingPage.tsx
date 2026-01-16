@@ -410,30 +410,27 @@ const LandingPage = () => {
               {/* Card de Preço abaixo do VSL */}
               <div className="w-full max-w-md mx-auto mt-8">
                 <Card className="border-2 border-[#3c83f6] rounded-2xl shadow-lg bg-white">
-                  <CardContent className="p-8 space-y-6 text-center">
-                    <h3 className="text-2xl font-bold text-black mb-2">Plano Anual</h3>
-                    
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      <span className="text-red-500 line-through text-xl font-medium">de R$ 147</span>
-                      <span className="text-gray-600">por</span>
+                  <CardContent className="p-8 space-y-6">
+                    <div className="text-center space-y-2">
+                      <h3 className="text-2xl font-bold text-black">Plano Anual</h3>
+                      <div className="flex items-center justify-center gap-3">
+                        <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
+                        <span className="text-xl md:text-2xl font-medium text-gray-700">por</span>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                        <span className="text-gray-500">/ano</span>
+                      </div>
+                      <p className="text-sm text-gray-500">Equivale a R$ 8,16/mês</p>
                     </div>
-                    
-                    <div className="mb-1">
-                      <span className="text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
-                      <span className="text-gray-400 text-base">/ano</span>
-                    </div>
-                    
-                    <p className="text-gray-400 text-sm mb-4">
-                      Equivale a R$ 8,16/mês
-                    </p>
-                    
-                    <div className="bg-green-100 border border-green-400 rounded-lg px-4 py-2 mb-4 inline-block">
-                      <span className="text-green-600 font-bold">
+
+                    <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
+                      <p className="text-lg font-bold text-center text-green-700">
                         🎉 Economia de R$ 56,90 por ano!
-                      </span>
+                      </p>
                     </div>
-                    
-                    <ul className="text-left space-y-2 mb-4">
+
+                    <ul className="text-left space-y-2">
                       <li className="flex items-center gap-2">
                         <span className="text-green-500 text-3xl font-bold">✓</span>
                         <span className="text-black text-lg font-bold">Ganhos Por Hora</span>
@@ -451,9 +448,9 @@ const LandingPage = () => {
                         <span className="text-black text-lg font-bold">Horas Trabalhadas</span>
                       </li>
                     </ul>
-                    
+
                     <Button
-                      className="w-full py-5 text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-full"
+                      className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                       onClick={() => handleSelectPlan()}
                     >
                       COMEÇAR AGORA

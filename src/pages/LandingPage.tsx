@@ -411,19 +411,19 @@ const LandingPage = () => {
               <div className="w-full max-w-md mx-auto mt-8">
                 <Card className="border-2 border-[#3c83f6] rounded-2xl shadow-lg bg-white">
                   <CardContent className="pt-6 pb-6 text-center">
-                    <h3 className="text-xl font-bold text-black mb-2">Plano Anual</h3>
+                    <h3 className="text-2xl font-bold text-black mb-2">Plano Anual</h3>
                     
                     <div className="flex items-center justify-center gap-2 mb-1">
-                      <span className="text-red-600 line-through text-lg">de R$ 147</span>
+                      <span className="text-red-500 line-through text-xl font-medium">de R$ 147</span>
                       <span className="text-gray-600">por</span>
                     </div>
                     
                     <div className="mb-1">
-                      <span className="text-4xl font-bold text-black">R$ 97,90</span>
-                      <span className="text-gray-500 text-lg">/ano</span>
+                      <span className="text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                      <span className="text-gray-400 text-base">/ano</span>
                     </div>
                     
-                    <p className="text-gray-500 text-sm mb-4 underline">
+                    <p className="text-gray-400 text-sm mb-4">
                       Equivale a R$ 8,16/mês
                     </p>
                     
@@ -434,7 +434,7 @@ const LandingPage = () => {
                     </div>
                     
                     <Button 
-                      className="w-full py-5 text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg"
+                      className="w-full py-5 text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-full"
                       onClick={() => handleSelectPlan()}
                     >
                       COMEÇAR AGORA

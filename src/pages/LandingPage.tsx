@@ -442,14 +442,6 @@ const LandingPage = () => {
                   </CardContent>
                 </Card>
               </div>
-
-              <Button
-              size="lg" 
-              onClick={scrollToPricing}
-              className="w-full md:w-auto text-base md:text-lg px-6 md:px-10 py-5 md:py-6 bg-[#25D366] hover:bg-[#1da851] text-white font-bold rounded-lg shadow-lg animate-soft-pulse mx-4 md:mx-0"
-            >
-              COMEÇAR AGORA
-            </Button>
           </div>
         </div>
       </section>

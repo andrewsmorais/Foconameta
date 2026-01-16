@@ -405,9 +405,45 @@ const LandingPage = () => {
                   />
                 </div>
               </DialogContent>
-            </Dialog>
+              </Dialog>
 
-            <Button 
+              {/* Card de Preço abaixo do VSL */}
+              <div className="w-full max-w-md mx-auto mt-8">
+                <Card className="border-2 border-[#3c83f6] rounded-2xl shadow-lg bg-white">
+                  <CardContent className="pt-6 pb-6 text-center">
+                    <h3 className="text-xl font-bold text-black mb-2">Plano Anual</h3>
+                    
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <span className="text-red-500 line-through text-lg">de R$ 147</span>
+                      <span className="text-gray-600">por</span>
+                    </div>
+                    
+                    <div className="mb-1">
+                      <span className="text-4xl font-bold text-black">R$ 97,90</span>
+                      <span className="text-gray-500 text-lg">/ano</span>
+                    </div>
+                    
+                    <p className="text-gray-500 text-sm mb-4 underline">
+                      Equivale a R$ 8,16/mês
+                    </p>
+                    
+                    <div className="bg-green-100 border border-green-400 rounded-lg px-4 py-2 mb-4 inline-block">
+                      <span className="text-green-600 font-bold">
+                        🎉 Economia de R$ 56,90 por ano!
+                      </span>
+                    </div>
+                    
+                    <Button 
+                      className="w-full py-5 text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg"
+                      onClick={() => handleSelectPlan()}
+                    >
+                      COMEÇAR AGORA
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Button
               size="lg" 
               onClick={scrollToPricing}
               className="w-full md:w-auto text-base md:text-lg px-6 md:px-10 py-5 md:py-6 bg-[#25D366] hover:bg-[#1da851] text-white font-bold rounded-lg shadow-lg animate-soft-pulse mx-4 md:mx-0"

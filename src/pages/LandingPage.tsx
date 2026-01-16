@@ -433,7 +433,26 @@ const LandingPage = () => {
                       </span>
                     </div>
                     
-                    <Button 
+                    <ul className="text-left space-y-2 mb-4">
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span className="text-gray-700 text-sm">Ganhos Por Hora</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span className="text-gray-700 text-sm">Ganhos Por Km</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span className="text-gray-700 text-sm">Despesas Por Km</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span className="text-gray-700 text-sm">Horas Trabalhadas</span>
+                      </li>
+                    </ul>
+                    
+                    <Button
                       className="w-full py-5 text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-full"
                       onClick={() => handleSelectPlan()}
                     >

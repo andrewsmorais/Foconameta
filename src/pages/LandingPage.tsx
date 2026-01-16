@@ -436,19 +436,19 @@ const LandingPage = () => {
                     <ul className="text-left space-y-2 mb-4">
                       <li className="flex items-center gap-2">
                         <span className="text-green-500 text-xl font-bold">✓</span>
-                        <span className="text-gray-700 text-base font-semibold">Ganhos Por Hora</span>
+                        <span className="text-black text-base font-bold">Ganhos Por Hora</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span className="text-green-500 text-xl font-bold">✓</span>
-                        <span className="text-gray-700 text-base font-semibold">Ganhos Por Km</span>
+                        <span className="text-black text-base font-bold">Ganhos Por Km</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span className="text-green-500 text-xl font-bold">✓</span>
-                        <span className="text-gray-700 text-base font-semibold">Despesas Por Km</span>
+                        <span className="text-black text-base font-bold">Despesas Por Km</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span className="text-green-500 text-xl font-bold">✓</span>
-                        <span className="text-gray-700 text-base font-semibold">Horas Trabalhadas</span>
+                        <span className="text-black text-base font-bold">Horas Trabalhadas</span>
                       </li>
                     </ul>
                     
@@ -951,19 +951,19 @@ const LandingPage = () => {
                 <ul className="text-left space-y-2">
                   <li className="flex items-center gap-2">
                     <span className="text-green-500 text-xl font-bold">✓</span>
-                    <span className="text-gray-700 text-base font-semibold">Ganhos Por Hora</span>
+                    <span className="text-black text-base font-bold">Ganhos Por Hora</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-500 text-xl font-bold">✓</span>
-                    <span className="text-gray-700 text-base font-semibold">Ganhos Por Km</span>
+                    <span className="text-black text-base font-bold">Ganhos Por Km</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-500 text-xl font-bold">✓</span>
-                    <span className="text-gray-700 text-base font-semibold">Despesas Por Km</span>
+                    <span className="text-black text-base font-bold">Despesas Por Km</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-500 text-xl font-bold">✓</span>
-                    <span className="text-gray-700 text-base font-semibold">Horas Trabalhadas</span>
+                    <span className="text-black text-base font-bold">Horas Trabalhadas</span>
                   </li>
                 </ul>
 

@@ -426,7 +426,7 @@ const LandingPage = () => {
 
                     <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
                       <p className="text-lg font-bold text-center text-green-700">
-                        🎉 Economia de R$ 56,90 por ano!
+                        🎉 Economia de R$ 49,10 por ano!
                       </p>
                     </div>
 
@@ -941,7 +941,7 @@ const LandingPage = () => {
 
                 <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
                   <p className="text-lg font-bold text-center text-green-700">
-                    🎉 Economia de R$ 56,90 por ano!
+                    🎉 Economia de R$ 49,10 por ano!
                   </p>
                 </div>
 

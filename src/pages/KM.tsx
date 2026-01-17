@@ -13,7 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Pencil, Trash2, CalendarIcon, X } from "lucide-react";
+import { Pencil, Trash2, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -140,9 +140,6 @@ const KM = () => {
     }
   };
 
-  const limparFiltro = () => {
-    setFiltroData(undefined);
-  };
 
   // Calculate individual shift metrics
   const calcularMetricasTurno = (turno: Turno) => {
@@ -218,12 +215,6 @@ const KM = () => {
                 />
               </PopoverContent>
             </Popover>
-            {filtroData && (
-              <Button variant="ghost" onClick={limparFiltro} className="gap-2">
-                <X className="h-4 w-4" />
-                Limpar Filtro
-              </Button>
-            )}
           </div>
           {filtroData && (
             <p className="text-sm text-muted-foreground mt-2">

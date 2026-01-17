@@ -832,9 +832,9 @@ const LandingPage = () => {
                   <CarouselItem key={index} className="basis-full">
                     <Card className="bg-white shadow-lg border-0 mx-2">
                       <CardContent className="p-4 md:p-8">
-                        <div className="flex flex-row gap-4 md:gap-8 items-center">
+                        <div className="flex flex-col items-center gap-4 md:gap-6">
                           {/* Photo - formato 9:16 */}
-                          <div className="w-32 h-56 md:w-52 md:h-[370px] flex-shrink-0">
+                          <div className="w-40 h-72 md:w-52 md:h-[370px] flex-shrink-0">
                             <img 
                               src={slide.img} 
                               alt={`Depoimento de ${slide.name}`}
@@ -842,8 +842,8 @@ const LandingPage = () => {
                             />
                           </div>
                           
-                          {/* Text - sempre ao lado */}
-                          <div className="flex-1 text-left">
+                          {/* Text - embaixo da foto */}
+                          <div className="text-center">
                             <p 
                               className="text-sm md:text-xl text-gray-700 italic leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: `"${highlightKeywords(slide.testimonial)}"` }}

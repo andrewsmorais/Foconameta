@@ -199,7 +199,7 @@ const LandingPage = () => {
 
     const interval = setInterval(() => {
       testimonialCarouselApi.scrollNext();
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [testimonialCarouselApi]);
@@ -831,10 +831,10 @@ const LandingPage = () => {
                 {testimonialSlides.map((slide, index) => (
                   <CarouselItem key={index} className="basis-full">
                     <Card className="bg-white shadow-lg border-0 mx-2">
-                      <CardContent className="p-6 md:p-8">
-                        <div className="flex flex-col md:flex-row md:gap-8 items-center">
-                          {/* Photo */}
-                          <div className="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 mb-6 md:mb-0">
+                      <CardContent className="p-4 md:p-8">
+                        <div className="flex flex-row gap-4 md:gap-8 items-center">
+                          {/* Photo - formato 9:16 */}
+                          <div className="w-32 h-56 md:w-52 md:h-[370px] flex-shrink-0">
                             <img 
                               src={slide.img} 
                               alt={`Depoimento de ${slide.name}`}
@@ -842,13 +842,13 @@ const LandingPage = () => {
                             />
                           </div>
                           
-                          {/* Text */}
-                          <div className="flex-1 text-center md:text-left">
+                          {/* Text - sempre ao lado */}
+                          <div className="flex-1 text-left">
                             <p 
-                              className="text-lg md:text-xl text-gray-700 italic leading-relaxed"
+                              className="text-sm md:text-xl text-gray-700 italic leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: `"${highlightKeywords(slide.testimonial)}"` }}
                             />
-                            <p className="mt-4 font-bold text-black text-lg">
+                            <p className="mt-3 md:mt-4 font-bold text-black text-base md:text-lg">
                               — {slide.name}
                             </p>
                           </div>

@@ -346,7 +346,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden py-4 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-4">
+          <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
             <h1 className="text-xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
               <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
               <span className="text-brand-blue">Resultados Reais!</span>
@@ -411,7 +411,7 @@ const LandingPage = () => {
               </Dialog>
 
               {/* Card de Preço abaixo do VSL */}
-              <div className="w-full max-w-[98%] md:max-w-md mx-auto mt-8 px-1 md:px-0">
+              <div className="w-full max-w-full md:max-w-md mx-auto mt-8 px-0 md:px-0">
                 <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black w-full">
                   <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
                     <div className="text-center space-y-1 md:space-y-2">
@@ -861,7 +861,7 @@ const LandingPage = () => {
 
           <div className="flex justify-center mt-4 md:mt-6">
             {/* Annual Plan */}
-            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-[98%] md:max-w-md w-full mx-auto">
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-full md:max-w-md w-full mx-auto">
               <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
                 <div className="text-center space-y-1 md:space-y-2">
                   <h3 className="text-2xl md:text-2xl font-bold text-white">Plano Anual</h3>

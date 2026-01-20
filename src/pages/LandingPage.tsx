@@ -412,68 +412,68 @@ const LandingPage = () => {
 
               {/* Card de Preço abaixo do VSL */}
               <div className="w-full max-w-md mx-auto mt-8">
-                <Card className="border-2 border-[#3c83f6] rounded-2xl shadow-lg bg-black">
-                  <CardContent className="p-8 space-y-6">
-                    <div className="text-center space-y-2">
-                      <h3 className="text-2xl font-bold text-white">Plano Anual</h3>
-                      <div className="flex items-center justify-center gap-3">
-                        <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
-                        <span className="text-xl md:text-2xl font-medium text-gray-300">por</span>
+                <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-md w-full">
+                  <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
+                    <div className="text-center space-y-1 md:space-y-2">
+                      <h3 className="text-xl md:text-2xl font-bold text-white">Plano Anual</h3>
+                      <div className="flex items-center justify-center gap-2 md:gap-3">
+                        <span className="text-xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
+                        <span className="text-base md:text-2xl font-medium text-gray-300">por</span>
                       </div>
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
-                        <span className="text-gray-400">/ano</span>
+                        <span className="text-2xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                        <span className="text-gray-400 text-sm md:text-base">/ano</span>
                       </div>
-                      <p className="text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
+                      <p className="text-xs md:text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
                     </div>
 
-                    <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
-                      <p className="text-lg font-bold text-center text-green-400">
+                    <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
+                      <p className="text-sm md:text-lg font-bold text-center text-green-400">
                         🎉 Economia de R$ 49,10 por ano!
                       </p>
                     </div>
 
-                    <ul className="text-left space-y-3">
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                    <ul className="text-left space-y-2 md:space-y-3">
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
+                        <span className="text-white text-xs md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
                       </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
+                        <span className="text-white text-xs md:text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
                       </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                        <span className="text-white text-xs md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
                       </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Defina uma meta para os seus ganhos e para os gastos</span>
+                        <span className="text-white text-xs md:text-base">Defina uma meta para os seus ganhos e para os gastos</span>
                       </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Acompanhe o seu faturamento por hora e por KM</span>
+                        <span className="text-white text-xs md:text-base">Acompanhe o seu faturamento por hora e por KM</span>
                       </li>
-                      <li className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-4 h-4 text-white" />
+                      <li className="flex items-start gap-2 md:gap-3">
+                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className="text-white text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
+                        <span className="text-white text-xs md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
                       </li>
                     </ul>
 
                     <Button
-                      className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
+                      className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                       onClick={() => handleSelectPlan()}
                     >
                       COMEÇAR AGORA

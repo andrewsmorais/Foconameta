@@ -77,64 +77,60 @@ const Planos = () => {
           </p>
         </div>
 
-        {/* Plano Anual - Único */}
-        <Card className="relative border-2 border-primary shadow-lg">
+        {/* Plano Anual Exclusive */}
+        <Card className="relative border-2 border-[#3c83f6] shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-primary text-primary-foreground px-4 py-1">
-              Melhor Oferta
+            <Badge className="bg-[#25D366] text-white px-4 py-1 font-bold">
+              Economize R$ 49,10 agora!
             </Badge>
           </div>
-          <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-2 p-3 rounded-full bg-primary/10 w-fit">
-              <Crown className="h-8 w-8 text-primary" />
+          <CardHeader className="text-center pb-2 pt-6">
+            <div className="mx-auto mb-2 p-3 rounded-full bg-[#3c83f6]/10 w-fit">
+              <Crown className="h-8 w-8 text-[#3c83f6]" />
             </div>
-            <CardTitle className="text-2xl">Plano Anual</CardTitle>
+            <CardTitle className="text-2xl text-[#3c83f6]">PLANO ANUAL EXCLUSIVE</CardTitle>
             <CardDescription>Acesso completo por 1 ano</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <div className="mb-2">
-              <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
-              <span className="text-muted-foreground">/ano</span>
-            </div>
-            <div className="bg-green-500/20 border border-green-500 rounded-lg px-4 py-2 mb-4">
-              <p className="text-lg text-green-500 font-bold">
-                🎉 Apenas R$ 8,16/mês!
-              </p>
-            </div>
-
             <ul className="space-y-3 mb-6 text-left">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>Controle completo de turnos</span>
+              <li className="flex items-start gap-2">
+                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm"><strong>Ganhos Brutos, Ganhos Líquidos e Despesas:</strong> Tenha a clareza total do seu saldo em cada turno.</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>Dashboard financeiro</span>
+              <li className="flex items-start gap-2">
+                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm"><strong>Ganhos por Hora, Ganho por KM e Despesas por KM:</strong> Entenda sua performance real no trecho.</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>Relatórios detalhados</span>
+              <li className="flex items-start gap-2">
+                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm"><strong>Custo por Combustível:</strong> Controle exato do seu maior gasto diário.</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>Gestão de manutenções</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>Metas personalizadas</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Suporte prioritário</span>
+              <li className="flex items-start gap-2">
+                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm"><strong>Funciona em aparelhos IOS (iPhone) e em aparelhos Android</strong></span>
               </li>
             </ul>
 
+            <div className="mb-4">
+              <p className="text-muted-foreground text-sm">De: <span className="line-through">R$ 147,00</span> por apenas</p>
+              <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
+              <p className="text-muted-foreground text-sm">(Pagamento Único)</p>
+            </div>
+
             <Button 
-              className="w-full" 
+              className="w-full bg-[#25D366] hover:bg-[#1da851] text-white font-bold rounded-full" 
               size="lg"
               onClick={handleSelectPlan}
             >
-              ASSINAR AGORA
+              QUERO GARANTIR MEU ACESSO AGORA
             </Button>
           </CardContent>
         </Card>

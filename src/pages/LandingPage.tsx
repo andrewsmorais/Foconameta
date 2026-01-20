@@ -493,71 +493,66 @@ const LandingPage = () => {
             <p className="text-[#c41313] font-bold text-sm mb-2 uppercase tracking-wide">
               Vantagens e Diferenciais
             </p>
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-10">
-              O Bateu a Meta é para você,<br />
-              motorista que...
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+              Tudo o que você precisa para ter<br />
+              <span className="text-[#15a249]">controle total</span> das suas finanças
             </h2>
+            <p className="text-gray-400 mb-10 text-base">
+              Ferramentas práticas pensadas para o dia a dia do motorista
+            </p>
             
             {/* Grid 2 colunas */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {/* Card 1 - Menu KM */}
-              <div className="flex items-start gap-4">
-                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+              {/* Card 1 - Domínio Financeiro (DESTAQUE) */}
+              <div className="flex items-start gap-4 bg-gradient-to-r from-[#15a249]/10 to-transparent p-4 rounded-xl border border-[#15a249]/30">
+                <div className="border border-[#15a249] rounded-lg p-2 flex-shrink-0 bg-[#15a249]/10">
+                  <ChevronRight className="w-5 h-5 text-[#15a249]" />
                 </div>
-                <p className="text-gray-300 text-base md:text-lg">
-                  Sente que <strong className="text-white">'bate lata'</strong> e quer saber exatamente o seu <strong className="text-[#15a249]">lucro líquido real</strong> por quilômetro rodado.
-                </p>
+                <div>
+                  <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Domínio Financeiro</p>
+                  <p className="text-gray-300 text-base md:text-lg">
+                    Tenha total clareza sobre seus <strong className="text-[#15a249]">Ganhos Brutos</strong>, <strong className="text-[#15a249]">Lucros Líquidos</strong> e suas <strong className="text-white">Despesas detalhadas</strong> em cada turno.
+                  </p>
+                </div>
               </div>
 
-              {/* Card 2 - Gestão de Metas */}
-              <div className="flex items-start gap-4">
+              {/* Card 2 - Menu Manutenções */}
+              <div className="flex items-start gap-4 p-4">
                 <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
-                <p className="text-gray-300 text-base md:text-lg">
-                  Precisa de um <strong className="text-white">guia visual</strong> para saber quanto falta para atingir seu <strong className="text-[#3c83f6]">objetivo financeiro</strong> do dia.
-                </p>
+                <div>
+                  <p className="text-white font-bold text-sm mb-2 uppercase tracking-wide">Menu Manutenções</p>
+                  <p className="text-gray-300 text-base md:text-lg">
+                    Registre o <strong className="text-white">nome da oficina</strong>, <strong className="text-white">peças trocadas</strong>, <strong className="text-white">KM da manutenção</strong>, data, motivo da troca e garantia, com a facilidade de <strong className="text-white">anexar suas notas fiscais</strong>.
+                  </p>
+                </div>
               </div>
 
-              {/* Card 3 - Menu Manutenções */}
-              <div className="flex items-start gap-4">
+              {/* Card 3 - Gestão Prática */}
+              <div className="flex items-start gap-4 p-4">
                 <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
-              <p className="text-gray-300 text-base md:text-lg">
-                  Gerencie suas <strong className="text-white">trocas de óleo, pneus e revisões</strong> em um só lugar. O segredo para o lucro real é um <strong className="text-white">carro que nunca te deixa na mão</strong>.
-                </p>
+                <div>
+                  <p className="text-white font-bold text-sm mb-2 uppercase tracking-wide">Gestão Prática</p>
+                  <p className="text-gray-300 text-base md:text-lg">
+                    Muito mais prático que papel ou planilhas: Com o <strong className="text-[#15a249]">Bateu a Meta</strong>, você registra tudo na hora pelo celular, <strong className="text-white">evita esquecimentos</strong> e deixa que o aplicativo faça os <strong className="text-white">cálculos automáticos</strong> para você.
+                  </p>
+                </div>
               </div>
 
-              {/* Card 4 - Ganhos e Despesas */}
-              <div className="flex items-start gap-4">
+              {/* Card 4 - Estratégia de Metas */}
+              <div className="flex items-start gap-4 p-4">
                 <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
-                <p className="text-gray-300 text-base md:text-lg">
-                  Busca uma maneira <strong className="text-white">simples de registrar ganhos</strong> da Uber, 99, iFood e outras plataformas <strong className="text-[#15a249]">em um só lugar</strong>.
-                </p>
-              </div>
-
-              {/* Card 5 - Análise de Performance */}
-              <div className="flex items-start gap-4">
-                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-white font-bold text-sm mb-2 uppercase tracking-wide">Estratégia de Metas</p>
+                  <p className="text-gray-300 text-base md:text-lg">
+                    Pare de rodar na sorte: <strong className="text-[#c41313]">Quem não controla os números, não vê o dinheiro crescer.</strong> Com o Bateu a Meta, você registra cada turno com <strong className="text-white">clareza total</strong>, garantindo o seu <strong className="text-[#15a249]">resultado no final do mês</strong>.
+                  </p>
                 </div>
-              <p className="text-gray-300 text-base md:text-lg">
-                  <strong className="text-[#3c83f6]">Meta Diária e Mensal:</strong> Configure quanto você precisa ganhar para <strong className="text-white">cobrir suas contas</strong> e quanto quer lucrar para <strong className="text-white">realizar seus sonhos</strong>.
-                </p>
-              </div>
-
-              {/* Card 6 - Organização Financeira */}
-              <div className="flex items-start gap-4">
-                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </div>
-                <p className="text-gray-300 text-base md:text-lg">
-                  Sente-se <strong className="text-[#c41313]">desorganizado</strong> e quer transformar o <strong className="text-white">caos das contas</strong> em um histórico limpo e profissional.
-                </p>
               </div>
             </div>
           </div>

@@ -642,26 +642,26 @@ const LandingPage = () => {
             <div className="flex-shrink-0 relative">
               {/* Linhas decorativas */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-52 h-52 md:w-64 md:h-64 border border-dashed border-[#c41313]/30 rounded-full" />
+                <div className="w-52 h-52 md:w-64 md:h-64 border border-dashed border-[#8B0000]/40 rounded-full" />
               </div>
               
-              {/* Badge principal */}
-              <div className="relative w-40 h-40 md:w-52 md:h-52 bg-[#2a2a2a] rounded-full flex flex-col items-center justify-center shadow-xl">
+              {/* Badge principal - Preto puro com vermelho escuro */}
+              <div className="relative w-40 h-40 md:w-52 md:h-52 bg-black border-2 border-[#8B0000]/50 rounded-full flex flex-col items-center justify-center shadow-2xl">
                 {/* Texto circular superior */}
-                <span className="absolute top-3 md:top-4 text-[#c41313] font-bold text-[10px] md:text-xs tracking-widest uppercase">
+                <span className="absolute top-3 md:top-4 text-[#8B0000] font-bold text-[10px] md:text-xs tracking-widest uppercase">
                   7 DIAS DE GARANTIA
                 </span>
                 
                 {/* Número 7 grande */}
-                <span className="text-[#c41313] font-bold text-6xl md:text-8xl leading-none">7</span>
+                <span className="text-[#8B0000] font-bold text-6xl md:text-8xl leading-none">7</span>
                 
                 {/* Texto inferior */}
-                <span className="text-gray-400 font-medium text-[10px] md:text-xs tracking-wider uppercase mt-1">
+                <span className="text-[#8B0000] font-medium text-[10px] md:text-xs tracking-wider uppercase mt-1">
                   DIAS
                 </span>
                 
                 {/* Texto circular inferior */}
-                <span className="absolute bottom-3 md:bottom-4 text-gray-500 font-medium text-[8px] md:text-[10px] tracking-widest uppercase">
+                <span className="absolute bottom-3 md:bottom-4 text-[#6B0000] font-medium text-[8px] md:text-[10px] tracking-widest uppercase">
                   DE GARANTIA
                 </span>
               </div>

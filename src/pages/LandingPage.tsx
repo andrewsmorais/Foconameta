@@ -971,14 +971,14 @@ const LandingPage = () => {
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
               {/* Ícone de chat */}
               <div className="flex-shrink-0">
-                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-orange-100 flex items-center justify-center">
-                  <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-orange-500" />
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#25D366]/20 flex items-center justify-center">
+                  <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-[#25D366]" />
                 </div>
               </div>
               
               {/* Texto */}
               <div className="text-center md:text-left flex-1">
-                <h3 className="text-lg md:text-xl font-bold text-orange-500 mb-1">
+                <h3 className="text-lg md:text-xl font-bold text-[#25D366] mb-1">
                   Ainda ficou com dúvidas?
                 </h3>
                 <p className="text-gray-600 text-sm md:text-base">

@@ -364,7 +364,7 @@ const LandingPage = () => {
               >
                 {/* Thumbnail do YouTube */}
                 <img
-                  src="https://img.youtube.com/vi/sbWG4v0Rm8I/maxresdefault.jpg"
+                  src="https://img.youtube.com/vi/TlnrQnk4M_E/maxresdefault.jpg"
                   alt="Assistir vídeo - Bateu a Meta"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -397,7 +397,7 @@ const LandingPage = () => {
                 <div className="relative w-full aspect-[9/16] md:aspect-video">
                   <iframe
                     className="w-full h-full"
-                    src="https://www.youtube.com/embed/sbWG4v0Rm8I?rel=0&modestbranding=1&autoplay=1"
+                    src="https://www.youtube.com/embed/TlnrQnk4M_E?rel=0&modestbranding=1&autoplay=1"
                     title="Bateu a Meta - VSL"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

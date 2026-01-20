@@ -490,7 +490,7 @@ const LandingPage = () => {
           {/* Card container único com tudo junto */}
           <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-12 border border-gray-800">
             {/* Header */}
-            <p className="text-[#3c83f6] font-bold text-xl md:text-2xl mb-2 uppercase tracking-wide text-center">
+            <p className="text-[#3c83f6] font-bold text-2xl md:text-4xl mb-4 uppercase tracking-wide text-center">
               Vantagens e Diferenciais
             </p>
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 text-center">

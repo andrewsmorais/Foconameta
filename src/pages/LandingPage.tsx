@@ -662,21 +662,21 @@ const LandingPage = () => {
               loop: true,
             }}
             setApi={setResourcesCarouselApi}
-            className="w-full max-w-3xl mx-auto"
+            className="w-full max-w-4xl mx-auto"
           >
             <CarouselContent>
               {resourcesSlides.map((slide, index) => (
-                <CarouselItem key={index} className="basis-full md:basis-4/5">
-                  <div className="px-2 md:px-4">
+                <CarouselItem key={index} className="basis-[95%] md:basis-4/5">
+                  <div className="px-1 md:px-4">
                     <div 
-                      className="bg-white rounded-2xl shadow-lg p-3 md:p-4 border border-gray-200 cursor-pointer group relative"
+                      className="bg-white rounded-2xl shadow-lg p-2 md:p-4 border border-gray-200 cursor-pointer group relative"
                       onClick={() => setSelectedResourceImage({ ...slide, index })}
                     >
                       <div className="relative overflow-hidden rounded-xl">
                         <img 
                           src={slide.img} 
                           alt={slide.caption}
-                          className="w-full h-auto rounded-xl transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-auto max-h-[70vh] object-contain rounded-xl transition-transform duration-300 group-hover:scale-105"
                         />
                         {/* Hover overlay with expand icon */}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-xl">
@@ -685,7 +685,7 @@ const LandingPage = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="text-center mt-3 text-black font-medium text-sm md:text-base">
+                      <p className="text-center mt-3 text-black font-semibold text-base md:text-lg">
                         {slide.caption}
                       </p>
                       {/* Mobile tap hint */}

@@ -972,7 +972,7 @@ const LandingPage = () => {
               {/* Ícone de chat */}
               <div className="flex-shrink-0">
                 <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#25D366]/20 flex items-center justify-center">
-                  <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-[#25D366]" />
+                  <Headphones className="w-7 h-7 md:w-8 md:h-8 text-[#25D366]" />
                 </div>
               </div>
               

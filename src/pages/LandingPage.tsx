@@ -487,12 +487,14 @@ const LandingPage = () => {
       {/* Vantagens e Diferenciais Section */}
       <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">
+          {/* Header fora do card */}
+          <p className="text-[#3c83f6] font-bold text-xl md:text-2xl mb-8 uppercase tracking-wide text-center">
+            Muito mais que um app, sua central de comando
+          </p>
+          
           {/* Card container único com tudo junto */}
           <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-12 border border-gray-800">
             {/* Header */}
-            <p className="text-[#3c83f6] font-bold text-xl md:text-2xl mb-4 uppercase tracking-wide text-center">
-              Muito mais que um app, sua central de comando
-            </p>
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 text-center">
               Tudo o que você precisa para ter<br />
               <span className="text-[#15a249]">controle total</span> das suas finanças

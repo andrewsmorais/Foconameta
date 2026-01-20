@@ -511,7 +511,7 @@ const LandingPage = () => {
                 <div>
                   <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Domínio Financeiro</p>
                   <p className="text-gray-300 text-base md:text-lg">
-                    Tenha total clareza sobre seus <strong className="text-[#15a249]">Ganhos Brutos</strong>, <strong className="text-[#15a249]">Lucros Líquidos</strong> e suas <strong className="text-white">Despesas detalhadas</strong> em cada turno.
+                    Tenha total clareza sobre seus <strong className="text-[#3c83f6]">Ganhos Brutos</strong>, <strong className="text-[#3c83f6]">Lucros Líquidos</strong> e suas <strong className="text-white">Despesas detalhadas</strong> em cada turno.
                   </p>
                 </div>
               </div>
@@ -524,7 +524,7 @@ const LandingPage = () => {
                 <div>
                   <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Menu Manutenções</p>
                   <p className="text-gray-300 text-base md:text-lg">
-                    Registre o <strong className="text-white">nome da oficina</strong>, <strong className="text-white">peças trocadas</strong>, <strong className="text-white">KM da manutenção</strong>, data, motivo da troca e garantia, com a facilidade de <strong className="text-white">anexar suas notas fiscais</strong>.
+                    Registre o <strong className="text-[#3c83f6]">nome da oficina</strong>, <strong className="text-[#3c83f6]">peças trocadas</strong>, <strong className="text-[#3c83f6]">KM da manutenção</strong>, data, motivo da troca e garantia, com a facilidade de <strong className="text-[#3c83f6]">anexar suas notas fiscais</strong>.
                   </p>
                 </div>
               </div>
@@ -537,7 +537,7 @@ const LandingPage = () => {
                 <div>
                   <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Gestão Prática</p>
                   <p className="text-gray-300 text-base md:text-lg">
-                    Muito mais prático que papel ou planilhas: Com o <strong className="text-[#15a249]">Bateu a Meta</strong>, você registra tudo na hora pelo celular, <strong className="text-white">evita esquecimentos</strong> e deixa que o aplicativo faça os <strong className="text-white">cálculos automáticos</strong> para você.
+                    Muito mais prático que papel ou planilhas: Com o <strong className="text-[#3c83f6]">Bateu a Meta</strong>, você registra tudo na hora pelo celular, <strong className="text-[#3c83f6]">evita esquecimentos</strong> e deixa que o aplicativo faça os <strong className="text-[#3c83f6]">cálculos automáticos</strong> para você.
                   </p>
                 </div>
               </div>
@@ -550,7 +550,7 @@ const LandingPage = () => {
                 <div>
                   <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Estratégia de Metas</p>
                   <p className="text-gray-300 text-base md:text-lg">
-                    Pare de rodar na sorte: <strong className="text-[#c41313]">Quem não controla os números, não vê o dinheiro crescer.</strong> Com o Bateu a Meta, você registra cada turno com <strong className="text-white">clareza total</strong>, garantindo o seu <strong className="text-[#15a249]">resultado no final do mês</strong>.
+                    Pare de rodar na sorte: <strong className="text-[#3c83f6]">Quem não controla os números, não vê o dinheiro crescer.</strong> Com o Bateu a Meta, você registra cada turno com <strong className="text-[#3c83f6]">clareza total</strong>, garantindo o seu <strong className="text-[#3c83f6]">resultado no final do mês</strong>.
                   </p>
                 </div>
               </div>

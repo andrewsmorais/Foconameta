@@ -32,7 +32,8 @@ import {
   Expand,
   ChevronLeft,
   ChevronRight,
-  Check
+  Check,
+  Calculator
 } from "lucide-react";
 import logo from "@/assets/bateu-a-meta-logo.png";
 import platformLogos from "@/assets/platform-logos.png";
@@ -343,15 +344,15 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-6 md:py-20 bg-[#fafafa]">
+      <section className="relative overflow-hidden py-4 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="flex flex-col items-center text-center space-y-4 md:space-y-6 px-4">
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
+          <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-4">
+            <h1 className="text-xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
               <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
               <span className="text-brand-blue">Resultados Reais!</span>
             </h1>
             
-            <h2 className="text-base md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
+            <h2 className="text-sm md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
               Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
             </h2>
 
@@ -374,8 +375,9 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                 {/* Botão de Play */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 md:w-24 md:h-24 bg-[#c41313] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                    <Play className="w-8 h-8 md:w-12 md:h-12 text-white ml-1" fill="white" />
+                  <div className="w-14 h-14 md:w-24 md:h-24 bg-[#c41313] rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                    <Play className="w-7 h-7 md:w-12 md:h-12 text-white ml-1" fill="white" />
+                  </div>
                   </div>
                 </div>
                 {/* Texto indicativo */}
@@ -485,157 +487,119 @@ const LandingPage = () => {
       </section>
 
       {/* Vantagens e Diferenciais Section */}
-      <section className="py-16 md:py-24 px-4 bg-black">
-        <div className="container mx-auto max-w-5xl">
-          {/* Header fora do card */}
-          <p className="text-[#3c83f6] font-bold text-xl md:text-2xl mb-8 uppercase tracking-wide text-center">
-            Muito mais que um app, sua central de comando
-          </p>
+      <section className="py-10 md:py-24 bg-[#1a1a1a]">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-xl md:text-3xl font-bold text-center mb-8 md:mb-12">
+            <span className="text-[#3c83f6]">Muito mais que um app, sua central de comando</span>
+          </h2>
           
-          {/* Card container único com tudo junto */}
-          <div className="bg-[#1a1a1a] rounded-3xl p-6 md:p-12 border border-gray-800">
-            {/* Header */}
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4 text-center">
-              Tudo o que você precisa para ter<br />
-              <span className="text-[#15a249]">controle total</span> das suas finanças
-            </h2>
-            <p className="text-gray-400 mb-10 text-base text-center">
-              Ferramentas práticas pensadas para o dia a dia do motorista
-            </p>
-            
-            {/* Grid 2 colunas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
-              {/* Card 1 - Domínio Financeiro (DESTAQUE) */}
-              <div className="flex items-start gap-4 bg-gradient-to-r from-[#15a249]/10 to-transparent p-4 rounded-xl border border-[#15a249]/30">
-                <div className="border border-[#15a249] rounded-lg p-2 flex-shrink-0 bg-[#15a249]/10">
-                  <ChevronRight className="w-5 h-5 text-[#15a249]" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {/* Card 1 - Domínio Financeiro */}
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+              <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
                 </div>
-                <div>
-                  <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Domínio Financeiro</p>
-                  <p className="text-gray-300 text-base md:text-lg">
-                    Tenha total clareza sobre seus <strong className="text-[#3c83f6]">Ganhos Brutos</strong>, <strong className="text-[#3c83f6]">Lucros Líquidos</strong> e suas <strong className="text-white">Despesas detalhadas</strong> em cada turno.
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 2 - Menu Manutenções */}
-              <div className="flex items-start gap-4 bg-gradient-to-r from-[#15a249]/10 to-transparent p-4 rounded-xl border border-[#15a249]/30">
-                <div className="border border-[#15a249] rounded-lg p-2 flex-shrink-0 bg-[#15a249]/10">
-                  <ChevronRight className="w-5 h-5 text-[#15a249]" />
-                </div>
-                <div>
-                  <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Menu Manutenções</p>
-                  <p className="text-gray-300 text-base md:text-lg">
-                    Registre o <strong className="text-[#3c83f6]">nome da oficina</strong>, <strong className="text-[#3c83f6]">peças trocadas</strong>, <strong className="text-[#3c83f6]">KM da manutenção</strong>, data, motivo da troca e garantia, com a facilidade de <strong className="text-[#3c83f6]">anexar suas notas fiscais</strong>.
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 3 - Gestão Prática */}
-              <div className="flex items-start gap-4 bg-gradient-to-r from-[#15a249]/10 to-transparent p-4 rounded-xl border border-[#15a249]/30">
-                <div className="border border-[#15a249] rounded-lg p-2 flex-shrink-0 bg-[#15a249]/10">
-                  <ChevronRight className="w-5 h-5 text-[#15a249]" />
-                </div>
-                <div>
-                  <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Gestão Prática</p>
-                  <p className="text-gray-300 text-base md:text-lg">
-                    Muito mais prático que papel ou planilhas: Com o <strong className="text-[#3c83f6]">Bateu a Meta</strong>, você registra tudo na hora pelo celular, <strong className="text-[#3c83f6]">evita esquecimentos</strong> e deixa que o aplicativo faça os <strong className="text-[#3c83f6]">cálculos automáticos</strong> para você.
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 4 - Estratégia de Metas */}
-              <div className="flex items-start gap-4 bg-gradient-to-r from-[#15a249]/10 to-transparent p-4 rounded-xl border border-[#15a249]/30">
-                <div className="border border-[#15a249] rounded-lg p-2 flex-shrink-0 bg-[#15a249]/10">
-                  <ChevronRight className="w-5 h-5 text-[#15a249]" />
-                </div>
-                <div>
-                  <p className="text-[#15a249] font-bold text-sm mb-2 uppercase tracking-wide">Estratégia de Metas</p>
-                  <p className="text-gray-300 text-base md:text-lg">
-                    Pare de rodar na sorte: <strong className="text-[#3c83f6]">Quem não controla os números, não vê o dinheiro crescer.</strong> Com o Bateu a Meta, você registra cada turno com <strong className="text-[#3c83f6]">clareza total</strong>, garantindo o seu <strong className="text-[#3c83f6]">resultado no final do mês</strong>.
+                <div className="text-center md:text-left">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Domínio Financeiro Total</h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                    Registre <span className="text-[#3c83f6] font-medium">Ganhos Brutos</span>, <span className="text-[#3c83f6] font-medium">custos de combustível</span>, <span className="text-[#3c83f6] font-medium">KM rodado</span> e muito mais. Tenha clareza sobre cada centavo que entra e sai.
                   </p>
                 </div>
               </div>
             </div>
-            
-            {/* Separador sutil */}
-            <div className="border-t border-gray-700 my-8"></div>
-            
-            {/* Footer com plataformas - agora dentro do mesmo card */}
-            <div className="flex flex-col items-center gap-6">
-              {/* Texto */}
-              <div className="bg-gradient-to-r from-yellow-400/10 via-yellow-400/20 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-6 max-w-2xl">
-                <p className="text-white text-lg md:text-xl text-center font-medium leading-relaxed">
-                  O <strong className="text-yellow-400 font-bold">Bateu a Meta</strong> é totalmente compatível com sistemas <strong className="text-yellow-400 font-bold">iOS (iPhone)</strong>, <strong className="text-yellow-400 font-bold">Android</strong>, tablets e computadores. Após a conclusão do pagamento, basta retornar ao nosso site oficial, clicar no botão <strong className="text-yellow-400 font-bold">'Já sou Cliente'</strong> e entrar com suas credenciais para começar a usar o aplicativo imediatamente.
-                </p>
-              </div>
-              
-              {/* Logos das plataformas */}
-              <div className="flex items-center justify-center gap-3 flex-wrap">
-                {/* 99 */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-yellow-400 rounded-xl flex items-center justify-center">
-                  <span className="text-black font-bold text-2xl md:text-3xl">99</span>
+
+            {/* Card 2 - Manutenções */}
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+              <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Wrench className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
                 </div>
-                
-                {/* Uber */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-black border-2 border-white rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg md:text-xl">Uber</span>
-                </div>
-                
-                {/* iFood */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-red-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg md:text-xl">iFood</span>
-                </div>
-                
-                {/* InDriver */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-green-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xs md:text-sm">InDriver</span>
-                </div>
-                
-                {/* BlaBlaCar */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-[#00AAFF] rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xs md:text-sm text-center leading-tight">Bla<br/>BlaCar</span>
-                </div>
-                
-                {/* Keepa */}
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-purple-600 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg md:text-xl">Keepa</span>
+                <div className="text-center md:text-left">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Menu Manutenções</h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                    Registre <span className="text-[#3c83f6] font-medium">peças trocadas</span>, <span className="text-[#3c83f6] font-medium">nome da oficina</span>, KM atual e próximo para troca. Nunca mais esqueça uma revisão importante.
+                  </p>
                 </div>
               </div>
+            </div>
+
+            {/* Card 3 - Gestão Prática */}
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+              <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Calculator className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                </div>
+                <div className="text-center md:text-left">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Gestão Prática</h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                    Menos tempo perdido com planilhas. Com <span className="text-[#3c83f6] font-medium">cálculos automáticos</span> e <span className="text-[#3c83f6] font-medium">relatórios semanais/mensais</span>, você sabe exatamente o <span className="text-[#3c83f6] font-medium">resultado no final do mês</span>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4 - Metas */}
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+              <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Target className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                </div>
+                <div className="text-center md:text-left">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Estratégia de Metas</h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                    Defina <span className="text-[#3c83f6] font-medium">metas diárias</span>, <span className="text-[#3c83f6] font-medium">semanais</span> e <span className="text-[#3c83f6] font-medium">mensais</span>. Acompanhe seu progresso e saiba exatamente quanto falta para bater a meta.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Compatibilidade */}
+          <div className="mt-6 md:mt-10 text-center">
+            <p className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
+              <span className="text-[#fbbf24] font-medium">Compatível</span> com todas as plataformas:
+            </p>
+            <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+              {['99', 'Uber', 'iFood', 'InDriver', 'BlaBlaCar', 'Keepa'].map((platform) => (
+                <span 
+                  key={platform}
+                  className="bg-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white text-xs md:text-sm font-medium"
+                >
+                  {platform}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Garantia Section - White Background */}
-      <section className="py-16 md:py-24 px-4 bg-[#f5f5f5]">
+      <section className="py-10 md:py-24 px-4 bg-[#f5f5f5]">
         <div className="container mx-auto max-w-5xl">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-            {/* Texto à esquerda */}
-            <div className="flex-1 space-y-4">
-              <span className="text-[#c41313] font-bold text-sm uppercase tracking-wide">Garantia</span>
-              <h2 className="text-2xl md:text-4xl font-bold text-black leading-tight">
+          <div className="flex flex-col items-center text-center md:text-left md:flex-row justify-between gap-6 md:gap-12">
+            {/* Texto */}
+            <div className="flex-1 space-y-3 md:space-y-4 order-1 md:order-1">
+              <span className="text-[#c41313] font-bold text-xs md:text-sm uppercase tracking-wide">Garantia</span>
+              <h2 className="text-xl md:text-4xl font-bold text-black leading-tight">
                 Você não tem<br />nada a perder!
               </h2>
-              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
                 Se por qualquer motivo você não ficar satisfeito ou não se adaptar, basta{" "}
                 <strong className="text-black">entrar em contato com a nossa equipe dentro do prazo de 7 dias e solicitar o reembolso do valor investido.</strong>{" "}
                 Você receberá de volta cada centavo que pagou.
               </p>
-              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
                 Eu estou tirando todo o risco das suas mãos e colocando em nossa mão. Faça sua inscrição agora mesmo e veja com seus próprios olhos.
               </p>
             </div>
             
-            {/* Número 7 grande à direita */}
-            <div className="flex-shrink-0 flex flex-col items-center justify-center">
-              {/* Número 7 gigante */}
-              <span className="text-[#c41313] font-black text-[120px] md:text-[180px] leading-none drop-shadow-lg">
+            {/* Número 7 grande */}
+            <div className="flex-shrink-0 flex flex-col items-center justify-center order-2 md:order-2">
+              <span className="text-[#c41313] font-black text-[100px] md:text-[180px] leading-none drop-shadow-lg">
                 7
               </span>
-              
-              {/* Texto abaixo */}
-              <span className="text-black font-bold text-xl md:text-2xl mt-2 tracking-wide">
+              <span className="text-black font-bold text-base md:text-2xl mt-1 md:mt-2 tracking-wide">
                 Garantia de 7 dias
               </span>
             </div>
@@ -644,13 +608,13 @@ const LandingPage = () => {
       </section>
 
       {/* Resources Carousel Section - White Background */}
-      <section className="py-16 md:py-24 px-4 bg-white">
+      <section className="py-10 md:py-24 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
+          <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
+            <h2 className="text-xl md:text-4xl font-bold text-black">
               Veja os <span className="text-[#3c83f6]">Recursos</span> na Prática
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
               Conheça cada funcionalidade do app
             </p>
           </div>
@@ -742,24 +706,24 @@ const LandingPage = () => {
       </section>
 
       {/* Founder Section */}
-      <section className="py-16 md:py-24 px-4 bg-white">
+      <section className="py-10 md:py-24 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left - Photo */}
+          <div className="flex flex-col items-center gap-6 md:gap-12 md:grid md:grid-cols-2">
+            {/* Photo */}
             <div className="order-1 flex justify-center">
               <img 
                 src={fundadorImg} 
                 alt="Fundador do Bateu a Meta"
-                className="w-full max-w-md rounded-2xl shadow-xl"
+                className="w-48 md:w-full max-w-md rounded-2xl shadow-xl"
               />
             </div>
             
-            {/* Right - Text */}
-            <div className="space-y-6 order-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-black">
+            {/* Text */}
+            <div className="space-y-4 md:space-y-6 order-2 text-center md:text-left">
+              <h2 className="text-xl md:text-3xl font-bold text-black">
                 Chega de '<span className="text-[#c41313]">bater lata</span>'. É hora de bater a meta com <span className="text-[#3c83f6]">inteligência</span>
               </h2>
-              <p className="text-black text-base md:text-lg leading-relaxed font-medium">
+              <p className="text-black text-sm md:text-lg leading-relaxed font-medium">
                 Meu nome é <span className="text-[#3c83f7]">Andrews Morais</span>, eu também sou motorista e sei que o segredo do lucro está no controle. 
                 Criei o <span className="text-[#3c83f7]">Bateu a Meta</span> para ser nosso braço direito na gestão financeira: 
                 prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
@@ -771,16 +735,16 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials Section - #f9f9fa */}
-      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
+      <section className="py-10 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto text-black">
+          <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
+            <h2 className="text-lg md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto text-black">
               <span className="text-brand-red">Veja Quem Já Bateu A Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em <span className="text-brand-blue">lucro líquido real</span>.
             </h2>
           </div>
 
           {/* Driver Testimonials Carousel */}
-          <div className="mb-16">
+          <div className="mb-10 md:mb-16">
             <Carousel
               opts={{
                 align: "center",
@@ -794,9 +758,9 @@ const LandingPage = () => {
                   <CarouselItem key={index} className="basis-full">
                     <Card className="bg-white shadow-lg border-0 mx-2">
                       <CardContent className="p-4 md:p-8">
-                        <div className="flex flex-col items-center gap-4 md:gap-6">
+                        <div className="flex flex-col items-center gap-3 md:gap-6">
                           {/* Photo - formato 9:16 */}
-                          <div className="w-40 h-72 md:w-52 md:h-[370px] flex-shrink-0">
+                          <div className="w-32 h-56 md:w-52 md:h-[370px] flex-shrink-0">
                             <img 
                               src={slide.img} 
                               alt={`Depoimento de ${slide.name}`}
@@ -807,10 +771,10 @@ const LandingPage = () => {
                           {/* Text - embaixo da foto */}
                           <div className="text-center">
                             <p 
-                              className="text-sm md:text-xl text-gray-700 italic leading-relaxed"
+                              className="text-xs md:text-xl text-gray-700 italic leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: `"${highlightKeywords(slide.testimonial)}"` }}
                             />
-                            <p className="mt-3 md:mt-4 font-bold text-black text-base md:text-lg">
+                            <p className="mt-2 md:mt-4 font-bold text-black text-sm md:text-lg">
                               — {slide.name}
                             </p>
                           </div>
@@ -873,81 +837,81 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section - #f9f9fa */}
-      <section id="pricing" className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
+      <section id="pricing" className="py-10 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
+          <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
+            <h2 className="text-xl md:text-4xl font-bold text-black">
               Escolha Seu <span className="text-brand-blue">Plano</span>
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-sm md:text-lg">
               Invista no controle das suas finanças
             </p>
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-4 md:mt-6">
             {/* Annual Plan */}
             <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-md w-full">
-              <CardContent className="p-8 space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold text-white">Plano Anual</h3>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
-                    <span className="text-xl md:text-2xl font-medium text-gray-300">por</span>
+              <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
+                <div className="text-center space-y-1 md:space-y-2">
+                  <h3 className="text-xl md:text-2xl font-bold text-white">Plano Anual</h3>
+                  <div className="flex items-center justify-center gap-2 md:gap-3">
+                    <span className="text-xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
+                    <span className="text-base md:text-2xl font-medium text-gray-300">por</span>
                   </div>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
-                    <span className="text-gray-400">/ano</span>
+                    <span className="text-2xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                    <span className="text-gray-400 text-sm md:text-base">/ano</span>
                   </div>
-                  <p className="text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
+                  <p className="text-xs md:text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/30">
-                  <p className="text-lg font-bold text-center text-green-400">
+                <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
+                  <p className="text-sm md:text-lg font-bold text-center text-green-400">
                     🎉 Economia de R$ 49,10 por ano!
                   </p>
                 </div>
 
-                <ul className="text-left space-y-3">
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                <ul className="text-left space-y-2 md:space-y-3">
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
+                    <span className="text-white text-xs md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
+                    <span className="text-white text-xs md:text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                    <span className="text-white text-xs md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Defina uma meta para os seus ganhos e para os gastos</span>
+                    <span className="text-white text-xs md:text-base">Defina uma meta para os seus ganhos e para os gastos</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Acompanhe o seu faturamento por hora e por KM</span>
+                    <span className="text-white text-xs md:text-base">Acompanhe o seu faturamento por hora e por KM</span>
                   </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                     </div>
-                    <span className="text-white text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
+                    <span className="text-white text-xs md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
                   </li>
                 </ul>
 
                 <Button
-                  className="w-full py-5 md:py-6 text-base md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
+                  className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                   onClick={() => handleSelectPlan()}
                 >
                   COMEÇAR AGORA
@@ -956,31 +920,31 @@ const LandingPage = () => {
             </Card>
           </div>
 
-          <div className="text-center mt-10">
-            <div className="inline-flex items-center gap-2 md:gap-3 px-4 py-3 md:px-8 md:py-5 rounded-xl bg-green-600">
-              <ShieldCheck className="h-5 w-5 md:h-8 md:w-8 text-white flex-shrink-0" />
-              <span className="text-sm md:text-lg lg:text-xl font-bold text-white">7 dias de Garantia ou Seu Dinheiro de Volta</span>
+          <div className="text-center mt-6 md:mt-10">
+            <div className="inline-flex items-center gap-2 px-4 py-3 md:px-8 md:py-5 rounded-xl bg-green-600">
+              <ShieldCheck className="h-4 w-4 md:h-8 md:w-8 text-white flex-shrink-0" />
+              <span className="text-xs md:text-xl font-bold text-white">7 dias de Garantia ou Seu Dinheiro de Volta</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ Section - #f9f9fa */}
-      <section className="py-16 md:py-24 px-4 bg-[#f9f9fa]">
+      <section className="py-10 md:py-24 px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-3xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black">
+          <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
+            <h2 className="text-xl md:text-4xl font-bold text-black">
               Perguntas <span className="text-brand-blue">Frequentes</span>
             </h2>
           </div>
 
-          <Accordion type="single" collapsible className="w-full space-y-4">
+          <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-4 bg-white">
-                <AccordionTrigger className="text-left font-medium hover:no-underline text-black">
+              <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-3 md:px-4 bg-white">
+                <AccordionTrigger className="text-left font-medium hover:no-underline text-black text-sm md:text-base py-3 md:py-4">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-600">
+                <AccordionContent className="text-gray-600 text-xs md:text-base pb-3 md:pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

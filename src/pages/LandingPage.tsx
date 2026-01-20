@@ -618,28 +618,54 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 3 Passos Section - Black Background */}
-      <section className="py-16 md:py-24 px-4 bg-black">
+      {/* Garantia Section - White Background */}
+      <section className="py-16 md:py-24 px-4 bg-[#f5f5f5]">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-white">
-              <span className="text-brand-blue">3 Passos Simples</span> Para Começar
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {steps.map((step, index) => (
-              <div key={index} className="relative text-center space-y-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-[#c41313] to-[#3c83f6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                  {step.number}
-                </div>
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[#c41313] to-[#3c83f6]" />
-                )}
-                <h3 className="text-xl font-bold text-white">{step.title}</h3>
-                <p className="text-gray-400">{step.description}</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+            {/* Texto à esquerda */}
+            <div className="flex-1 space-y-4">
+              <span className="text-[#c41313] font-bold text-sm uppercase tracking-wide">Garantia</span>
+              <h2 className="text-2xl md:text-4xl font-bold text-black leading-tight">
+                Você não tem<br />nada a perder!
+              </h2>
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                Se por qualquer motivo você não ficar satisfeito ou não se adaptar, basta{" "}
+                <strong className="text-black">entrar em contato com a nossa equipe dentro do prazo de 7 dias e solicitar o reembolso do valor investido.</strong>{" "}
+                Você receberá de volta cada centavo que pagou.
+              </p>
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                Eu estou tirando todo o risco das suas mãos e colocando em nossa mão. Faça sua inscrição agora mesmo e veja com seus próprios olhos.
+              </p>
+            </div>
+            
+            {/* Badge de garantia à direita */}
+            <div className="flex-shrink-0 relative">
+              {/* Linhas decorativas */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-52 h-52 md:w-64 md:h-64 border border-dashed border-[#c41313]/30 rounded-full" />
               </div>
-            ))}
+              
+              {/* Badge principal */}
+              <div className="relative w-40 h-40 md:w-52 md:h-52 bg-[#2a2a2a] rounded-full flex flex-col items-center justify-center shadow-xl">
+                {/* Texto circular superior */}
+                <span className="absolute top-3 md:top-4 text-[#c41313] font-bold text-[10px] md:text-xs tracking-widest uppercase">
+                  7 DIAS DE GARANTIA
+                </span>
+                
+                {/* Número 7 grande */}
+                <span className="text-[#c41313] font-bold text-6xl md:text-8xl leading-none">7</span>
+                
+                {/* Texto inferior */}
+                <span className="text-gray-400 font-medium text-[10px] md:text-xs tracking-wider uppercase mt-1">
+                  DIAS
+                </span>
+                
+                {/* Texto circular inferior */}
+                <span className="absolute bottom-3 md:bottom-4 text-gray-500 font-medium text-[8px] md:text-[10px] tracking-widest uppercase">
+                  DE GARANTIA
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

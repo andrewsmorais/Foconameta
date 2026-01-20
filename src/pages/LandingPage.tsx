@@ -640,33 +640,17 @@ const LandingPage = () => {
               </p>
             </div>
             
-            {/* Badge de garantia à direita */}
-            <div className="flex-shrink-0 relative">
-              {/* Linhas decorativas */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-52 h-52 md:w-64 md:h-64 border border-dashed border-[#8B0000]/40 rounded-full" />
-              </div>
+            {/* Número 7 grande à direita */}
+            <div className="flex-shrink-0 flex flex-col items-center justify-center">
+              {/* Número 7 gigante */}
+              <span className="text-[#c41313] font-black text-[120px] md:text-[180px] leading-none drop-shadow-lg">
+                7
+              </span>
               
-              {/* Badge principal - Preto puro com vermelho escuro */}
-              <div className="relative w-40 h-40 md:w-52 md:h-52 bg-black border-2 border-[#8B0000]/50 rounded-full flex flex-col items-center justify-center shadow-2xl">
-                {/* Texto circular superior */}
-                <span className="absolute top-3 md:top-4 text-[#8B0000] font-bold text-[10px] md:text-xs tracking-widest uppercase">
-                  7 DIAS DE GARANTIA
-                </span>
-                
-                {/* Número 7 grande */}
-                <span className="text-[#8B0000] font-bold text-6xl md:text-8xl leading-none">7</span>
-                
-                {/* Texto inferior */}
-                <span className="text-[#8B0000] font-medium text-[10px] md:text-xs tracking-wider uppercase mt-1">
-                  DIAS
-                </span>
-                
-                {/* Texto circular inferior */}
-                <span className="absolute bottom-3 md:bottom-4 text-[#6B0000] font-medium text-[8px] md:text-[10px] tracking-widest uppercase">
-                  DE GARANTIA
-                </span>
-              </div>
+              {/* Texto abaixo */}
+              <span className="text-black font-bold text-xl md:text-2xl mt-2 tracking-wide">
+                Garantia de 7 dias
+              </span>
             </div>
           </div>
         </div>

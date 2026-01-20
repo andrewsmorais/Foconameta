@@ -488,20 +488,20 @@ const LandingPage = () => {
       {/* Vantagens e Diferenciais Section */}
       <section className="py-10 md:py-24 bg-[#1a1a1a]">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-xl md:text-3xl font-bold text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
             <span className="text-[#3c83f6]">Muito mais que um app, sua central de comando</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {/* Card 1 - Domínio Financeiro */}
-            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-5 md:p-6">
               <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <DollarSign className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="w-6 h-6 md:w-7 md:h-7 text-[#15a249]" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Domínio Financeiro Total</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Domínio Financeiro Total</h3>
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                     Registre <span className="text-[#3c83f6] font-medium">Ganhos Brutos</span>, <span className="text-[#3c83f6] font-medium">custos de combustível</span>, <span className="text-[#3c83f6] font-medium">KM rodado</span> e muito mais. Tenha clareza sobre cada centavo que entra e sai.
                   </p>
                 </div>
@@ -509,14 +509,14 @@ const LandingPage = () => {
             </div>
 
             {/* Card 2 - Manutenções */}
-            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-5 md:p-6">
               <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Wrench className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Wrench className="w-6 h-6 md:w-7 md:h-7 text-[#15a249]" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Menu Manutenções</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Menu Manutenções</h3>
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                     Registre <span className="text-[#3c83f6] font-medium">peças trocadas</span>, <span className="text-[#3c83f6] font-medium">nome da oficina</span>, KM atual e próximo para troca. Nunca mais esqueça uma revisão importante.
                   </p>
                 </div>
@@ -524,14 +524,14 @@ const LandingPage = () => {
             </div>
 
             {/* Card 3 - Gestão Prática */}
-            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-5 md:p-6">
               <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calculator className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Calculator className="w-6 h-6 md:w-7 md:h-7 text-[#15a249]" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Gestão Prática</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Gestão Prática</h3>
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                     Menos tempo perdido com planilhas. Com <span className="text-[#3c83f6] font-medium">cálculos automáticos</span> e <span className="text-[#3c83f6] font-medium">relatórios semanais/mensais</span>, você sabe exatamente o <span className="text-[#3c83f6] font-medium">resultado no final do mês</span>.
                   </p>
                 </div>
@@ -539,14 +539,14 @@ const LandingPage = () => {
             </div>
 
             {/* Card 4 - Metas */}
-            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-4 md:p-6">
+            <div className="bg-gradient-to-br from-[#15a249]/10 to-transparent border border-[#15a249]/30 rounded-xl p-5 md:p-6">
               <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Target className="w-5 h-5 md:w-6 md:h-6 text-[#15a249]" />
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#15a249]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Target className="w-6 h-6 md:w-7 md:h-7 text-[#15a249]" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h3 className="text-base md:text-lg font-bold text-white mb-1 md:mb-2">Estratégia de Metas</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Estratégia de Metas</h3>
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                     Defina <span className="text-[#3c83f6] font-medium">metas diárias</span>, <span className="text-[#3c83f6] font-medium">semanais</span> e <span className="text-[#3c83f6] font-medium">mensais</span>. Acompanhe seu progresso e saiba exatamente quanto falta para bater a meta.
                   </p>
                 </div>
@@ -555,9 +555,9 @@ const LandingPage = () => {
           </div>
 
           {/* Compatibilidade */}
-          <div className="mt-6 md:mt-10 text-center">
-            <p className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
-              <span className="text-[#fbbf24] font-medium">Compatível</span> com todas as plataformas:
+          <div className="mt-8 md:mt-10 text-center">
+            <p className="text-gray-300 text-sm md:text-base mb-4 md:mb-4">
+              <span className="text-[#fbbf24] font-semibold">Compatível</span> com todas as plataformas:
             </p>
             <div className="flex flex-wrap justify-center gap-2 md:gap-3">
               {/* 99 - Yellow background */}
@@ -595,31 +595,31 @@ const LandingPage = () => {
       </section>
 
       {/* Garantia Section - White Background */}
-      <section className="py-10 md:py-24 px-4 bg-[#f5f5f5]">
+      <section className="py-12 md:py-24 px-4 bg-[#f5f5f5]">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col items-center text-center md:text-left md:flex-row justify-between gap-6 md:gap-12">
             {/* Texto */}
-            <div className="flex-1 space-y-3 md:space-y-4 order-1 md:order-1">
-              <span className="text-[#c41313] font-bold text-xs md:text-sm uppercase tracking-wide">Garantia</span>
-              <h2 className="text-xl md:text-4xl font-bold text-black leading-tight">
+            <div className="flex-1 space-y-4 md:space-y-4 order-1 md:order-1">
+              <span className="text-[#c41313] font-bold text-sm md:text-base uppercase tracking-wide">Garantia</span>
+              <h2 className="text-2xl md:text-4xl font-bold text-black leading-tight">
                 Você não tem<br />nada a perder!
               </h2>
-              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                 Se por qualquer motivo você não ficar satisfeito ou não se adaptar, basta{" "}
                 <strong className="text-black">entrar em contato com a nossa equipe dentro do prazo de 7 dias e solicitar o reembolso do valor investido.</strong>{" "}
                 Você receberá de volta cada centavo que pagou.
               </p>
-              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                 Eu estou tirando todo o risco das suas mãos e colocando em nossa mão. Faça sua inscrição agora mesmo e veja com seus próprios olhos.
               </p>
             </div>
             
             {/* Número 7 grande */}
             <div className="flex-shrink-0 flex flex-col items-center justify-center order-2 md:order-2">
-              <span className="text-[#c41313] font-black text-[100px] md:text-[180px] leading-none drop-shadow-lg">
+              <span className="text-[#c41313] font-black text-[120px] md:text-[180px] leading-none drop-shadow-lg">
                 7
               </span>
-              <span className="text-black font-bold text-base md:text-2xl mt-1 md:mt-2 tracking-wide">
+              <span className="text-black font-bold text-lg md:text-2xl mt-1 md:mt-2 tracking-wide">
                 Garantia de 7 dias
               </span>
             </div>
@@ -726,7 +726,7 @@ const LandingPage = () => {
       </section>
 
       {/* Founder Section */}
-      <section className="py-10 md:py-24 px-4 bg-white">
+      <section className="py-12 md:py-24 px-4 bg-white">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col items-center gap-6 md:gap-12 md:grid md:grid-cols-2">
             {/* Photo */}
@@ -734,16 +734,16 @@ const LandingPage = () => {
               <img 
                 src={fundadorImg} 
                 alt="Fundador do Bateu a Meta"
-                className="w-48 md:w-full max-w-md rounded-2xl shadow-xl"
+                className="w-52 md:w-full max-w-md rounded-2xl shadow-xl"
               />
             </div>
             
             {/* Text */}
             <div className="space-y-4 md:space-y-6 order-2 text-center md:text-left">
-              <h2 className="text-xl md:text-3xl font-bold text-black">
+              <h2 className="text-2xl md:text-3xl font-bold text-black">
                 Chega de '<span className="text-[#c41313]">bater lata</span>'. É hora de bater a meta com <span className="text-[#3c83f6]">inteligência</span>
               </h2>
-              <p className="text-black text-sm md:text-lg leading-relaxed font-medium">
+              <p className="text-black text-base md:text-lg leading-relaxed font-medium">
                 Meu nome é <span className="text-[#3c83f7]">Andrews Morais</span>, eu também sou motorista e sei que o segredo do lucro está no controle. 
                 Criei o <span className="text-[#3c83f7]">Bateu a Meta</span> para ser nosso braço direito na gestão financeira: 
                 prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 

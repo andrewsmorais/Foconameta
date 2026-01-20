@@ -575,11 +575,13 @@ const LandingPage = () => {
           <div className="bg-[#1a1a1a] py-8 px-6 rounded-b-3xl mt-0 border border-gray-800 border-t-0">
             <div className="flex flex-col items-center gap-6">
               {/* Texto primeiro */}
-              <p className="text-gray-300 text-sm md:text-base text-center max-w-lg">
-                O aplicativo está disponível para <strong className="text-white">sistemas iOS e Android</strong>. 
-                E vale ressaltar que o link para instalação e ativação do aplicativo 
-                <em className="text-yellow-400"> é disponibilizado após a conclusão do pagamento</em>.
-              </p>
+              <div className="bg-gradient-to-r from-yellow-400/10 via-yellow-400/20 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-6 max-w-2xl">
+                <p className="text-white text-lg md:text-xl text-center font-medium leading-relaxed">
+                  O aplicativo está disponível para <strong className="text-yellow-400 font-bold">sistemas iOS e Android</strong>. 
+                  Vale ressaltar que o link para instalação e ativação do aplicativo 
+                  <span className="text-yellow-400 font-bold"> é disponibilizado após a conclusão do pagamento</span>.
+                </p>
+              </div>
               
               {/* Logos maiores embaixo */}
               <div className="flex items-center justify-center gap-3 flex-wrap">

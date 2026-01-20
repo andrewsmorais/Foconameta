@@ -462,6 +462,115 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Vantagens e Diferenciais Section */}
+      <section className="py-16 md:py-24 px-4 bg-[#1a1a1a]">
+        <div className="container mx-auto max-w-5xl">
+          {/* Card container com bordas arredondadas */}
+          <div className="bg-[#252525] rounded-3xl p-6 md:p-12">
+            {/* Header */}
+            <p className="text-[#c41313] font-bold text-sm mb-2 uppercase tracking-wide">
+              Vantagens e Diferenciais
+            </p>
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-10">
+              O Bateu a Meta é para você,<br />
+              motorista que...
+            </h2>
+            
+            {/* Grid 2 colunas */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {/* Card 1 - Menu KM */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Sente que <strong className="text-white">'bate lata'</strong> e quer saber exatamente o seu <strong className="text-[#15a249]">lucro líquido real</strong> por quilômetro rodado.
+                </p>
+              </div>
+
+              {/* Card 2 - Gestão de Metas */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Precisa de um <strong className="text-white">guia visual</strong> para saber quanto falta para atingir seu <strong className="text-[#3c83f6]">objetivo financeiro</strong> do dia.
+                </p>
+              </div>
+
+              {/* Card 3 - Menu Manutenções */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Quer ter o <strong className="text-white">controle total dos gastos preventivos</strong> e evitar surpresas mecânicas que pesam no bolso.
+                </p>
+              </div>
+
+              {/* Card 4 - Ganhos e Despesas */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Busca uma maneira <strong className="text-white">simples de registrar ganhos</strong> da Uber, 99, iFood e outras plataformas <strong className="text-[#15a249]">em um só lugar</strong>.
+                </p>
+              </div>
+
+              {/* Card 5 - Análise de Performance */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Deseja entender seu <strong className="text-[#3c83f6]">ganho real por hora</strong> para decidir os <strong className="text-white">melhores horários</strong> para rodar.
+                </p>
+              </div>
+
+              {/* Card 6 - Organização Financeira */}
+              <div className="flex items-start gap-4">
+                <div className="border border-gray-600 rounded-lg p-2 flex-shrink-0">
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <p className="text-gray-300 text-base md:text-lg">
+                  Sente-se <strong className="text-[#c41313]">desorganizado</strong> e quer transformar o <strong className="text-white">caos das contas</strong> em um histórico limpo e profissional.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Marquee Importante */}
+          <div className="bg-yellow-400 py-2 mt-8 overflow-hidden rounded-lg">
+            <div className="animate-marquee whitespace-nowrap flex">
+              {[...Array(10)].map((_, i) => (
+                <span key={i} className="text-black font-bold text-sm mx-4">IMPORTANTE •</span>
+              ))}
+            </div>
+          </div>
+          
+          {/* Footer com plataformas */}
+          <div className="bg-black py-8 px-6 rounded-b-3xl mt-0 border border-gray-800 border-t-0">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              {/* Logos das Plataformas */}
+              <div className="flex items-center gap-3 flex-wrap justify-center">
+                <span className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-bold text-sm">99</span>
+                <span className="bg-black border-2 border-white text-white px-4 py-2 rounded-lg font-bold text-sm">Uber</span>
+                <span className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm">iFood</span>
+                <span className="bg-green-500 text-white px-4 py-2 rounded-lg font-bold text-sm">InDriver</span>
+              </div>
+              
+              {/* Texto */}
+              <p className="text-gray-300 text-sm md:text-base text-center md:text-right max-w-md">
+                O aplicativo está disponível para <strong className="text-white">sistemas iOS e Android</strong>. 
+                E vale ressaltar que o link para instalação e ativação do aplicativo 
+                <em className="text-yellow-400"> é disponibilizado após a conclusão do pagamento</em>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 3 Passos Section - Black Background */}
       <section className="py-16 md:py-24 px-4 bg-black">
         <div className="container mx-auto max-w-5xl">

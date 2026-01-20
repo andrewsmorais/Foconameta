@@ -564,9 +564,7 @@ const LandingPage = () => {
               {/* Texto primeiro */}
               <div className="bg-gradient-to-r from-yellow-400/10 via-yellow-400/20 to-yellow-400/10 border border-yellow-400/30 rounded-2xl p-6 max-w-2xl">
                 <p className="text-white text-lg md:text-xl text-center font-medium leading-relaxed">
-                  O aplicativo está disponível para <strong className="text-yellow-400 font-bold">sistemas iOS e Android</strong>. 
-                  Vale ressaltar que o link para instalação e ativação do aplicativo 
-                  <span className="text-yellow-400 font-bold"> é disponibilizado após a conclusão do pagamento</span>.
+                  O <strong className="text-yellow-400 font-bold">Bateu a Meta</strong> é totalmente compatível com sistemas <strong className="text-yellow-400 font-bold">iOS (iPhone)</strong>, <strong className="text-yellow-400 font-bold">Android</strong>, tablets e computadores. Após a conclusão do pagamento, basta retornar ao nosso site oficial, clicar no botão <strong className="text-yellow-400 font-bold">'Já sou Cliente'</strong> e entrar com suas credenciais para começar a usar o aplicativo imediatamente.
                 </p>
               </div>
               

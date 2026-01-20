@@ -559,15 +559,36 @@ const LandingPage = () => {
             <p className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
               <span className="text-[#fbbf24] font-medium">Compatível</span> com todas as plataformas:
             </p>
-            <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-              {['99', 'Uber', 'iFood', 'InDriver', 'BlaBlaCar', 'Keepa'].map((platform) => (
-                <span 
-                  key={platform}
-                  className="bg-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white text-xs md:text-sm font-medium"
-                >
-                  {platform}
-                </span>
-              ))}
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+              {/* 99 - Yellow background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#FFDE00] flex items-center justify-center">
+                <span className="text-black font-black text-sm md:text-base">99</span>
+              </div>
+              
+              {/* Uber - Black background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-black flex items-center justify-center border border-white/20">
+                <span className="text-white font-bold text-[10px] md:text-xs">Uber</span>
+              </div>
+              
+              {/* iFood - Red background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#EA1D2C] flex items-center justify-center">
+                <span className="text-white font-bold text-[10px] md:text-xs">iFood</span>
+              </div>
+              
+              {/* InDriver - Green/Lime background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#C6F221] flex items-center justify-center">
+                <span className="text-black font-bold text-[8px] md:text-[10px]">inDrive</span>
+              </div>
+              
+              {/* BlaBlaCar - Blue background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#00AFF5] flex items-center justify-center">
+                <span className="text-white font-bold text-[7px] md:text-[9px]">BlaBlaCar</span>
+              </div>
+              
+              {/* Keepa/Lalamove style - Orange background */}
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#FF6B00] flex items-center justify-center">
+                <span className="text-white font-bold text-[9px] md:text-[11px]">Lalamove</span>
+              </div>
             </div>
           </div>
         </div>

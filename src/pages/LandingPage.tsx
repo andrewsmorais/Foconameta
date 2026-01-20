@@ -667,19 +667,19 @@ const LandingPage = () => {
             <CarouselContent className="-ml-0 md:-ml-4">
               {resourcesSlides.map((slide, index) => (
                 <CarouselItem key={index} className="pl-0 md:pl-4 basis-[100%] md:basis-4/5">
-                  <div className="px-0 md:px-4">
+                  <div className="px-0">
                     <div 
-                      className="bg-transparent md:bg-white md:rounded-2xl md:shadow-lg p-0 md:p-4 md:border md:border-gray-200 cursor-pointer group relative"
+                      className="cursor-pointer group relative"
                       onClick={() => setSelectedResourceImage({ ...slide, index })}
                     >
-                      <div className="relative overflow-hidden md:rounded-xl">
+                      <div className="relative overflow-hidden">
                         <img 
                           src={slide.img} 
                           alt={slide.caption}
                           className="w-full h-auto min-h-[85vh] max-h-[90vh] object-contain md:max-h-[80vh] md:min-h-0 transition-transform duration-300 group-hover:scale-105"
                         />
                         {/* Hover overlay with expand icon */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center md:rounded-xl">
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                           <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
                             <Expand className="w-6 h-6 md:w-8 md:h-8 text-white" />
                           </div>

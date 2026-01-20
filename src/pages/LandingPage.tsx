@@ -411,7 +411,7 @@ const LandingPage = () => {
               </Dialog>
 
               {/* Card de Preço abaixo do VSL */}
-              <div className="w-full max-w-[95%] md:max-w-md mx-auto mt-8">
+              <div className="w-full max-w-[98%] md:max-w-md mx-auto mt-8 px-1 md:px-0">
                 <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black w-full">
                   <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
                     <div className="text-center space-y-1 md:space-y-2">
@@ -848,7 +848,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section - #f9f9fa */}
-      <section id="pricing" className="py-10 md:py-24 px-4 bg-[#f9f9fa]">
+      <section id="pricing" className="py-10 md:py-24 px-2 md:px-4 bg-[#f9f9fa]">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
             <h2 className="text-xl md:text-4xl font-bold text-black">
@@ -861,7 +861,7 @@ const LandingPage = () => {
 
           <div className="flex justify-center mt-4 md:mt-6">
             {/* Annual Plan */}
-            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-[95%] md:max-w-md w-full mx-auto">
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-[98%] md:max-w-md w-full mx-auto">
               <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
                 <div className="text-center space-y-1 md:space-y-2">
                   <h3 className="text-2xl md:text-2xl font-bold text-white">Plano Anual</h3>

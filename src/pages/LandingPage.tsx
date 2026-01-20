@@ -662,23 +662,23 @@ const LandingPage = () => {
               loop: true,
             }}
             setApi={setResourcesCarouselApi}
-            className="w-full mx-auto relative -mx-4 md:mx-auto"
+            className="w-full mx-auto relative"
           >
             <CarouselContent className="-ml-0">
               {resourcesSlides.map((slide, index) => (
-                <CarouselItem key={index} className="pl-0 basis-[100%]">
+                <CarouselItem key={index} className="pl-0 basis-[100%] flex items-center justify-center">
                   <img 
                     src={slide.img} 
                     alt={slide.caption}
-                    className="w-screen h-screen object-cover md:w-full md:h-[80vh] md:object-contain cursor-pointer"
+                    className="h-[80vh] w-auto max-w-full object-contain cursor-pointer"
                     onClick={() => setSelectedResourceImage({ ...slide, index })}
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
             {/* Navigation arrows */}
-            <CarouselPrevious className="left-4 bg-black/60 border-0 text-white hover:bg-black/80 h-14 w-14" />
-            <CarouselNext className="right-4 bg-black/60 border-0 text-white hover:bg-black/80 h-14 w-14" />
+            <CarouselPrevious className="left-2 bg-black/60 border-0 text-white hover:bg-black/80 h-12 w-12" />
+            <CarouselNext className="right-2 bg-black/60 border-0 text-white hover:bg-black/80 h-12 w-12" />
           </Carousel>
 
           {/* Resources Image Lightbox Dialog */}

@@ -79,6 +79,21 @@ serve(async (req) => {
       });
     }
 
+    // Check if user has "free" role (added by super admin)
+    const { data: userRole } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (userRole?.role === "free") {
+      console.log("User has free role, granting access:", user.id);
+      return new Response(JSON.stringify({ hasActiveSubscription: true, isFreeUser: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     // Check subscription status
     const { data: subscription, error: subError } = await supabaseAdmin
       .from("subscriptions")

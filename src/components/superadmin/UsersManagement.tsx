@@ -32,6 +32,7 @@ interface UserData {
   started_at?: string | null;
   daysRemaining?: number | null;
   admin_notes?: string | null;
+  provisional_password?: string | null;
 }
 
 export const UsersManagement = () => {
@@ -43,6 +44,7 @@ export const UsersManagement = () => {
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isViewPasswordOpen, setIsViewPasswordOpen] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   
@@ -605,10 +607,13 @@ export const UsersManagement = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => window.open(`/dashboard?simulate=${user.id}`, '_blank')}
-                            title="Simular Visão do Usuário"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setIsViewPasswordOpen(true);
+                            }}
+                            title="Ver Senha do Usuário"
                           >
-                            <Eye className="h-4 w-4 text-[hsl(217,91%,60%)]" />
+                            <Eye className={`h-4 w-4 ${user.provisional_password ? "text-green-500" : "text-muted-foreground"}`} />
                           </Button>
                           <Button
                             variant="ghost"
@@ -742,6 +747,65 @@ export const UsersManagement = () => {
               disabled={updateUserMutation.isPending}
             >
               {updateUserMutation.isPending ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Password Dialog */}
+      <Dialog open={isViewPasswordOpen} onOpenChange={setIsViewPasswordOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary" />
+              Senha do Usuário
+            </DialogTitle>
+            <DialogDescription>
+              {selectedUser?.nome_completo || "Usuário"} ({selectedUser?.email})
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {selectedUser?.provisional_password ? (
+              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">Senha atual:</p>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 text-xl font-mono bg-background px-4 py-3 rounded border text-center tracking-widest">
+                    {selectedUser.provisional_password}
+                  </code>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(selectedUser.provisional_password!)}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <p className="text-sm text-yellow-600 dark:text-yellow-400">
+                  ⚠️ Senha não disponível. Este usuário foi criado antes da funcionalidade de visualização de senha ou alterou a senha manualmente.
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Clique em "Gerar Nova Senha" para criar uma senha que você poderá visualizar.
+                </p>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsViewPasswordOpen(false)}>
+              Fechar
+            </Button>
+            <Button
+              onClick={() => {
+                setIsViewPasswordOpen(false);
+                handleResetPasswordClick(selectedUser!);
+              }}
+            >
+              <Key className="h-4 w-4 mr-2" />
+              Gerar Nova Senha
             </Button>
           </DialogFooter>
         </DialogContent>

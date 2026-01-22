@@ -65,11 +65,19 @@ serve(async (req) => {
       throw authError;
     }
 
-    // Get all profiles
+    // Get all profiles (including provisional_password for admin viewing)
     const { data: profiles, error: profilesError } = await supabaseAdmin
       .from("profiles")
       .select(`
-        *,
+        id,
+        nome_completo,
+        cpf,
+        telefone,
+        status,
+        admin_notes,
+        provisional_password,
+        created_at,
+        subscription_id,
         subscriptions(
           id,
           status,
@@ -102,8 +110,15 @@ serve(async (req) => {
 
     // Combine all data
     const usersWithEmails = profiles?.map((profile) => {
-      const subscription = profile.subscriptions;
-      const planPrice = subscription?.plans?.price || 0;
+      // Handle subscriptions - can be array or single object depending on Supabase config
+      const subscriptionData = profile.subscriptions;
+      const subscription = Array.isArray(subscriptionData) ? subscriptionData[0] : subscriptionData;
+      
+      // Handle plans inside subscription
+      const plansData = subscription?.plans;
+      const plan = Array.isArray(plansData) ? plansData[0] : plansData;
+      
+      const planPrice = plan?.price || 0;
       const expiresAt = subscription?.expires_at ? new Date(subscription.expires_at) : null;
 
       // Calculate renewal status
@@ -135,8 +150,9 @@ serve(async (req) => {
         telefone: profile.telefone,
         status: profile.status,
         admin_notes: profile.admin_notes,
+        provisional_password: profile.provisional_password,
         role: roles?.find((r) => r.user_id === profile.id)?.role || "free",
-        plan: subscription?.plans?.name || "Free",
+        plan: plan?.name || "Free",
         planPrice,
         plan_id: subscription?.plan_id,
         subscription_id: subscription?.id,

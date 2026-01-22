@@ -150,6 +150,18 @@ serve(async (req) => {
 
     console.log('[Reset Password] Password reset successful for user:', user_id);
 
+    // Save provisional password to profile for admin viewing
+    const { error: profileUpdateError } = await supabaseClient
+      .from('profiles')
+      .update({ provisional_password: provisionalPassword })
+      .eq('id', user_id);
+
+    if (profileUpdateError) {
+      console.error('[Reset Password] Error saving provisional password:', profileUpdateError);
+    } else {
+      console.log('[Reset Password] Provisional password saved to profile');
+    }
+
     // Get user info for email and webhook notification
     const { data: { user: targetUser } } = await supabaseClient.auth.admin.getUserById(user_id);
     

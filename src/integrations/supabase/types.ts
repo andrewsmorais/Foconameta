@@ -318,6 +318,7 @@ export type Database = {
           created_at: string | null
           id: string
           nome_completo: string | null
+          provisional_password: string | null
           status: Database["public"]["Enums"]["user_status"] | null
           subscription_id: string | null
           telefone: string | null
@@ -330,6 +331,7 @@ export type Database = {
           created_at?: string | null
           id: string
           nome_completo?: string | null
+          provisional_password?: string | null
           status?: Database["public"]["Enums"]["user_status"] | null
           subscription_id?: string | null
           telefone?: string | null
@@ -342,6 +344,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           nome_completo?: string | null
+          provisional_password?: string | null
           status?: Database["public"]["Enums"]["user_status"] | null
           subscription_id?: string | null
           telefone?: string | null

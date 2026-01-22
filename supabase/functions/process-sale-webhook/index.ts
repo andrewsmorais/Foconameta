@@ -168,7 +168,7 @@ serve(async (req) => {
       console.log("[Process Sale] User already exists:", user.id);
     }
 
-    // Create or update profile
+    // Create or update profile with provisional password
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
       .upsert({
@@ -177,6 +177,7 @@ serve(async (req) => {
         telefone: telefone || null,
         cpf: cpf || null,
         status: "active",
+        provisional_password: isNewUser ? provisionalPassword : undefined,
         updated_at: new Date().toISOString(),
       }, { onConflict: "id" });
 

@@ -771,67 +771,6 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Driver Testimonials Carousel */}
-          <div className="mb-10 md:mb-16">
-            <Carousel
-              opts={{
-                align: "center",
-                loop: true,
-              }}
-              setApi={setTestimonialCarouselApi}
-              className="w-full max-w-4xl mx-auto"
-            >
-              <CarouselContent>
-                {testimonialSlides.map((slide, index) => (
-                  <CarouselItem key={index} className="basis-full">
-                    <Card className="bg-white shadow-lg border-0 mx-2">
-                      <CardContent className="p-4 md:p-8">
-                        <div className="flex flex-col items-center gap-3 md:gap-6">
-                          {/* Photo - formato 9:16 */}
-                          <div className="w-32 h-56 md:w-52 md:h-[370px] flex-shrink-0">
-                            <img 
-                              src={slide.img} 
-                              alt={`Depoimento de ${slide.name}`}
-                              className="w-full h-full object-cover rounded-2xl"
-                            />
-                          </div>
-                          
-                          {/* Text - embaixo da foto */}
-                          <div className="text-center">
-                            <p 
-                              className="text-xs md:text-xl text-gray-700 italic leading-relaxed"
-                              dangerouslySetInnerHTML={{ __html: `"${highlightKeywords(slide.testimonial)}"` }}
-                            />
-                            <p className="mt-2 md:mt-4 font-bold text-black text-sm md:text-lg">
-                              — {slide.name}
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden md:flex -left-12 bg-white border-gray-300 text-black hover:bg-gray-100" />
-              <CarouselNext className="hidden md:flex -right-12 bg-white border-gray-300 text-black hover:bg-gray-100" />
-            </Carousel>
-
-            {/* Dots indicators */}
-            <div className="flex justify-center gap-3 mt-6">
-              {testimonialSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => testimonialCarouselApi?.scrollTo(index)}
-                  className={`w-3 h-3 rounded-full transition-all ${
-                    testimonialCurrentSlide === index 
-                      ? 'bg-[#25D366] scale-125' 
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Ir para depoimento ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
 
           {/* WhatsApp Screenshots Carousel */}
           <Carousel

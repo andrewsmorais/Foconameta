@@ -1,51 +1,57 @@
 
 
-# Plano: Empilhar Vídeos do YouTube Shorts Verticalmente
+# Plano: Layout Responsivo para Vídeos Shorts
 
 ## Objetivo
-Alterar o layout dos 4 vídeos do YouTube Shorts para que fiquem empilhados um debaixo do outro (verticalmente), removendo o formato de carrossel.
+Alterar o layout dos 4 vídeos do YouTube Shorts para que:
+- **Desktop**: Fiquem lado a lado (4 colunas)
+- **Mobile**: Fiquem empilhados (1 coluna)
 
-## Layout Atual vs. Proposto
+## Layout Proposto
 
 ```text
-ATUAL:                              PROPOSTO:
-+------+ +------+ +------+ +------+        +------+
-|Video1| |Video2| |Video3| |Video4|        |Video1|
-+------+ +------+ +------+ +------+        +------+
-   (Grid horizontal no desktop)              |
-                                           +------+
-   [< ] [Video] [ >]                       |Video2|
-   (Carrossel no mobile)                   +------+
-                                             |
-                                           +------+
-                                           |Video3|
-                                           +------+
-                                             |
-                                           +------+
-                                           |Video4|
-                                           +------+
-                                      (Empilhados verticalmente)
+DESKTOP (md e acima):
++------+ +------+ +------+ +------+
+|Video1| |Video2| |Video3| |Video4|
++------+ +------+ +------+ +------+
+
+MOBILE (abaixo de md):
++------+
+|Video1|
++------+
+   |
++------+
+|Video2|
++------+
+   |
++------+
+|Video3|
++------+
+   |
++------+
+|Video4|
++------+
 ```
 
 ## Implementação
 
 ### Arquivo: `src/pages/LandingPage.tsx`
 
-**Alteração:** Substituir o código atual (linhas 757-802) por uma estrutura simples de flex vertical:
+**Alteração nas linhas 759-771:**
 
-1. **Remover** o grid de 4 colunas do desktop
-2. **Remover** o componente Carousel do mobile
-3. **Adicionar** layout flex vertical com espaçamento entre vídeos
-4. **Centralizar** cada vídeo com largura máxima apropriada para formato 9:16
+Mudar de `flex flex-col` para um layout de grid responsivo:
+
+- **Mobile**: `grid-cols-1` (empilhados)
+- **Desktop**: `md:grid-cols-4` (lado a lado)
 
 ### Detalhes Técnicos
-- Usar `flex flex-col` para empilhar verticalmente
-- Usar `gap-6` para espaçamento entre vídeos
-- Usar `max-w-xs` (320px) para tamanho adequado no mobile
-- Usar `md:max-w-sm` (384px) para tamanho maior no desktop
+- Usar `grid` ao invés de `flex`
+- Usar `grid-cols-1 md:grid-cols-4` para responsividade
+- Usar `gap-4` para espaçamento uniforme
 - Manter `aspect-[9/16]` para proporção vertical
-- Manter bordas arredondadas e sombra
+- Ajustar largura máxima para desktop (`max-w-4xl` no container)
+- Remover `max-w-xs` e `max-w-sm` individuais para permitir que o grid controle o tamanho
 
 ## Resultado Esperado
-Os 4 vídeos aparecerão empilhados verticalmente (um abaixo do outro), centralizados na página, com tamanho apropriado para o formato Shorts, tanto no mobile quanto no desktop.
+No celular, os vídeos aparecem um abaixo do outro. No computador, os 4 vídeos ficam lado a lado em uma única linha.
 

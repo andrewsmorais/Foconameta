@@ -754,6 +754,53 @@ const LandingPage = () => {
             </h2>
           </div>
 
+          {/* YouTube Shorts Videos Carousel */}
+          <div className="mb-10 md:mb-16">
+            {/* Desktop: Grid 4 colunas | Mobile: Carousel */}
+            <div className="hidden md:grid md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+              {['bOkwngfR0-8', '9e7MrKaUW5c', 'RTqU92TMKfU', 'rR8iYDF_8YY'].map((videoId, index) => (
+                <div key={videoId} className="aspect-[9/16] rounded-xl overflow-hidden shadow-lg">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                    title={`Depoimento em vídeo ${index + 1}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: Carousel */}
+            <div className="md:hidden">
+              <Carousel
+                opts={{
+                  align: "center",
+                  loop: true,
+                }}
+                className="w-full max-w-xs mx-auto"
+              >
+                <CarouselContent>
+                  {['bOkwngfR0-8', '9e7MrKaUW5c', 'RTqU92TMKfU', 'rR8iYDF_8YY'].map((videoId, index) => (
+                    <CarouselItem key={videoId} className="basis-full">
+                      <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-lg mx-2">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                          title={`Depoimento em vídeo ${index + 1}`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="-left-4 bg-white border-gray-300 text-black hover:bg-gray-100" />
+                <CarouselNext className="-right-4 bg-white border-gray-300 text-black hover:bg-gray-100" />
+              </Carousel>
+            </div>
+          </div>
+
           {/* Driver Testimonials Carousel */}
           <div className="mb-10 md:mb-16">
             <Carousel

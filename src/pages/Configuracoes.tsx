@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Car, Info, Instagram, Phone, PlayCircle } from "lucide-react";
+import { Camera, Car, Download, Info, Instagram, Phone, PlayCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AvatarEditor } from "@/components/AvatarEditor";
 import { Link } from "react-router-dom";

@@ -757,7 +757,7 @@ const LandingPage = () => {
           {/* YouTube Shorts Videos - Responsive Grid */}
           <div className="mb-10 md:mb-16">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {['bOkwngfR0-8', '9e7MrKaUW5c', 'RTqU92TMKfU', 'rR8iYDF_8YY'].map((videoId, index) => (
+              {['bOkwngfR0-8', '9e7MrKaUW5c', 'RTqU92TMKfU', 'rR8iYDF_8YY', 'T85VaIC987M'].map((videoId, index) => (
                 <div key={videoId} className="aspect-[9/16] rounded-xl overflow-hidden shadow-lg mx-auto w-full max-w-xs md:max-w-none">
                   <iframe
                     src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}

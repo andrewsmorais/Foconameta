@@ -9,8 +9,6 @@ import { useIOSPWA } from "@/hooks/useIOSPWA";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
-import { PWAFloatingButton } from "./PWAFloatingButton";
-import { PWAInstallDialog } from "./PWAInstallDialog";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { supabase } from "@/integrations/supabase/client";
 

@@ -235,7 +235,7 @@ const Configuracoes = () => {
       <Card>
         <CardContent className="pt-6">
           <a 
-            href="https://youtu.be/u2kpNJZX5Y8" 
+            href="https://www.youtube.com/watch?v=u2kpNJZX5Y8" 
             target="_blank" 
             rel="noopener noreferrer"
           >

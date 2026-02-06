@@ -373,6 +373,9 @@ const Configuracoes = () => {
           <Button onClick={() => setShowContact(false)}>Fechar</Button>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* PWA Install Dialog */}
+      <PWAInstallDialog open={showInstallDialog} onOpenChange={setShowInstallDialog} />
     </div>
   );
 };

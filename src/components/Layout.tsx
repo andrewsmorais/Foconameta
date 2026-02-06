@@ -298,12 +298,6 @@ export const Layout = ({
         <main className={cn("p-6", isIOSPWA && "ios-pwa-content")}>{children}</main>
       </div>
 
-      {/* PWA Install Dialog */}
-      <PWAInstallDialog open={installDialogOpen} onOpenChange={setInstallDialogOpen} />
-      
-      {/* PWA Floating Button - Appears after clicking "Instalar App" */}
-      <PWAFloatingButton visible={showFloatingButton} onClose={handleCloseFloatingButton} />
-      
       {/* Offline Indicator */}
       <OfflineIndicator />
     </div>;

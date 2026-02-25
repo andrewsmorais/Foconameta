@@ -347,7 +347,7 @@ const LandingPage = () => {
       <section className="relative overflow-hidden py-4 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-center">
+            <h1 className="text-xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-center whitespace-nowrap">
               <span className="text-brand-blue">Bateu A Meta :</span>{" "}
               <span className="text-black">Controle e Planejamento Inteligente</span>
             </h1>

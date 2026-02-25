@@ -351,13 +351,13 @@ const LandingPage = () => {
               <span className="text-brand-blue">Bateu A Meta :</span>{" "}
               <span className="text-black">Controle e Planejamento Inteligente</span>
             </h1>
-            <p className="text-base md:text-xl lg:text-2xl font-medium leading-relaxed max-w-3xl text-left md:text-center text-black mt-4 md:mt-6">
+            <p className="text-base md:text-xl lg:text-2xl font-medium leading-relaxed max-w-3xl text-left md:text-center text-black mt-8 md:mt-12">
               <span className="text-brand-red">Aposente o caderninho e as planilhas complicadas!</span>{" "}
               Chegou o <span className="text-brand-blue">Bateu a Meta</span>: o App para Celular, Tablet ou PC. Domine seus Ganhos e Despesas por Hora e por KM rodado com um clique.
             </p>
 
             {/* VSL Video - Thumbnail clicável que abre modal */}
-            <div className="w-full max-w-xs md:max-w-4xl mx-auto px-0 sm:px-4 mt-6 md:mt-10">
+            <div className="w-full max-w-xs md:max-w-4xl mx-auto px-0 sm:px-4 mt-10 md:mt-16">
               <button
                 onClick={() => {
                   trackViewContent('VSL Video', 'Video');
@@ -411,7 +411,7 @@ const LandingPage = () => {
               </Dialog>
 
               {/* Card de Preço abaixo do VSL */}
-              <div className="w-full max-w-full md:max-w-md mx-auto mt-8 px-0 md:px-0">
+              <div className="w-full max-w-full md:max-w-md mx-auto mt-14 md:mt-20 px-0 md:px-0">
                 <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black w-full">
                   <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
                     <div className="text-center space-y-1 md:space-y-2">

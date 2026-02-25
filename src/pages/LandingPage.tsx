@@ -347,7 +347,7 @@ const LandingPage = () => {
       <section className="relative overflow-hidden py-4 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
-            <h1 className="text-xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
+            <h1 className="text-2xl md:text-3xl font-bold leading-tight max-w-4xl text-black text-center">
               <span className="text-brand-red">Aposente o caderninho e as planilhas complicadas!</span>{" "}
               Chegou o <span className="text-brand-blue">Bateu a Meta</span>: o App para Celular, Tablet ou PC. Domine seus{" "}
               <span className="text-brand-blue">Ganhos e Despesas</span> por Hora e por KM rodado com um clique.

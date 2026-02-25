@@ -348,13 +348,10 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
             <h1 className="text-xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-black">
-              <span className="text-brand-red">Bateu A Meta:</span> Transforme Sua Gestão Financeira Pessoal em{" "}
-              <span className="text-brand-blue">Resultados Reais!</span>
+              <span className="text-brand-red">Aposente o caderninho e as planilhas complicadas!</span>{" "}
+              Chegou o <span className="text-brand-blue">Bateu a Meta</span>: o App para Celular, Tablet ou PC. Domine seus{" "}
+              <span className="text-brand-blue">Ganhos e Despesas</span> por Hora e por KM rodado com um clique.
             </h1>
-            
-            <h2 className="text-sm md:text-xl lg:text-2xl text-black font-bold max-w-2xl">
-              Conquiste Seus Objetivos Financeiros Com O Poder Da Organização E Planejamento Inteligente.
-            </h2>
 
             {/* VSL Video - Thumbnail clicável que abre modal */}
             <div className="w-full max-w-xs md:max-w-4xl mx-auto px-0 sm:px-4">

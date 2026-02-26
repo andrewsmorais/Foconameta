@@ -1,35 +1,28 @@
 
 
-## Implementação da Tag Google Ads
+## Correção: Tag do Google Ads nao detectada pelo Tag Assistant
 
-### Dados recebidos
-- **ID de conversão:** `AW-17945487409`
-- **Evento de conversão (compra):** `AW-17945487409/yx-VCLrj_P4bELHQie1C`
-- O evento snippet já está configurado na Cakto (webhook externo), então no app vamos focar no script global + PageView + evento de conversão na página de sucesso.
+### Problema
+O `index.html` (linha 34) carrega o `gtag.js` com `async`, mas **nao inclui o script inline de inicializacao** com `window.dataLayer` e `gtag('config')`. O Google Tag Assistant verifica o HTML bruto antes do JavaScript do React executar, por isso mostra "Nenhuma tag do Google foi encontrada".
 
-### Plano
+### Solucao
+Adicionar o script inline de inicializacao logo apos o script async no `index.html`, exatamente como o snippet original fornecido pelo Google:
 
-#### 1. Adicionar script global no `index.html`
-Inserir o gtag.js no `<head>`, igual ao snippet fornecido.
+```html
+<!-- Google Ads (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17945487409"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-17945487409');
+</script>
+```
 
-#### 2. Criar hook `src/hooks/useGoogleAds.tsx`
-Seguindo o padrão do `useFacebookPixel.tsx`:
-- Inicialização do gtag
-- `trackPageView()` — PageView
-- `trackConversion(transactionId?)` — Evento de conversão com label `yx-VCLrj_P4bELHQie1C`
-- `trackCustomEvent()` — Eventos customizados futuros
-
-#### 3. Integrar na `LandingPage.tsx`
-- Importar e usar o hook (PageView automático)
-
-#### 4. Integrar na `PagamentoSucesso.tsx`
-- Disparar `trackConversion()` quando o pagamento é confirmado (mesmo ponto onde já dispara o `trackAddPaymentInfo` do Facebook Pixel)
-
-### Arquivos
-| Arquivo | Ação |
+### Arquivo afetado
+| Arquivo | Acao |
 |---------|------|
-| `index.html` | Adicionar script gtag.js no `<head>` |
-| `src/hooks/useGoogleAds.tsx` | **Novo** — Hook com funções de tracking |
-| `src/pages/LandingPage.tsx` | Importar e inicializar o hook |
-| `src/pages/PagamentoSucesso.tsx` | Disparar evento de conversão |
+| `index.html` | Adicionar script inline de inicializacao (linhas 34-35) |
+
+O hook `useGoogleAds.tsx` e as integracoes nas paginas continuam funcionando normalmente, pois o hook ja verifica se `window.gtag` existe antes de re-inicializar.
 

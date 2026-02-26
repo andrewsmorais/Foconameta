@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { z } from "zod";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
+import { useGoogleAds } from "@/hooks/useGoogleAds";
 
 const registrationSchema = z.object({
   nomeCompleto: z.string().min(2, "Nome completo é obrigatório"),
@@ -44,6 +45,7 @@ const PagamentoSucesso = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { trackAddPaymentInfo } = useFacebookPixel();
+  const { trackConversion } = useGoogleAds();
   const sessionId = searchParams.get("session_id");
   const hasTrackedPixel = useRef(false);
 
@@ -89,6 +91,7 @@ const PagamentoSucesso = () => {
         // Dispara evento AddPaymentInfo quando carrega com sucesso
         if (!hasTrackedPixel.current) {
           trackAddPaymentInfo(data.plan_type || 'Premium', 29.90);
+          trackConversion(sessionId || undefined);
           hasTrackedPixel.current = true;
         }
         

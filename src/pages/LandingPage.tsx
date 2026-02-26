@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
+import { useGoogleAds } from "@/hooks/useGoogleAds";
 import { toast } from "sonner";
 import {
   BarChart3, 
@@ -143,6 +144,9 @@ const LandingPage = () => {
   
   // Facebook Pixel - inicializa e dispara PageView automaticamente
   const { trackLead, trackInitiateCheckout, trackViewContent, trackContact } = useFacebookPixel();
+  
+  // Google Ads - inicializa e dispara PageView automaticamente
+  useGoogleAds();
   
   useEffect(() => {
     setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));

@@ -1,30 +1,35 @@
 
 
-## Adicionar Tag do Google Ads
+## Implementação da Tag Google Ads
 
-### Como funciona
-Assim como o Facebook Pixel que já está no projeto (`src/hooks/useFacebookPixel.tsx`), podemos adicionar o script do Google Ads (gtag.js) para rastrear conversões e remarketing.
+### Dados recebidos
+- **ID de conversão:** `AW-17945487409`
+- **Evento de conversão (compra):** `AW-17945487409/yx-VCLrj_P4bELHQie1C`
+- O evento snippet já está configurado na Cakto (webhook externo), então no app vamos focar no script global + PageView + evento de conversão na página de sucesso.
 
-### O que preciso de você
-Para implementar, preciso do seu **ID de conversão do Google Ads** (formato: `AW-XXXXXXXXXX`). Você encontra isso no painel do Google Ads em **Ferramentas > Conversões**.
+### Plano
 
-### Plano de implementação
+#### 1. Adicionar script global no `index.html`
+Inserir o gtag.js no `<head>`, igual ao snippet fornecido.
 
-1. **Criar hook `useGoogleAds.tsx`** — Similar ao `useFacebookPixel.tsx`, com funções para:
-   - Carregar o script `gtag.js`
-   - Rastrear PageView
-   - Rastrear conversões (compra, lead, etc.)
+#### 2. Criar hook `src/hooks/useGoogleAds.tsx`
+Seguindo o padrão do `useFacebookPixel.tsx`:
+- Inicialização do gtag
+- `trackPageView()` — PageView
+- `trackConversion(transactionId?)` — Evento de conversão com label `yx-VCLrj_P4bELHQie1C`
+- `trackCustomEvent()` — Eventos customizados futuros
 
-2. **Adicionar no `index.html`** — Inserir o script global do gtag.js no `<head>`
+#### 3. Integrar na `LandingPage.tsx`
+- Importar e usar o hook (PageView automático)
 
-3. **Integrar na Landing Page e páginas de conversão** — Disparar eventos nos mesmos pontos onde o Facebook Pixel já dispara (checkout, registro, etc.)
+#### 4. Integrar na `PagamentoSucesso.tsx`
+- Disparar `trackConversion()` quando o pagamento é confirmado (mesmo ponto onde já dispara o `trackAddPaymentInfo` do Facebook Pixel)
 
-### Arquivos envolvidos
-- `index.html` — Script global do gtag.js
-- `src/hooks/useGoogleAds.tsx` — Novo hook (seguindo o padrão do Facebook Pixel)
-- `src/pages/LandingPage.tsx` — Integração dos eventos
-- `src/pages/PagamentoSucesso.tsx` — Evento de conversão de compra
-
-### Próximo passo
-Me envie seu **ID de conversão do Google Ads** (`AW-XXXXXXXXXX`) e, se tiver, os **IDs das ações de conversão** específicas, que eu implemento tudo.
+### Arquivos
+| Arquivo | Ação |
+|---------|------|
+| `index.html` | Adicionar script gtag.js no `<head>` |
+| `src/hooks/useGoogleAds.tsx` | **Novo** — Hook com funções de tracking |
+| `src/pages/LandingPage.tsx` | Importar e inicializar o hook |
+| `src/pages/PagamentoSucesso.tsx` | Disparar evento de conversão |
 

@@ -1,37 +1,28 @@
 
 
-## Tornar links do footer da Landing Page clicáveis
+## Correção: Tag do Google Ads nao detectada pelo Tag Assistant
 
-### Situação atual
-Os links "Política de Privacidade", "Termos de Uso" e "Política de Reembolso" no footer da Landing Page apontam para `href="#"` — não fazem nada.
+### Problema
+O `index.html` (linha 34) carrega o `gtag.js` com `async`, mas **nao inclui o script inline de inicializacao** com `window.dataLayer` e `gtag('config')`. O Google Tag Assistant verifica o HTML bruto antes do JavaScript do React executar, por isso mostra "Nenhuma tag do Google foi encontrada".
 
-### Plano
+### Solucao
+Adicionar o script inline de inicializacao logo apos o script async no `index.html`, exatamente como o snippet original fornecido pelo Google:
 
-#### 1. Criar página `/politica-privacidade`
-Nova página `src/pages/PoliticaPrivacidade.tsx` com conteúdo completo sobre:
-- Coleta e tratamento de dados (LGPD)
-- Direitos do usuário
-- Cookies e rastreamento
-- Contato
+```html
+<!-- Google Ads (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17945487409"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-17945487409');
+</script>
+```
 
-#### 2. Criar página `/termos-de-uso`
-Nova página `src/pages/TermosDeUso.tsx` com:
-- Condições gerais de uso do app
-- Responsabilidades do usuário
-- Limitações de responsabilidade
-- Política de reembolso (7 dias)
-
-#### 3. Registrar rotas no `App.tsx`
-Adicionar as duas novas rotas públicas.
-
-#### 4. Atualizar links no footer da `LandingPage.tsx`
-Trocar `href="#"` por `<Link to="/politica-privacidade">` e `<Link to="/termos-de-uso">`. O link de "Política de Reembolso" pode apontar para a seção de reembolso dentro dos Termos de Uso.
-
-### Arquivos
-| Arquivo | Ação |
+### Arquivo afetado
+| Arquivo | Acao |
 |---------|------|
-| `src/pages/PoliticaPrivacidade.tsx` | **Novo** |
-| `src/pages/TermosDeUso.tsx` | **Novo** |
-| `src/App.tsx` | Adicionar 2 rotas |
-| `src/pages/LandingPage.tsx` | Atualizar links do footer (linhas 1007-1011) |
+| `index.html` | Adicionar script inline de inicializacao (linhas 34-35) |
+
+O hook `useGoogleAds.tsx` e as integracoes nas paginas continuam funcionando normalmente, pois o hook ja verifica se `window.gtag` existe antes de re-inicializar.
 

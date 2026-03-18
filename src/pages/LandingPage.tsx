@@ -415,75 +415,105 @@ const LandingPage = () => {
               </Dialog>
 
               {/* Card de Preço abaixo do VSL */}
-              <div className="w-full max-w-full md:max-w-md mx-auto mt-14 md:mt-20 px-0 md:px-0">
-                <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black w-full">
-                  <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
-                    <div className="text-center space-y-1 md:space-y-2">
-                      <h3 className="text-2xl md:text-2xl font-bold text-white">Plano Anual</h3>
-                      <div className="flex items-center justify-center gap-2 md:gap-3">
-                        <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
-                        <span className="text-lg md:text-2xl font-medium text-gray-300">por</span>
+              <div className="w-full max-w-full md:max-w-3xl mx-auto mt-14 md:mt-20 px-0 md:px-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  {/* Monthly Plan */}
+                  <Card className="relative border border-gray-300 shadow-md bg-white w-full">
+                    <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
+                      <div className="text-center space-y-1 md:space-y-2">
+                        <h3 className="text-2xl font-bold text-black">Plano Mensal</h3>
+                        <p className="text-sm text-gray-500">Acesso completo mês a mês</p>
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 12,90</span>
+                          <span className="text-gray-400 text-sm md:text-base">/mês</span>
+                        </div>
                       </div>
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
-                        <span className="text-gray-400 text-sm md:text-base">/ano</span>
+
+                      <ul className="text-left space-y-2 md:space-y-3">
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-gray-700 text-sm md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-gray-700 text-sm md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-gray-700 text-sm md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
+                        </li>
+                      </ul>
+
+                      <Button
+                        className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#3c83f6] hover:bg-[#2b6de0] text-white rounded-lg"
+                        onClick={() => handleSelectPlan()}
+                      >
+                        ASSINAR AGORA
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Annual Plan */}
+                  <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black w-full">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                      <span className="bg-[#25D366] text-white px-4 py-1 rounded-full text-xs md:text-sm font-bold whitespace-nowrap">Melhor Custo-Benefício</span>
+                    </div>
+                    <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6 pt-8">
+                      <div className="text-center space-y-1 md:space-y-2">
+                        <h3 className="text-2xl font-bold text-white">Plano Anual</h3>
+                        <div className="flex items-center justify-center gap-2 md:gap-3">
+                          <span className="text-2xl md:text-3xl font-semibold text-red-500 line-through">de R$ 147</span>
+                          <span className="text-lg md:text-2xl font-medium text-gray-300">por</span>
+                        </div>
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 97,90</span>
+                          <span className="text-gray-400 text-sm md:text-base">/ano</span>
+                        </div>
+                        <p className="text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
                       </div>
-                      <p className="text-sm md:text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
-                    </div>
 
-                    <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
-                      <p className="text-base md:text-lg font-bold text-center text-green-400">
-                        🎉 Economia de R$ 49,10 por ano!
-                      </p>
-                    </div>
+                      <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
+                        <p className="text-base md:text-lg font-bold text-center text-green-400">
+                          🎉 Economia de R$ 49,10 por ano!
+                        </p>
+                      </div>
 
-                    <ul className="text-left space-y-2 md:space-y-3">
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
-                      </li>
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
-                      </li>
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
-                      </li>
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Defina uma meta para os seus ganhos e para os gastos</span>
-                      </li>
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Acompanhe o seu faturamento por hora e por KM</span>
-                      </li>
-                      <li className="flex items-start gap-2 md:gap-3">
-                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                        </div>
-                        <span className="text-white text-sm md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
-                      </li>
-                    </ul>
+                      <ul className="text-left space-y-2 md:space-y-3">
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-white text-sm md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-white text-sm md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-white text-sm md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
+                        </li>
+                      </ul>
 
-                    <Button
-                      className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                      onClick={() => handleSelectPlan()}
-                    >
-                      COMEÇAR AGORA
-                    </Button>
-                  </CardContent>
-                </Card>
+                      <Button
+                        className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
+                        onClick={() => handleSelectPlan()}
+                      >
+                        COMEÇAR AGORA
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
           </div>
         </div>
@@ -819,10 +849,73 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="flex justify-center mt-4 md:mt-6">
-            {/* Annual Plan */}
-            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-full md:max-w-md w-full mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+            {/* Monthly Plan */}
+            <Card className="relative border border-gray-300 shadow-md bg-white max-w-full w-full">
               <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
+                <div className="text-center space-y-1 md:space-y-2">
+                  <h3 className="text-2xl md:text-2xl font-bold text-black">Plano Mensal</h3>
+                  <p className="text-sm text-gray-500">Acesso completo mês a mês</p>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 12,90</span>
+                    <span className="text-gray-400 text-sm md:text-base">/mês</span>
+                  </div>
+                </div>
+
+                <ul className="text-left space-y-2 md:space-y-3">
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Descubra qual é o seu Custo e o seu Lucro real em cada viagem</span>
+                  </li>
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
+                  </li>
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                  </li>
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Defina uma meta para os seus ganhos e para os gastos</span>
+                  </li>
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Acompanhe o seu faturamento por hora e por KM</span>
+                  </li>
+                  <li className="flex items-start gap-2 md:gap-3">
+                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 text-sm md:text-base">Funciona em aparelhos IOS (iPhone) e em aparelhos Android</span>
+                  </li>
+                </ul>
+
+                <Button
+                  className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#3c83f6] hover:bg-[#2b6de0] text-white rounded-lg"
+                  onClick={() => handleSelectPlan()}
+                >
+                  ASSINAR AGORA
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Annual Plan */}
+            <Card className="relative border-2 border-[#3c83f6] shadow-xl bg-black max-w-full w-full">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                <span className="bg-[#25D366] text-white px-4 py-1 rounded-full text-xs md:text-sm font-bold whitespace-nowrap">Melhor Custo-Benefício</span>
+              </div>
+              <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6 pt-8">
                 <div className="text-center space-y-1 md:space-y-2">
                   <h3 className="text-2xl md:text-2xl font-bold text-white">Plano Anual</h3>
                   <div className="flex items-center justify-center gap-2 md:gap-3">

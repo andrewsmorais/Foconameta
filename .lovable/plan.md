@@ -1,28 +1,13 @@
 
 
-## Correção: Tag do Google Ads nao detectada pelo Tag Assistant
+## Simplificar título e subtítulo do Hero
 
-### Problema
-O `index.html` (linha 34) carrega o `gtag.js` com `async`, mas **nao inclui o script inline de inicializacao** com `window.dataLayer` e `gtag('config')`. O Google Tag Assistant verifica o HTML bruto antes do JavaScript do React executar, por isso mostra "Nenhuma tag do Google foi encontrada".
+### Arquivo: `src/pages/LandingPage.tsx` (linhas 354-361)
 
-### Solucao
-Adicionar o script inline de inicializacao logo apos o script async no `index.html`, exatamente como o snippet original fornecido pelo Google:
+Substituir o conteúdo atual do h1 e parágrafo por:
 
-```html
-<!-- Google Ads (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17945487409"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-17945487409');
-</script>
-```
-
-### Arquivo afetado
-| Arquivo | Acao |
-|---------|------|
-| `index.html` | Adicionar script inline de inicializacao (linhas 34-35) |
-
-O hook `useGoogleAds.tsx` e as integracoes nas paginas continuam funcionando normalmente, pois o hook ja verifica se `window.gtag` existe antes de re-inicializar.
+1. **h1** — Apenas "Bateu A Meta" em azul (`text-brand-blue`), remover ": Controle e Planejamento Inteligente"
+2. **Primeira linha abaixo** — "Aposente o caderninho e as planilhas complicadas!" em vermelho (`text-brand-red`)
+3. **Segunda linha abaixo** — "Domine seus Ganhos e Despesas por Hora e por KM rodado com um clique." em preto (`text-black`)
+4. Remover todo o texto intermediário ("Chegou o Bateu a Meta: o App para Celular, Tablet ou PC.")
 

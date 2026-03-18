@@ -544,7 +544,7 @@ const LandingPage = () => {
 
                       <Button
                         className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                        onClick={() => handleSelectPlan()}
+                        onClick={() => handleSelectPlan('anual')}
                       >
                         COMEÇAR AGORA
                       </Button>

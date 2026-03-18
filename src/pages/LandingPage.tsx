@@ -440,7 +440,25 @@ const LandingPage = () => {
                           <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
                           </div>
+                          <span className="text-white text-sm md:text-base">Entenda de forma simples quanto é o seu Custo e o seu Lucro por cada KM que você roda</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
                           <span className="text-white text-sm md:text-base">Tenha total controle de quanto você lucra e de quanto você gasta por hora</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-white text-sm md:text-base">Defina uma meta para os seus ganhos e para os gastos</span>
+                        </li>
+                        <li className="flex items-start gap-2 md:gap-3">
+                          <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                          </div>
+                          <span className="text-white text-sm md:text-base">Acompanhe o seu faturamento por hora e por KM</span>
                         </li>
                         <li className="flex items-start gap-2 md:gap-3">
                           <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">

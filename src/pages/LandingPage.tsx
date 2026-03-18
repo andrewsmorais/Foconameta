@@ -351,13 +351,14 @@ const LandingPage = () => {
       <section className="relative overflow-hidden py-4 md:py-20 bg-[#fafafa]">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-center">
-              <span className="text-brand-blue">Bateu A Meta :</span>{" "}
-              <span className="text-black">Controle e Planejamento Inteligente</span>
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-center text-brand-blue">
+              Bateu A Meta
             </h1>
-            <p className="text-base md:text-xl lg:text-2xl font-medium leading-relaxed max-w-3xl text-left md:text-center text-black mt-8 md:mt-12">
-              <span className="text-brand-red">Aposente o caderninho e as planilhas complicadas!</span>{" "}
-              Chegou o <span className="text-brand-blue">Bateu a Meta</span>: o App para Celular, Tablet ou PC. Domine seus Ganhos e Despesas por Hora e por KM rodado com um clique.
+            <p className="text-lg md:text-2xl lg:text-3xl font-bold max-w-3xl text-center text-brand-red mt-4 md:mt-6">
+              Aposente o caderninho e as planilhas complicadas!
+            </p>
+            <p className="text-base md:text-xl lg:text-2xl font-medium leading-relaxed max-w-3xl text-center text-black mt-2 md:mt-4">
+              Domine seus Ganhos e Despesas por Hora e por KM rodado com um clique.
             </p>
 
             {/* VSL Video - Thumbnail clicável que abre modal */}

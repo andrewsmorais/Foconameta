@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown } from "lucide-react";
+import { Check, Crown, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 
 const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/pxje8kx_669077";
+
+const features = [
+  { label: "Ganhos Brutos, Ganhos Líquidos e Despesas:", desc: "Tenha a clareza total do seu saldo em cada turno." },
+  { label: "Ganhos por Hora, Ganho por KM e Despesas por KM:", desc: "Entenda sua performance real no trecho." },
+  { label: "Custo por Combustível:", desc: "Controle exato do seu maior gasto diário." },
+  { label: "Funciona em aparelhos IOS (iPhone) e em aparelhos Android", desc: "" },
+];
 
 const Planos = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -35,11 +42,9 @@ const Planos = () => {
   }, [navigate]);
 
   const handleSelectPlan = async () => {
-    // Verificar se já tem email (usuário logado)
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
 
-    // Redirecionar para checkout da Cakto com email se disponível
     const checkoutUrl = email 
       ? `${CAKTO_CHECKOUT_URL}?email=${encodeURIComponent(email)}`
       : CAKTO_CHECKOUT_URL;
@@ -62,7 +67,7 @@ const Planos = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <img 
             src={logoImage} 
@@ -77,63 +82,90 @@ const Planos = () => {
           </p>
         </div>
 
-        {/* Plano Anual Exclusive */}
-        <Card className="relative border-2 border-[#3c83f6] shadow-lg bg-black text-white">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-[#25D366] text-white px-4 py-1 font-bold">
-              Economize R$ 49,10 agora!
-            </Badge>
-          </div>
-          <CardHeader className="text-center pb-2 pt-6">
-            <div className="mx-auto mb-2 p-3 rounded-full bg-[#3c83f6]/10 w-fit">
-              <Crown className="h-8 w-8 text-[#3c83f6]" />
-            </div>
-            <CardTitle className="text-2xl text-[#3c83f6]">PLANO ANUAL EXCLUSIVE</CardTitle>
-            <CardDescription>Acesso completo por 1 ano</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <ul className="space-y-3 mb-6 text-left">
-              <li className="flex items-start gap-2">
-                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-sm"><strong>Ganhos Brutos, Ganhos Líquidos e Despesas:</strong> Tenha a clareza total do seu saldo em cada turno.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-sm"><strong>Ganhos por Hora, Ganho por KM e Despesas por KM:</strong> Entenda sua performance real no trecho.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-sm"><strong>Custo por Combustível:</strong> Controle exato do seu maior gasto diário.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="bg-[#f97316] rounded-full p-1 mt-0.5 flex-shrink-0">
-                  <Check className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-sm"><strong>Funciona em aparelhos IOS (iPhone) e em aparelhos Android</strong></span>
-              </li>
-            </ul>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Plano Mensal */}
+          <Card className="relative border border-border shadow-sm">
+            <CardHeader className="text-center pb-2 pt-6">
+              <div className="mx-auto mb-2 p-3 rounded-full bg-muted w-fit">
+                <Zap className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-2xl text-foreground">PLANO MENSAL</CardTitle>
+              <CardDescription>Acesso completo mês a mês</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center">
+              <ul className="space-y-3 mb-6 text-left">
+                {features.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <div className="bg-muted-foreground/20 rounded-full p-1 mt-0.5 flex-shrink-0">
+                      <Check className="h-3 w-3 text-foreground" />
+                    </div>
+                    <span className="text-sm">
+                      <strong>{f.label}</strong>{f.desc ? ` ${f.desc}` : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
 
-            <div className="mb-4">
-              <p className="text-muted-foreground text-sm">De: <span className="line-through">R$ 147,00</span> por apenas</p>
-              <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
-              <p className="text-muted-foreground text-sm">(Pagamento Único)</p>
-            </div>
+              <div className="mb-4">
+                <span className="text-4xl font-bold text-foreground">R$ 12,90</span>
+                <p className="text-muted-foreground text-sm">/mês</p>
+              </div>
 
-            <Button 
-              className="w-full bg-[#25D366] hover:bg-[#1da851] text-white font-bold rounded-full" 
-              size="lg"
-              onClick={handleSelectPlan}
-            >
-              QUERO GARANTIR MEU ACESSO AGORA
-            </Button>
-          </CardContent>
-        </Card>
+              <Button 
+                className="w-full rounded-full" 
+                size="lg"
+                variant="outline"
+                onClick={handleSelectPlan}
+              >
+                ASSINAR AGORA
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Plano Anual Exclusive */}
+          <Card className="relative border-2 border-[hsl(217,90%,60%)] shadow-lg bg-black text-white">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <Badge className="bg-[hsl(142,69%,49%)] text-white px-4 py-1 font-bold">
+                Melhor Custo-Benefício
+              </Badge>
+            </div>
+            <CardHeader className="text-center pb-2 pt-6">
+              <div className="mx-auto mb-2 p-3 rounded-full bg-[hsl(217,90%,60%)]/10 w-fit">
+                <Crown className="h-8 w-8 text-[hsl(217,90%,60%)]" />
+              </div>
+              <CardTitle className="text-2xl text-[hsl(217,90%,60%)]">PLANO ANUAL EXCLUSIVE</CardTitle>
+              <CardDescription>Acesso completo por 1 ano</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center">
+              <ul className="space-y-3 mb-6 text-left">
+                {features.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <div className="bg-[hsl(24,95%,53%)] rounded-full p-1 mt-0.5 flex-shrink-0">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-sm">
+                      <strong>{f.label}</strong>{f.desc ? ` ${f.desc}` : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mb-4">
+                <p className="text-muted-foreground text-sm">De: <span className="line-through">R$ 147,00</span> por apenas</p>
+                <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
+                <p className="text-muted-foreground text-sm">(Pagamento Único)</p>
+              </div>
+
+              <Button 
+                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full" 
+                size="lg"
+                onClick={handleSelectPlan}
+              >
+                QUERO GARANTIR MEU ACESSO AGORA
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="text-center space-y-2 mt-8">
           {isAuthenticated ? (

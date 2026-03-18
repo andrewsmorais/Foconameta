@@ -451,7 +451,7 @@ const LandingPage = () => {
                       </ul>
 
                       <Button
-                        className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#3c83f6] hover:bg-[#2b6de0] text-white rounded-lg"
+                        className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                         onClick={() => handleSelectPlan()}
                       >
                         ASSINAR AGORA
@@ -902,7 +902,7 @@ const LandingPage = () => {
                 </ul>
 
                 <Button
-                  className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#3c83f6] hover:bg-[#2b6de0] text-white rounded-lg"
+                  className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
                   onClick={() => handleSelectPlan()}
                 >
                   ASSINAR AGORA

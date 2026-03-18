@@ -73,8 +73,9 @@ import motoristaCacheado from "@/assets/testimonials/motorista-cacheado.png";
 // Founder image
 import fundadorImg from "@/assets/andrews-morais.jpeg";
 
-// Cakto checkout URL
-const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/pxje8kx_669077";
+// Cakto checkout URLs
+const CAKTO_CHECKOUT_MENSAL = "https://app.cakto.com.br/checkout-builder/810036";
+const CAKTO_CHECKOUT_ANUAL = "https://pay.cakto.com.br/pxje8kx_669077";
 
 // Slides data for carousel
 const carouselSlides = [
@@ -234,18 +235,17 @@ const LandingPage = () => {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSelectPlan = async () => {
+  const handleSelectPlan = async (plan: 'mensal' | 'anual' = 'anual') => {
     // Facebook Pixel - InitiateCheckout
-    trackInitiateCheckout("Anual", 97.90);
+    trackInitiateCheckout(plan === 'anual' ? "Anual" : "Mensal", plan === 'anual' ? 97.90 : 12.90);
 
-    // Verificar se já tem email (usuário logado)
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
 
-    // Redirecionar para checkout da Cakto
+    const baseUrl = plan === 'mensal' ? CAKTO_CHECKOUT_MENSAL : CAKTO_CHECKOUT_ANUAL;
     const checkoutUrl = email 
-      ? `${CAKTO_CHECKOUT_URL}?email=${encodeURIComponent(email)}`
-      : CAKTO_CHECKOUT_URL;
+      ? `${baseUrl}?email=${encodeURIComponent(email)}`
+      : baseUrl;
     
     window.location.href = checkoutUrl;
   };
@@ -471,7 +471,7 @@ const LandingPage = () => {
 
                       <Button
                         className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                        onClick={() => handleSelectPlan()}
+                        onClick={() => handleSelectPlan('mensal')}
                       >
                         ASSINAR AGORA
                       </Button>
@@ -544,7 +544,7 @@ const LandingPage = () => {
 
                       <Button
                         className="w-full py-4 md:py-6 text-sm md:text-lg font-bold bg-[#25D366] hover:bg-[#1da851] text-white rounded-lg animate-soft-pulse"
-                        onClick={() => handleSelectPlan()}
+                        onClick={() => handleSelectPlan('anual')}
                       >
                         COMEÇAR AGORA
                       </Button>

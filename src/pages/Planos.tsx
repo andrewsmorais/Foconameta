@@ -7,7 +7,8 @@ import { Check, Crown, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 
-const CAKTO_CHECKOUT_URL = "https://pay.cakto.com.br/pxje8kx_669077";
+const CAKTO_CHECKOUT_MENSAL = "https://app.cakto.com.br/checkout-builder/810036";
+const CAKTO_CHECKOUT_ANUAL = "https://pay.cakto.com.br/pxje8kx_669077";
 
 const features = [
   "Descubra qual é o seu Custo e o seu Lucro real em cada viagem",
@@ -43,13 +44,14 @@ const Planos = () => {
     checkAuth();
   }, [navigate]);
 
-  const handleSelectPlan = async () => {
+  const handleSelectPlan = async (plan: 'mensal' | 'anual' = 'anual') => {
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
 
+    const baseUrl = plan === 'mensal' ? CAKTO_CHECKOUT_MENSAL : CAKTO_CHECKOUT_ANUAL;
     const checkoutUrl = email 
-      ? `${CAKTO_CHECKOUT_URL}?email=${encodeURIComponent(email)}`
-      : CAKTO_CHECKOUT_URL;
+      ? `${baseUrl}?email=${encodeURIComponent(email)}`
+      : baseUrl;
     
     window.location.href = checkoutUrl;
   };
@@ -110,7 +112,7 @@ const Planos = () => {
               <Button 
                 className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
                 size="lg"
-                onClick={handleSelectPlan}
+                onClick={() => handleSelectPlan('mensal')}
               >
                 ASSINAR AGORA
               </Button>
@@ -157,7 +159,7 @@ const Planos = () => {
               <Button 
                 className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
                 size="lg"
-                onClick={handleSelectPlan}
+                onClick={() => handleSelectPlan('anual')}
               >
                 COMEÇAR AGORA
               </Button>

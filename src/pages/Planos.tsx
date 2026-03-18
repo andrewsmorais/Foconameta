@@ -159,7 +159,7 @@ const Planos = () => {
               <Button 
                 className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
                 size="lg"
-                onClick={handleSelectPlan}
+                onClick={() => handleSelectPlan('anual')}
               >
                 COMEÇAR AGORA
               </Button>

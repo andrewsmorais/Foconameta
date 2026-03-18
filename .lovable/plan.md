@@ -1,28 +1,18 @@
 
 
-## Correção: Tag do Google Ads nao detectada pelo Tag Assistant
+## Igualar cores do botão Mensal ao botão Anual
 
 ### Problema
-O `index.html` (linha 34) carrega o `gtag.js` com `async`, mas **nao inclui o script inline de inicializacao** com `window.dataLayer` e `gtag('config')`. O Google Tag Assistant verifica o HTML bruto antes do JavaScript do React executar, por isso mostra "Nenhuma tag do Google foi encontrada".
+O botão "ASSINAR AGORA" do Plano Mensal usa azul (`bg-[#3c83f6]`), enquanto o botão do Plano Anual usa verde (`bg-[#25D366]`) com animação pulsante. O pedido é que ambos tenham as mesmas cores.
 
-### Solucao
-Adicionar o script inline de inicializacao logo apos o script async no `index.html`, exatamente como o snippet original fornecido pelo Google:
+### Alterações
 
-```html
-<!-- Google Ads (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17945487409"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-17945487409');
-</script>
-```
+#### 1. `src/pages/LandingPage.tsx` (2 locais)
+- **Linha 454** (Hero - botão mensal): Trocar `bg-[#3c83f6] hover:bg-[#2b6de0]` por `bg-[#25D366] hover:bg-[#1da851] animate-soft-pulse`
+- **Linha 905** (Seção preços - botão mensal): Mesma troca
 
-### Arquivo afetado
-| Arquivo | Acao |
-|---------|------|
-| `index.html` | Adicionar script inline de inicializacao (linhas 34-35) |
+#### 2. `src/pages/Planos.tsx`
+- **Linha ~117** (botão mensal): Trocar `variant="outline"` por estilo verde `bg-[#25D366] hover:bg-[#1da851] text-white font-bold`
 
-O hook `useGoogleAds.tsx` e as integracoes nas paginas continuam funcionando normalmente, pois o hook ja verifica se `window.gtag` existe antes de re-inicializar.
+Resultado: ambos os botões (mensal e anual) ficam verdes com animação pulsante.
 

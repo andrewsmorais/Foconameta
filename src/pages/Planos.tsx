@@ -88,30 +88,24 @@ const Planos = () => {
           {/* Plano Mensal */}
           <Card className="relative border-2 border-[hsl(217,90%,60%)] shadow-lg bg-black text-white">
             <CardHeader className="text-center pb-2 pt-6">
-              <div className="mx-auto mb-2 p-3 rounded-full bg-[hsl(217,90%,60%)]/10 w-fit">
-                <Zap className="h-8 w-8 text-[hsl(217,90%,60%)]" />
-              </div>
-              <CardTitle className="text-2xl text-[hsl(217,90%,60%)]">PLANO MENSAL</CardTitle>
+              <CardTitle className="text-2xl font-bold text-white">Plano Mensal</CardTitle>
               <CardDescription>Acesso completo mês a mês</CardDescription>
+              <div className="flex items-baseline justify-center gap-1 pt-2">
+                <span className="text-4xl font-bold text-white">R$ 12,90</span>
+                <span className="text-gray-400 text-sm">/mês</span>
+              </div>
             </CardHeader>
             <CardContent className="text-center">
               <ul className="space-y-3 mb-6 text-left">
                 {features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <div className="bg-[hsl(24,95%,53%)] rounded-full p-1 mt-0.5 flex-shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Check className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-sm">
-                      <strong>{f.label}</strong>{f.desc ? ` ${f.desc}` : ""}
-                    </span>
+                    <span className="text-sm text-white">{f}</span>
                   </li>
                 ))}
               </ul>
-
-              <div className="mb-4">
-                <span className="text-4xl font-bold text-white">R$ 12,90</span>
-                <p className="text-gray-400 text-sm">/mês</p>
-              </div>
 
               <Button 
                 className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
@@ -123,7 +117,7 @@ const Planos = () => {
             </CardContent>
           </Card>
 
-          {/* Plano Anual Exclusive */}
+          {/* Plano Anual */}
           <Card className="relative border-2 border-[hsl(217,90%,60%)] shadow-lg bg-black text-white">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <Badge className="bg-[hsl(142,69%,49%)] text-white px-4 py-1 font-bold">
@@ -131,38 +125,41 @@ const Planos = () => {
               </Badge>
             </div>
             <CardHeader className="text-center pb-2 pt-6">
-              <div className="mx-auto mb-2 p-3 rounded-full bg-[hsl(217,90%,60%)]/10 w-fit">
-                <Crown className="h-8 w-8 text-[hsl(217,90%,60%)]" />
+              <CardTitle className="text-2xl font-bold text-white">Plano Anual</CardTitle>
+              <div className="flex items-center justify-center gap-2 pt-1">
+                <span className="text-xl font-semibold text-red-500 line-through">de R$ 147</span>
+                <span className="text-lg font-medium text-gray-300">por</span>
               </div>
-              <CardTitle className="text-2xl text-[hsl(217,90%,60%)]">PLANO ANUAL EXCLUSIVE</CardTitle>
-              <CardDescription>Acesso completo por 1 ano</CardDescription>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-4xl font-bold text-white">R$ 97,90</span>
+                <span className="text-gray-400 text-sm">/ano</span>
+              </div>
+              <p className="text-sm text-gray-400">Equivale a R$ 8,16/mês</p>
             </CardHeader>
             <CardContent className="text-center">
+              <div className="p-3 rounded-lg bg-green-500/20 border border-green-500/30 mb-4">
+                <p className="text-base font-bold text-center text-green-400">
+                  🎉 Economia de R$ 49,10 por ano!
+                </p>
+              </div>
+
               <ul className="space-y-3 mb-6 text-left">
                 {features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <div className="bg-[hsl(24,95%,53%)] rounded-full p-1 mt-0.5 flex-shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Check className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-sm">
-                      <strong>{f.label}</strong>{f.desc ? ` ${f.desc}` : ""}
-                    </span>
+                    <span className="text-sm text-white">{f}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="mb-4">
-                <p className="text-muted-foreground text-sm">De: <span className="line-through">R$ 147,00</span> por apenas</p>
-                <span className="text-4xl font-bold text-foreground">R$ 97,90</span>
-                <p className="text-muted-foreground text-sm">(Pagamento Único)</p>
-              </div>
-
               <Button 
-                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full" 
+                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
                 size="lg"
                 onClick={handleSelectPlan}
               >
-                QUERO GARANTIR MEU ACESSO AGORA
+                COMEÇAR AGORA
               </Button>
             </CardContent>
           </Card>

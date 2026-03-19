@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react';
 // ============================================
 // 🔴 SUBSTITUA PELO SEU PIXEL ID DO FACEBOOK
 // ============================================
-const FB_PIXEL_ID = '1290319795205025';
+const FB_PIXEL_ID = '1163164178906906';
 
 declare global {
   interface Window {

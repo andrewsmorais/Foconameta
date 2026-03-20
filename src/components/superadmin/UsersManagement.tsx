@@ -359,7 +359,7 @@ export const UsersManagement = () => {
       user.email || "",
       user.telefone || "",
       user.cpf || "",
-      user.planPrice === 97.9 ? "Anual R$ 97,90" : "Free",
+      user.planPrice >= 90 ? "Anual R$ 97,90" : user.planPrice > 0 ? "Mensal R$ 12,90" : "Free",
       user.daysRemaining !== null && user.daysRemaining !== undefined ? String(user.daysRemaining) : "",
       user.status === "active" ? "Ativo" : "Bloqueado",
       user.admin_notes || ""

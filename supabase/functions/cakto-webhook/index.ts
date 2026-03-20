@@ -599,14 +599,15 @@ serve(async (req) => {
       }
 
     } else if (event === "checkout_abandonment" || event === "cart_abandoned" || event === "CHECKOUT_ABANDONMENT") {
-      console.log("[Cakto Webhook] Processing checkout abandonment for:", email);
+      const planType = detectPlanType(data);
+      console.log("[Cakto Webhook] Processing checkout abandonment for:", email, "Plan:", planType);
 
       // Verificar se já existe registro de abandono para este email e plano
       const { data: existingAbandonment } = await supabaseAdmin
         .from("abandoned_checkouts")
         .select("id, status")
         .eq("email", email)
-        .eq("plan_type", "anual")
+        .eq("plan_type", planType)
         .maybeSingle();
 
       if (existingAbandonment) {

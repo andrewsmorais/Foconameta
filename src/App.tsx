@@ -50,11 +50,7 @@ const AppContent = () => {
             <Planos />
           </ProtectedRoute>
         } />
-        <Route path="/pagamento-sucesso" element={
-          <ProtectedRoute requireSubscription={false}>
-            <PagamentoSucesso />
-          </ProtectedRoute>
-        } />
+        <Route path="/pagamento-sucesso" element={<PagamentoSucesso />} />
         <Route
           path="/dashboard"
           element={

@@ -12,6 +12,10 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
+const normalizePlanType = (planType: string | null | undefined): "mensal" | "anual" => {
+  return planType === "anual" ? "anual" : "mensal";
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -111,6 +115,8 @@ serve(async (req) => {
         nome_completo: nome_completo,
         telefone: telefone,
         cpf: cpf,
+        status: "active",
+        updated_at: new Date().toISOString(),
       });
 
     if (profileError) {
@@ -118,18 +124,19 @@ serve(async (req) => {
     }
 
     // Find or create plan
-    const isAnnual = pendingReg.plan_type === "anual";
+    const normalizedPlanType = normalizePlanType(pendingReg.plan_type);
+    const isAnnual = normalizedPlanType === "anual";
     let { data: plan } = await supabaseAdmin
       .from("plans")
       .select("id")
-      .eq("name", pendingReg.plan_type)
-      .single();
+      .eq("name", normalizedPlanType)
+      .maybeSingle();
 
     if (!plan) {
       const { data: newPlan, error: planError } = await supabaseAdmin
         .from("plans")
         .insert({
-          name: pendingReg.plan_type,
+          name: normalizedPlanType,
           price: isAnnual ? 97.90 : 12.90,
           features: {},
         })

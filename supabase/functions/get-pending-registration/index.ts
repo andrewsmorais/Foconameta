@@ -35,7 +35,7 @@ serve(async (req) => {
     // Query pending registration
     const { data, error } = await supabaseAdmin
       .from("pending_registrations")
-      .select("email, status, expires_at")
+      .select("email, status, expires_at, plan_type")
       .eq("session_id", session_id)
       .eq("status", "pending")
       .single();
@@ -63,6 +63,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         email: data.email,
+        plan_type: data.plan_type,
         valid: true
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -1,115 +1,73 @@
 
-## Corrigir fluxo de compra mensal para garantir envio de acesso
 
-### O que encontrei
-Hoje existem **dois fluxos diferentes** no projeto, e eles estão desalinhados:
+## Verificação do Fluxo Mensal e Anual — Análise Completa
 
-1. **Fluxo antigo no webhook da Cakto**
-   - `supabase/functions/cakto-webhook/index.ts` cria o usuário diretamente no Auth
-   - cria profile, subscription e role premium
-   - tenta enviar o e-mail com senha automaticamente
+### Status dos Planos no Banco
 
-2. **Fluxo novo da tela `/pagamento-sucesso`**
-   - espera um registro em `pending_registrations`
-   - coleta nome, CPF, telefone e senha escolhida pelo cliente
-   - só então cria a conta via `complete-registration`
+Os planos estão corretos:
+- **Mensal**: `49a734d8` → R$ 12,90 ✅
+- **Anual**: `08033a83` → R$ 97,90 ✅
+- **Free**: `7ce2d64b` → R$ 0,00 ✅
 
-### Problema principal
-O webhook atual **não grava nada em `pending_registrations`**. Eu confirmei que a tabela está vazia.
+### Fluxo Verificado (Passo a Passo)
 
-Isso causa dois problemas:
-- a tela `/pagamento-sucesso` não tem dados para concluir cadastro
-- o sistema fica dependente do envio imediato do e-mail com senha; se o e-mail falhar, o comprador fica sem acesso
+```text
+Compra na Cakto
+    ↓
+cakto-webhook (recebe evento purchase_approved)
+    ↓
+detectPlanType() → preço <= 15 = mensal, senão = anual
+    ↓
+┌─ Novo cliente?
+│   → Cria pending_registrations (session_id, email, plan_type)
+│   → Envia email Brevo com link /pagamento-sucesso?session_id=XXX
+│
+└─ Cliente existente?
+    → Renova subscription (1 mês ou 1 ano)
+    → Envia email de renovação via Brevo
+```
 
-### Problema adicional importante
-A rota `/pagamento-sucesso` está protegida por `ProtectedRoute`, então um comprador novo sem login tende a ser redirecionado para `/auth`. Isso quebra o fluxo pós-compra.
+### Problemas Encontrados
 
-## Plano de implementação
+**1. Nenhum problema crítico no código** — o fluxo está estruturalmente correto para ambos os planos.
 
-### 1) Unificar o fluxo pós-venda
-Vou ajustar o sistema para trabalhar de forma consistente com **um único fluxo**:
+**2. A tabela `pending_registrations` está vazia** — isso indica que:
+- Ou nenhuma compra nova de cliente sem conta aconteceu desde a última atualização do webhook
+- Ou o webhook não foi re-deployado após as últimas alterações
 
-- no webhook da Cakto, ao aprovar compra:
-  - identificar corretamente mensal/anual
-  - criar/atualizar `pending_registrations`
-  - **não depender só do e-mail com senha**
-- o comprador será levado para `/pagamento-sucesso?session_id=...`
-- nessa página ele completa o cadastro e define a própria senha
-- `complete-registration` cria a conta, assinatura e role premium
+**3. Possível problema de deploy** — Os logs mostram que o webhook está rodando (respondeu ao meu teste com 401 por falta de secret), mas não há logs de compras reais recentes. Isso pode significar que a Cakto não está enviando os eventos corretamente, ou que o evento está sendo enviado com um secret diferente.
 
-Isso elimina a dependência de “e-mail com senha” para novos compradores.
+**4. Detecção de plano funciona corretamente:**
+- Se o nome do produto contém "mensal" → mensal ✅
+- Se o preço é <= 15 → mensal ✅
+- Caso contrário → anual ✅
 
-### 2) Liberar a página de conclusão de cadastro
-Vou alterar o roteamento para que `/pagamento-sucesso` seja acessível sem login prévio.
+**5. `complete-registration` está correto:**
+- Lê `plan_type` do `pending_registrations`
+- Cria subscription com 1 mês (mensal) ou 12 meses (anual) ✅
+- Atribui role `premium` ✅
 
-Assim o comprador poderá:
-- abrir o link pós-pagamento
-- ver o e-mail preenchido
-- cadastrar nome, CPF, telefone e senha
-- entrar automaticamente no app
+**6. `check-subscription` está correto:**
+- Verifica se a subscription está ativa e não expirada ✅
+- Respeita roles `free` e `super_admin` ✅
 
-### 3) Ajustar o webhook da Cakto para o fluxo correto
-No `cakto-webhook` vou:
+**7. Rota `/pagamento-sucesso` é pública** — Confirmado no App.tsx ✅
 
-- manter a detecção de plano mensal/anual
-- deixar de criar usuário diretamente para novos compradores
-- criar um registro em `pending_registrations` com:
-  - email
-  - session_id/token do fluxo
-  - plan_type
-  - status pending
-  - expires_at
-- preservar tratamento de renovação para clientes que já existem
+### O que precisa ser verificado fora do código
 
-### 4) Garantir comportamento correto para novos clientes vs clientes existentes
-Vou separar a lógica assim:
+O fluxo está correto no código. Para confirmar que funciona em produção:
 
-- **novo comprador**
-  - cria `pending_registrations`
-  - segue para cadastro final em `/pagamento-sucesso`
-  - sem necessidade de receber senha por e-mail
+1. **Verificar se o webhook da Cakto está apontando para a URL correta**: `https://grfyoqsbypvvuzdudtgu.supabase.co/functions/v1/cakto-webhook`
+2. **Verificar se o secret configurado na Cakto é o mesmo que está no Supabase** (secret `CAKTO_WEBHOOK_SECRET`)
+3. **Verificar no painel do Brevo** se os emails estão sendo enviados (pode haver limite de envio ou domínio não verificado)
 
-- **cliente já existente**
-  - mantém atualização/renovação da assinatura
-  - mantém e-mail de renovação
-  - não cria novo cadastro pendente
+### Recomendação
 
-### 5) Tornar o fluxo resiliente quando o e-mail falhar
-Mesmo que o envio de e-mail falhe:
-- o comprador ainda conseguirá concluir o cadastro pela página de sucesso
-- o acesso não ficará bloqueado por dependência do Brevo
+Não há bugs no código. O fluxo mensal e anual está corretamente implementado. Se o email não chegou para o último comprador mensal, as causas mais prováveis são:
 
-Se fizer sentido, também posso deixar um fallback no painel admin para:
-- reenviar credenciais
-- gerar nova senha rapidamente
+- A Cakto não disparou o webhook (verificar no painel da Cakto os logs de webhook)
+- O email foi para spam/lixeira do comprador
+- O Brevo bloqueou o envio (verificar logs no painel do Brevo)
 
-### 6) Validar o plano mensal em todo o fluxo
-Vou conferir e alinhar:
-- `cakto-webhook`
-- `pending_registrations.plan_type`
-- `complete-registration`
-- criação da assinatura com 1 mês para mensal
-- renovação com label/preço corretos
+**Não há alterações de código necessárias.** O sistema está funcional para ambos os planos.
 
-## Resultado esperado
-Depois da correção, quando alguém comprar o plano mensal de R$ 12,90:
-
-- a compra será reconhecida como mensal
-- o comprador conseguirá concluir o cadastro normalmente
-- a conta será criada com assinatura mensal ativa
-- o login funcionará imediatamente
-- o processo não ficará quebrado se o e-mail não chegar
-
-## Detalhes técnicos
-- Arquivos principais envolvidos:
-  - `supabase/functions/cakto-webhook/index.ts`
-  - `supabase/functions/get-pending-registration/index.ts`
-  - `supabase/functions/complete-registration/index.ts`
-  - `src/pages/PagamentoSucesso.tsx`
-  - `src/App.tsx`
-
-- Evidências encontradas:
-  - `pending_registrations` está vazia
-  - `/pagamento-sucesso` exige autenticação hoje
-  - o webhook atual cria usuário diretamente e só envia e-mail para novos usuários
-  - isso conflita com o fluxo de cadastro final já existente no app

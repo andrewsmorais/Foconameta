@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -627,6 +628,7 @@ export const UsersManagement = () => {
                   <TableHead>Nome</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Telefone</TableHead>
+                  <TableHead>Data do Plano</TableHead>
                   <TableHead>CPF</TableHead>
                   <TableHead>Plano</TableHead>
                   <TableHead>Dias Restantes</TableHead>
@@ -637,7 +639,7 @@ export const UsersManagement = () => {
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       Nenhum usuário encontrado
                     </TableCell>
                   </TableRow>
@@ -662,6 +664,9 @@ export const UsersManagement = () => {
                             {user.telefone}
                           </a>
                         ) : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {user.started_at ? format(new Date(user.started_at), "dd/MM/yyyy") : "-"}
                       </TableCell>
                       <TableCell>{user.cpf || "-"}</TableCell>
                       <TableCell>

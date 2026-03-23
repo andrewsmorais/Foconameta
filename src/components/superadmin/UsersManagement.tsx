@@ -551,14 +551,73 @@ export const UsersManagement = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por nome, email, CPF ou telefone..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="space-y-3">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por nome, email, CPF ou telefone..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Select value={planFilter} onValueChange={setPlanFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Plano" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Planos</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="mensal">Mensal</SelectItem>
+                  <SelectItem value="anual">Anual</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={sortOrder} onValueChange={setSortOrder}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Ordenar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Mais recente</SelectItem>
+                  <SelectItem value="oldest">Mais antigo</SelectItem>
+                  <SelectItem value="name_az">Nome A-Z</SelectItem>
+                  <SelectItem value="name_za">Nome Z-A</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm text-muted-foreground whitespace-nowrap">De:</Label>
+                <Input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="w-[150px]"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm text-muted-foreground whitespace-nowrap">Até:</Label>
+                <Input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="w-[150px]"
+                />
+              </div>
+              {(planFilter !== "all" || dateFrom || dateTo || sortOrder !== "newest") && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setPlanFilter("all");
+                    setSortOrder("newest");
+                    setDateFrom("");
+                    setDateTo("");
+                  }}
+                  className="text-muted-foreground"
+                >
+                  Limpar filtros
+                </Button>
+              )}
+            </div>
           </div>
 
           <div className="rounded-md border overflow-x-auto">

@@ -93,7 +93,7 @@ const Planos = () => {
               <CardTitle className="text-2xl font-bold text-white">Plano Mensal</CardTitle>
               <CardDescription>Acesso completo mês a mês</CardDescription>
               <div className="flex items-baseline justify-center gap-1 pt-2">
-                <span className="text-4xl font-bold text-white">R$ 12,90</span>
+                <span className="text-4xl font-bold text-white">R$ 19,90</span>
                 <span className="text-gray-400 text-sm">/mês</span>
               </div>
             </CardHeader>
@@ -141,7 +141,7 @@ const Planos = () => {
             <CardContent className="text-center">
               <div className="p-3 rounded-lg bg-green-500/20 border border-green-500/30 mb-4">
                 <p className="text-base font-bold text-center text-green-400">
-                  🎉 Economia de R$ 49,10 por ano!
+                  🎉 Economia de R$ 56,90 por ano!
                 </p>
               </div>
 

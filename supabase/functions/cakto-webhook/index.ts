@@ -19,7 +19,7 @@ const supabaseAdmin = createClient(
 );
 
 const PLAN_CONFIG = {
-  mensal: { name: "mensal", price: 12.9, label: "Mensal (R$ 12,90)" },
+  mensal: { name: "mensal", price: 19.9, label: "Mensal (R$ 19,90)" },
   anual: { name: "anual", price: 97.9, label: "Anual (R$ 97,90)" },
 };
 

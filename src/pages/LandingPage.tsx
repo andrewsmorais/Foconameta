@@ -237,7 +237,7 @@ const LandingPage = () => {
 
   const handleSelectPlan = async (plan: 'mensal' | 'anual' = 'anual') => {
     // Facebook Pixel - InitiateCheckout
-    trackInitiateCheckout(plan === 'anual' ? "Anual" : "Mensal", plan === 'anual' ? 97.90 : 12.90);
+    trackInitiateCheckout(plan === 'anual' ? "Anual" : "Mensal", plan === 'anual' ? 97.90 : 19.90);
 
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
@@ -425,7 +425,7 @@ const LandingPage = () => {
                         <h3 className="text-2xl font-bold text-white">Plano Mensal</h3>
                         <p className="text-sm text-gray-400">Acesso completo mês a mês</p>
                         <div className="flex items-baseline justify-center gap-1">
-                          <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 12,90</span>
+                          <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 19,90</span>
                           <span className="text-gray-400 text-sm md:text-base">/mês</span>
                         </div>
                       </div>
@@ -499,7 +499,7 @@ const LandingPage = () => {
 
                       <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
                         <p className="text-base md:text-lg font-bold text-center text-green-400">
-                          🎉 Economia de R$ 49,10 por ano!
+                          🎉 Economia de R$ 56,90 por ano!
                         </p>
                       </div>
 
@@ -894,7 +894,7 @@ const LandingPage = () => {
                   <h3 className="text-2xl md:text-2xl font-bold text-white">Plano Mensal</h3>
                   <p className="text-sm text-gray-400">Acesso completo mês a mês</p>
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 12,90</span>
+                    <span className="text-3xl md:text-5xl font-bold text-[#3c83f6]">R$ 19,90</span>
                     <span className="text-gray-400 text-sm md:text-base">/mês</span>
                   </div>
                 </div>
@@ -968,7 +968,7 @@ const LandingPage = () => {
 
                 <div className="p-3 md:p-4 rounded-lg bg-green-500/20 border border-green-500/30">
                   <p className="text-base md:text-lg font-bold text-center text-green-400">
-                    🎉 Economia de R$ 49,10 por ano!
+                    🎉 Economia de R$ 56,90 por ano!
                   </p>
                 </div>
 

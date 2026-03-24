@@ -86,8 +86,8 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
         : 0;
 
       // Calculate MRR (Monthly Recurring Revenue)
-      // Mensal: R$ 12,90/mês | Anual: R$ 97,90/12 = R$ 8,16/mês
-      const mrr = (monthlyPlanCount * 12.90) + (annualPlanCount * (97.90 / 12));
+      // Mensal: R$ 19,90/mês | Anual: R$ 97,90/12 = R$ 8,16/mês
+      const mrr = (monthlyPlanCount * 19.90) + (annualPlanCount * (97.90 / 12));
 
       return {
         totalUsers: totalUsers || 0,
@@ -181,7 +181,7 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
       icon: Calendar,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Ativos - R$ 12,90/mês",
+      description: "Ativos - R$ 19,90/mês",
     },
     {
       title: "Plano Anual",

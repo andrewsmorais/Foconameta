@@ -137,7 +137,7 @@ serve(async (req) => {
         .from("plans")
         .insert({
           name: normalizedPlanType,
-          price: isAnnual ? 97.90 : 12.90,
+          price: isAnnual ? 97.90 : 19.90,
           features: {},
         })
         .select("id")

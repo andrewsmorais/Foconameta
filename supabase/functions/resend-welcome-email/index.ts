@@ -191,7 +191,11 @@ serve(async (req) => {
       throw new Error("Failed to update password");
     }
 
-    // Send welcome email
+    // Save provisional password to profile
+    await supabase
+      .from("profiles")
+      .update({ provisional_password: tempPassword })
+      .eq("id", user.id);
     await sendWelcomeEmail(email, name, tempPassword);
 
     return new Response(

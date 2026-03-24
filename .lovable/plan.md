@@ -1,33 +1,25 @@
 
 
-## Unificar e-mail de boas-vindas com credenciais
+## Cadastrar manualmente o usuario Roberto Da Silva Lima
 
-### Problema atual
+### Situacao
 
-Existem dois e-mails diferentes sendo enviados:
-1. **`process-sale-webhook`** — e-mail genérico com layout simples e URL errada (`appdriver-track.lovable.app`)
-2. **`resend-welcome-email`** — e-mail profissional com mensagem do Andrews, YouTube, WhatsApp, etc.
-
-O usuário quer que exista **apenas um e-mail**, usando o template profissional do `resend-welcome-email` com senha de 6 digitos.
+O pagamento foi confirmado na Cakto (24/03/2026, R$ 10,41 via Pix), mas o usuario nunca completou o formulario de cadastro e o link expirou. Precisamos criar a conta dele manualmente.
 
 ### O que sera feito
 
-**Arquivo: `supabase/functions/process-sale-webhook/index.ts`**
+Chamar a Edge Function `process-sale-webhook` via curl com os dados do usuario para:
 
-1. Substituir todo o HTML do e-mail (linhas 34-98) pelo template profissional do `resend-welcome-email`, que inclui:
-   - Header verde com "🚗 Bateu A Meta"
-   - Mensagem pessoal do Andrews Morais
-   - Caixa de credenciais (email + senha de 6 digitos)
-   - Link para video manual no YouTube
-   - Botao "ENTRAR NO APLICATIVO AGORA" apontando para `bateuameta.com/auth`
-   - Links uteis (site, WhatsApp, Instagram)
-   - Assinatura "Tamo junto no trecho! 🚗"
+1. Criar o usuario no Supabase Auth com senha de 6 digitos
+2. Criar o perfil com nome "Roberto Da Silva Lima"
+3. Atribuir o plano mensal e role premium
+4. Criar a assinatura ativa
+5. Enviar o e-mail de boas-vindas com as credenciais automaticamente via Brevo
 
-2. Atualizar o assunto do e-mail para: `"Bem-vindo ao Bateu a Meta, [nome]! 🎉 Seus dados de acesso estão aqui"`
+**Dados:**
+- Email: robertosilvalima40@gmail.com
+- Nome: Roberto Da Silva Lima
+- Plano: mensal (ID: 49a734d8-af86-4a0b-accf-755d947cc1d8)
 
-**Arquivo: `supabase/functions/resend-welcome-email/index.ts`**
-
-3. Alterar a geração de senha de `crypto.randomUUID().slice(0, 12)` para senha numérica de 6 digitos (mesmo padrão do `process-sale-webhook`), e salvar no campo `provisional_password` do perfil
-
-Ambas as Edge Functions serao reimplantadas apos as alterações.
+Apos a execucao, o usuario recebera o e-mail com login e senha para acessar o app.
 

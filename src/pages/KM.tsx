@@ -246,7 +246,7 @@ const KM = () => {
               Histórico de Turnos {filtroData ? `(${format(filtroData, "dd/MM/yyyy", { locale: ptBR })})` : ""}
             </h2>
             {turnos.length === 1 && (
-              <span className="text-sm text-muted-foreground">Horário: {turnos[0].hora_inicio} - {turnos[0].hora_fim}</span>
+              <span className="text-xl font-bold text-[#15a249]">Horário: {turnos[0].hora_inicio} - {turnos[0].hora_fim}</span>
             )}
           </div>
           

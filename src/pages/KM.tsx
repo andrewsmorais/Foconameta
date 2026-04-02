@@ -293,9 +293,7 @@ const KM = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Métricas do Turno */}
                   <div>
-                    <h4 className="text-sm font-bold text-foreground mb-3">Métricas do Turno</h4>
                     
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       {/* Fonte, Quantidade, Veículo - primeira linha */}

@@ -1,25 +1,19 @@
 
 
-## Cadastrar manualmente o usuario Roberto Da Silva Lima
-
-### Situacao
-
-O pagamento foi confirmado na Cakto (24/03/2026, R$ 10,41 via Pix), mas o usuario nunca completou o formulario de cadastro e o link expirou. Precisamos criar a conta dele manualmente.
+## Adicionar Shopee/Mercado Livre e trocar label para "Quantidade de Entregas"
 
 ### O que sera feito
 
-Chamar a Edge Function `process-sale-webhook` via curl com os dados do usuario para:
+**Arquivos: `AddTurnoDialog.tsx` e `EditTurnoDialog.tsx`**
 
-1. Criar o usuario no Supabase Auth com senha de 6 digitos
-2. Criar o perfil com nome "Roberto Da Silva Lima"
-3. Atribuir o plano mensal e role premium
-4. Criar a assinatura ativa
-5. Enviar o e-mail de boas-vindas com as credenciais automaticamente via Brevo
+1. Adicionar "Shopee" e "Mercado Livre" na lista `fontesGanho` (antes de "Outros")
 
-**Dados:**
-- Email: robertosilvalima40@gmail.com
-- Nome: Roberto Da Silva Lima
-- Plano: mensal (ID: 49a734d8-af86-4a0b-accf-755d947cc1d8)
+2. Trocar dinamicamente o label "Quantidade de Corridas" para "Quantidade de Entregas" quando a fonte selecionada for: `ifood`, `keeta`, `shopee` ou `mercado_livre`
 
-Apos a execucao, o usuario recebera o e-mail com login e senha para acessar o app.
+### Detalhes tecnicos
+
+- Novas entradas: `{ value: "shopee", label: "Shopee" }` e `{ value: "mercado_livre", label: "Mercado Livre" }`
+- Criar constante `fontesEntrega = ["ifood", "keeta", "shopee", "mercado_livre"]`
+- No label do campo quantidade, usar: `fontesEntrega.includes(fonte.fonte_ganho) ? "Quantidade de Entregas" : "Quantidade de Corridas"`
+- Aplicar a mesma logica nos dois dialogs (Add e Edit)
 

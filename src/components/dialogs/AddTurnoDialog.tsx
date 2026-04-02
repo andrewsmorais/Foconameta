@@ -464,7 +464,7 @@ export const AddTurnoDialog = ({ onSuccess }: AddTurnoDialogProps) => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor={`quantidade_corridas_${index}`}>Quantidade de Corridas</Label>
+                    <Label htmlFor={`quantidade_corridas_${index}`}>{fontesEntrega.includes(fonte.fonte_ganho) ? "Quantidade de Entregas" : "Quantidade de Corridas"}</Label>
                     <Input
                       id={`quantidade_corridas_${index}`}
                       type="number"

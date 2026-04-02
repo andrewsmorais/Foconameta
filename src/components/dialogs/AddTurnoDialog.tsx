@@ -29,8 +29,12 @@ const fontesGanho = [
   { value: "indriver", label: "Indriver" },
   { value: "lalamove", label: "Lalamove" },
   { value: "blabacar", label: "Blabacar" },
+  { value: "shopee", label: "Shopee" },
+  { value: "mercado_livre", label: "Mercado Livre" },
   { value: "outros", label: "Outros" },
 ];
+
+const fontesEntrega = ["ifood", "keeta", "shopee", "mercado_livre"];
 
 const tiposCombustivel = [
   { value: "gasolina", label: "Gasolina" },

@@ -22,7 +22,7 @@ const menuItems = [{
   path: "/"
 }, {
   icon: Route,
-  label: "Menu KM",
+  label: "Turnos",
   path: "/km"
 }, {
   icon: DollarSign,

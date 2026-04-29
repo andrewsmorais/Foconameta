@@ -672,6 +672,35 @@ serve(async (req) => {
       const user = existingUsers?.users?.find((u) => u.email === email);
 
       if (user) {
+        // Guard: do not cancel if a recent renewal already extended access into the future.
+        // Cakto sometimes delivers events out of order (canceled arriving after renewed).
+        const { data: currentSub } = await supabaseAdmin
+          .from("subscriptions")
+          .select("expires_at, started_at")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (currentSub?.expires_at) {
+          const expiresAt = new Date(currentSub.expires_at);
+          const startedAt = currentSub.started_at ? new Date(currentSub.started_at) : null;
+          const now = new Date();
+          const oneDayMs = 24 * 60 * 60 * 1000;
+          const recentlyRenewed = startedAt ? (now.getTime() - startedAt.getTime()) < oneDayMs : false;
+
+          if (expiresAt > now && recentlyRenewed) {
+            console.warn(
+              "[Cakto Webhook] IGNORING out-of-order cancel for",
+              email,
+              "— recent renewal detected (started_at:", currentSub.started_at,
+              ", expires_at:", currentSub.expires_at, ")"
+            );
+            return new Response(JSON.stringify({ success: true, ignored: "out_of_order_cancel" }), {
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200,
+            });
+          }
+        }
+
         await supabaseAdmin
           .from("subscriptions")
           .update({ status: "cancelled" })

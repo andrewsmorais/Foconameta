@@ -183,6 +183,37 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validações de campos obrigatórios para evitar erros de UUID vazio
+    if (!formData.veiculo_id) {
+      toast({
+        variant: "destructive",
+        title: "Veículo obrigatório",
+        description: "Selecione um veículo antes de salvar o turno.",
+      });
+      return;
+    }
+
+    // Validar fontes de ganho
+    for (const fonte of fontesGanhoList) {
+      if (!fonte.fonte_ganho) {
+        toast({
+          variant: "destructive",
+          title: "Fonte de ganho obrigatória",
+          description: "Selecione uma fonte de ganho em todas as entradas.",
+        });
+        return;
+      }
+      if (fonte.fonte_ganho === "outros" && !fonte.fonte_ganho_outros.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Nome da fonte obrigatório",
+          description: "Informe o nome da fonte de ganho personalizada.",
+        });
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {

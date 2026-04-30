@@ -123,6 +123,16 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.veiculo_id) {
+      toast({
+        variant: "destructive",
+        title: "Veículo obrigatório",
+        description: "Selecione um veículo antes de salvar a manutenção.",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {

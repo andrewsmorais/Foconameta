@@ -814,11 +814,9 @@ export const UsersManagement = () => {
                   <SelectValue placeholder="Selecione um plano" />
                 </SelectTrigger>
                 <SelectContent>
-                  {plans?.map((plan) => (
-                    <SelectItem key={plan.id} value={plan.id}>
-                      {plan.name} - R$ {plan.price.toFixed(2).replace('.', ',')}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="7ce2d64b-e97a-429e-9448-3af009895d70">Free (Sem cobrança)</SelectItem>
+                  <SelectItem value="49a734d8-af86-4a0b-accf-755d947cc1d8">Mensal R$ 19,90</SelectItem>
+                  <SelectItem value="08033a83-5a65-4248-ae25-89e8bc35fe04">Anual R$ 97,90</SelectItem>
                 </SelectContent>
               </Select>
             </div>

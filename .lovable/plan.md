@@ -1,67 +1,44 @@
-## Diagnóstico — Luis Cok (Luiz Carlos)
+## Problema
 
-Encontrei a conta como **Luis Cok** (`f8d9723c-1955-494e-aebe-418e564f802d`) no banco. O cliente tem razão:
+No painel **Super Admin → Gerenciamento de Usuários**, ao clicar em **Editar** em qualquer usuário (exceto `dandtecno@gmail.com`, que é Super Admin sem assinatura), o dropdown "Plano" do diálogo mostra opções vindas da tabela `plans`, que contém **6 planos** (Free, mensal R$12,90, Basic, Premium, anual, Enterprise). O usuário espera ver apenas as 3 opções comerciais reais: **Free / Mensal R$ 19,90 / Anual R$ 97,90** — exatamente como já é exibido no diálogo de **Adicionar Usuário**.
 
-| Campo | Valor atual |
-|---|---|
-| Perfil | active |
-| Assinatura `status` | **cancelled** ❌ |
-| `started_at` | 20/04/2026 02:20 |
-| `expires_at` | **20/04/2027 02:20** (renovação anual paga) |
-| Role | (nenhuma) |
+Além disso, há uma inconsistência grave nos dados:
+- A tabela `plans` tem o plano "mensal" com `price = 12,90`, enquanto a aplicação inteira (Landing, Planos, Cakto webhook, complete-registration, e até a coluna exportada do CSV) usa **R$ 19,90**.
+- Existem 5 assinaturas ativas/canceladas apontando para esse `plan_id` "mensal" com preço errado (12,90).
+- Isso faz com que o `planPrice` retornado por `get-admin-users` seja 12,90, e a badge na tabela ainda assim mostra "Mensal" porque a lógica usa `planPrice >= 90 ? Anual : planPrice > 0 ? Mensal : Free`. Mas qualquer outro lugar que dependa do preço do plano (MRR, relatórios, etc.) fica subestimado.
 
-Os campos `started_at` e `expires_at` foram atualizados pela renovação, ou seja, **o pagamento entrou e a Cakto enviou o evento `subscription_renewed`**. Porém o `status` continua `cancelled`.
+## Causa raiz
 
-### Causa raiz
+1. **`src/components/superadmin/UsersManagement.tsx`** (linhas 808–823): o `Select` do diálogo de edição usa `plans?.map(...)` em vez da lista fixa de 3 planos usada no diálogo de adição (linhas 530–534).
+2. **Tabela `plans`**: o registro "mensal" tem `price = 12.90`, divergente do valor cobrado em produção (R$ 19,90).
 
-A Cakto enviou os webhooks fora de ordem (ou o evento de cancelamento chegou DEPOIS do de renovação):
+## Plano de correção
 
-1. `subscription_renewed` → atualizou datas e marcou `status=active` ✅
-2. `subscription_canceled` chegou em seguida → forçou `status=cancelled` ❌
+### 1. Padronizar o Select do diálogo de Edição (frontend)
+Substituir o `plans?.map` pelas mesmas 3 opções fixas usadas em "Adicionar Usuário" (Free, Mensal R$ 19,90, Anual R$ 97,90), garantindo consistência com a UI de criação e com o restante do app.
 
-O handler `subscription_canceled` no `cakto-webhook` (linha 668-687) **não verifica se já existe uma renovação válida** (expires_at no futuro). Ele cancela cegamente, sobrescrevendo a renovação legítima.
-
-Por causa disso, o `check-subscription` retorna `hasActiveSubscription=false` (exige `status='active'`), e o cliente perde o acesso mesmo tendo pago.
-
----
-
-## O que vou fazer
-
-### 1. Corrigir imediatamente o Luis Cok (manual, via migration)
-
+### 2. Corrigir o preço do plano "mensal" no banco
+Atualizar via insert tool:
 ```sql
-UPDATE subscriptions
-SET status = 'active'
-WHERE user_id = 'f8d9723c-1955-494e-aebe-418e564f802d';
-
-UPDATE profiles
-SET status = 'active', updated_at = now()
-WHERE id = 'f8d9723c-1955-494e-aebe-418e564f802d';
+UPDATE public.plans SET price = 19.90, updated_at = now()
+WHERE id = '49a734d8-af86-4a0b-accf-755d947cc1d8';
 ```
+Isso alinha o valor com Landing, Planos, Cakto e cálculos de MRR.
 
-Isso restaura o acesso dele instantaneamente (assinatura válida até 20/04/2027).
+### 3. (Opcional, recomendado) Limpar planos não utilizados
+Os planos `Basic (29,90)`, `Premium (49,90)` e `Enterprise (99,90)` estão na tabela mas não são oferecidos em lugar nenhum. Não removerei automaticamente para não quebrar histórico, mas posso renomeá-los como "legacy" se você quiser. **Pergunta para depois da aprovação:** deseja remover ou manter?
 
-### 2. Proteger o webhook contra cancelamentos fora de ordem
+### 4. Verificação pós-fix
+- Abrir o painel Super Admin → Editar um usuário pago → confirmar que o dropdown mostra apenas Free/Mensal/Anual e que o plano atual do usuário aparece pré-selecionado.
+- Conferir os cards de MRR em StatsCards (já usam constante 19,90 hardcoded, então não dependem da tabela — ok).
 
-Em `supabase/functions/cakto-webhook/index.ts` (handler `subscription_canceled`, linhas 668-687):
+## Arquivos afetados
 
-- Antes de marcar `cancelled`, ler a assinatura atual
-- Se `expires_at > now()` E foi atualizada nas últimas 24h (sinal de renovação recente), **ignorar o cancelamento** e logar aviso
-- Caso contrário, manter o cancelamento normal
+- `src/components/superadmin/UsersManagement.tsx` — trocar Select de Edit Dialog
+- Migração SQL (via insert tool) — atualizar preço do plano mensal
 
-Isso evita que esse bug se repita com outros clientes em renovações futuras.
+## Resumo
 
-### 3. Reenviar e-mail de confirmação de renovação para o Luis Cok
-
-Para confirmar ao cliente que está tudo certo, disparar manualmente o e-mail "Sua assinatura foi renovada com sucesso" via a função existente `sendRenewalEmail` (chamando uma vez através de um script pontual ou via `resend-welcome-email` adaptado). Posso fazer isso após a correção, se você quiser.
-
----
-
-## Detalhes técnicos
-
-- **Arquivos alterados**: `supabase/functions/cakto-webhook/index.ts`
-- **Migrations**: 1 update em `subscriptions` + 1 em `profiles` (idempotente, escopo único usuário)
-- **Sem mudanças de schema**, sem novas RLS, sem novos secrets
-- **Risco**: muito baixo — a correção do webhook só altera comportamento quando há conflito renew/cancel
-
-Confirma se posso aplicar?
+Bug exibido: dropdown do Editar mostrando planos legados/errados.
+Bug real adicional descoberto: preço do plano mensal no banco está R$ 12,90 (deveria ser R$ 19,90).
+Ambos serão corrigidos.

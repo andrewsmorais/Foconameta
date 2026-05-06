@@ -142,6 +142,18 @@ serve(async (req) => {
         daysRemaining = 0;
       }
 
+      // Current effective plan: a cancelled/expired/refunded subscription means the user
+      // is now on the Free plan, even though we keep the historical record.
+      const isCurrentlyPaid =
+        !!subscription &&
+        subscription.status === "active" &&
+        planPrice > 0 &&
+        (!expiresAt || expiresAt > now);
+
+      const currentPlanName = isCurrentlyPaid ? (plan?.name || "Free") : "Free";
+      const currentPlanPrice = isCurrentlyPaid ? planPrice : 0;
+      const currentPlanId = isCurrentlyPaid ? subscription?.plan_id : undefined;
+
       return {
         id: profile.id,
         nome_completo: profile.nome_completo,
@@ -152,9 +164,9 @@ serve(async (req) => {
         admin_notes: profile.admin_notes,
         provisional_password: profile.provisional_password,
         role: roles?.find((r) => r.user_id === profile.id)?.role || "free",
-        plan: plan?.name || "Free",
-        planPrice,
-        plan_id: subscription?.plan_id,
+        plan: currentPlanName,
+        planPrice: currentPlanPrice,
+        plan_id: currentPlanId,
         subscription_id: subscription?.id,
         renewal_status,
         expires_at: subscription?.expires_at,

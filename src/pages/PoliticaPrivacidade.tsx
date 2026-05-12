@@ -68,7 +68,7 @@ const PoliticaPrivacidade = () => {
             </ul>
             <p className="mt-2">
               Para exercer esses direitos, entre em contato pelo e-mail: <strong>contato@bateuameta.com.br</strong> 
-              ou pelo WhatsApp: <strong>(12) 98179-6135</strong>.
+              ou pelo WhatsApp: <strong>(12) 98138-7508</strong>.
             </p>
           </section>
 
@@ -116,7 +116,7 @@ const PoliticaPrivacidade = () => {
             </p>
             <ul className="list-none mt-2 space-y-1">
               <li>📧 E-mail: <strong>contato@bateuameta.com.br</strong></li>
-              <li>📱 WhatsApp: <strong>(12) 98179-6135</strong></li>
+              <li>📱 WhatsApp: <strong>(12) 98138-7508</strong></li>
             </ul>
           </section>
         </div>

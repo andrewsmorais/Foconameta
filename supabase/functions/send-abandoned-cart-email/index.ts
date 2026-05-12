@@ -157,8 +157,8 @@ async function sendAbandonedCartEmail(
               <strong>Precisa de ajuda?</strong>
             </p>
             <p style="font-size: 14px; color: #666; margin: 0;">
-              <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none; font-weight: bold;">
-                📱 WhatsApp: (12) 98179-6135
+              <a href="https://wa.me/5512981387508" style="color: #25D366; text-decoration: none; font-weight: bold;">
+                📱 WhatsApp: (12) 98138-7508
               </a>
             </p>
             <p style="font-size: 14px; color: #666; margin: 8px 0 0 0;">

@@ -360,12 +360,12 @@ const Configuracoes = () => {
                 <Phone className="h-5 w-5" />
                 <span className="font-semibold">Celular (WhatsApp):</span>
                 <a 
-                  href="https://wa.me/5512981796135" 
+                  href="https://wa.me/5512981387508" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  12 98179-6135
+                  12 98138-7508
                 </a>
               </div>
             </AlertDialogDescription>

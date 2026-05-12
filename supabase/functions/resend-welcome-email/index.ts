@@ -81,7 +81,7 @@ async function sendWelcomeEmail(email: string, name: string, password: string) {
             • Nosso Site: <a href="https://bateuameta.com" style="color: #15a249; text-decoration: none;">bateuameta.com</a>
           </p>
           <p style="font-size: 15px; margin: 8px 0; color: #333;">
-            • Dúvidas ou Suporte: <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none;">Chamar no WhatsApp</a>
+            • Dúvidas ou Suporte: <a href="https://wa.me/5512981387508" style="color: #25D366; text-decoration: none;">Chamar no WhatsApp</a>
           </p>
           <p style="font-size: 15px; margin: 8px 0; color: #333;">
             • Instagram: <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none;">@bateu_meta</a>

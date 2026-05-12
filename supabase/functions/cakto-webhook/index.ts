@@ -210,7 +210,7 @@ async function sendWelcomeEmail(email: string, nome: string, registrationLink: s
         <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 25px 0;">
           <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">📌 LINKS ÚTEIS:</h3>
           <p style="font-size: 15px; margin: 8px 0; color: #333;">• Nosso Site: <a href="https://bateuameta.com" style="color: #15a249; text-decoration: none;">bateuameta.com</a></p>
-          <p style="font-size: 15px; margin: 8px 0; color: #333;">• Dúvidas ou Suporte: <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none;">Chamar no WhatsApp</a></p>
+          <p style="font-size: 15px; margin: 8px 0; color: #333;">• Dúvidas ou Suporte: <a href="https://wa.me/5512981387508" style="color: #25D366; text-decoration: none;">Chamar no WhatsApp</a></p>
           <p style="font-size: 15px; margin: 8px 0; color: #333;">• Instagram: <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none;">@bateu_meta</a></p>
         </div>
 
@@ -302,7 +302,7 @@ async function sendRenewalEmail(email: string, nome: string, expiresAt: string, 
       <div style="border-top: 2px solid #eee; padding-top: 25px; text-align: center;">
         <p style="color: #333; font-size: 16px; margin-bottom: 15px; font-weight: bold;">Dúvidas?</p>
         <p style="color: #666; font-size: 15px; margin: 8px 0;">
-          📱 WhatsApp: <a href="https://wa.me/5512981796135" style="color: #25D366; text-decoration: none;">(12) 98179-6135</a>
+          📱 WhatsApp: <a href="https://wa.me/5512981387508" style="color: #25D366; text-decoration: none;">(12) 98138-7508</a>
         </p>
         <p style="color: #666; font-size: 15px; margin: 8px 0;">
           📸 Instagram: <a href="https://www.instagram.com/bateu_meta/" style="color: #E1306C; text-decoration: none;">@bateu_meta</a>

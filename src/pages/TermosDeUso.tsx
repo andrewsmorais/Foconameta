@@ -63,7 +63,7 @@ const TermosDeUso = () => {
               <strong> reembolso total em até 7 (sete) dias</strong> a contar da data da compra,
               conforme garantido pelo <strong>Código de Defesa do Consumidor (Art. 49)</strong>.
               Para solicitar o reembolso, entre em contato pelo WhatsApp
-              <strong> (12) 98179-6135</strong> ou pelo e-mail
+              <strong> (12) 98138-7508</strong> ou pelo e-mail
               <strong> contato@bateuameta.com.br</strong>. Após o período de 7 dias, não será
               possível solicitar reembolso, exceto em casos previstos por lei.
             </p>
@@ -122,7 +122,7 @@ const TermosDeUso = () => {
             </p>
             <ul className="list-none mt-2 space-y-1">
               <li>📧 E-mail: <strong>contato@bateuameta.com.br</strong></li>
-              <li>📱 WhatsApp: <strong>(12) 98179-6135</strong></li>
+              <li>📱 WhatsApp: <strong>(12) 98138-7508</strong></li>
             </ul>
           </section>
         </div>

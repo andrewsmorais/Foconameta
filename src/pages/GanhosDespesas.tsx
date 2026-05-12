@@ -4,11 +4,14 @@ import { AddGanhoDespesaDialog } from "@/components/dialogs/AddGanhoDespesaDialo
 import { EditGanhoDespesaDialog } from "@/components/dialogs/EditGanhoDespesaDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format, isAfter, isBefore, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { TrendingUp, TrendingDown, Trash2, Repeat, Calendar, LayoutDashboard } from "lucide-react";
+import { TrendingUp, TrendingDown, Trash2, Repeat, Calendar as CalendarLucide, LayoutDashboard, CalendarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,6 +41,7 @@ interface Transacao {
 const GanhosDespesas = () => {
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtroData, setFiltroData] = useState<Date | undefined>(new Date());
   const { toast } = useToast();
 
   const loadTransacoes = async () => {
@@ -52,19 +56,7 @@ const GanhosDespesas = () => {
         .order("data", { ascending: false });
 
       if (error) throw error;
-      
-      // Filtra transações que ainda estão válidas (não passaram da data_fim)
-      const today = new Date();
-      const filteredData = (data || []).filter((t: Transacao) => {
-        // Recorrentes sempre aparecem
-        if (t.recorrente) return true;
-        // Se não tem data_fim, sempre aparece
-        if (!t.data_fim) return true;
-        // Se tem data_fim, verifica se ainda está válida
-        return !isBefore(parseISO(t.data_fim), today);
-      });
-      
-      setTransacoes(filteredData);
+      setTransacoes(data || []);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -122,31 +114,98 @@ const GanhosDespesas = () => {
     return <div className="text-center py-8">Carregando...</div>;
   }
 
+  // Aplica filtro por data selecionada
+  const filtroStr = filtroData ? format(filtroData, "yyyy-MM-dd") : null;
+  const transacoesFiltradas = filtroStr
+    ? transacoes.filter((t) => {
+        // Intervalo (data_inicio / data_fim) tem prioridade quando definido e não recorrente
+        if (!t.recorrente && t.data_inicio && t.data_fim) {
+          return filtroStr >= t.data_inicio && filtroStr <= t.data_fim;
+        }
+        if (t.recorrente) {
+          return t.data <= filtroStr;
+        }
+        return t.data === filtroStr;
+      })
+    : transacoes;
+
+  const totalGanhos = transacoesFiltradas
+    .filter((t) => t.tipo === "ganho")
+    .reduce((s, t) => s + Number(t.valor), 0);
+  const totalDespesas = transacoesFiltradas
+    .filter((t) => t.tipo === "despesa")
+    .reduce((s, t) => s + Number(t.valor), 0);
+  const saldo = totalGanhos - totalDespesas;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-3xl font-bold text-center">Ganhos & Despesas</h1>
-        <p className="text-sm text-muted-foreground text-center">
-          Exibindo os 4 Relatórios de Ganhos & Despesas mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
-        </p>
         <AddGanhoDespesaDialog onSuccess={loadTransacoes} />
       </div>
 
-      {transacoes.length === 0 ? (
+      {/* Filtro por Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Filtrar por Data</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap items-center gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full sm:w-[280px] justify-start text-left font-normal",
+                    !filtroData && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {filtroData ? format(filtroData, "PPP", { locale: ptBR }) : "Selecione uma data"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={filtroData}
+                  onSelect={setFiltroData}
+                  initialFocus
+                  locale={ptBR}
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          {filtroData && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Exibindo transações de {format(filtroData, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {transacoesFiltradas.length === 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Transações Avulsas</CardTitle>
+            <CardTitle>Histórico de Ganhos e Despesas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Nenhuma transação registrada ainda. Clique em "Nova Transação" para começar.
+              {filtroData
+                ? `Nenhuma transação encontrada para ${format(filtroData, "dd/MM/yyyy", { locale: ptBR })}.`
+                : 'Nenhuma transação registrada ainda. Clique em "Nova Transação" para começar.'}
             </p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <h2 className="text-xl font-bold text-foreground">
+              Histórico de Ganhos e Despesas {filtroData ? `(${format(filtroData, "dd/MM/yyyy", { locale: ptBR })})` : ""}
+            </h2>
+          </div>
           <div className="grid gap-4">
-            {transacoes.slice(0, 4).map((transacao) => (
+            {transacoesFiltradas.map((transacao) => (
             <Card key={transacao.id}>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
@@ -169,7 +228,7 @@ const GanhosDespesas = () => {
                       )}
                       {transacao.data_fim && !transacao.recorrente && (
                         <Badge variant="outline" className="gap-1">
-                          <Calendar className="w-3 h-3" />
+                          <CalendarLucide className="w-3 h-3" />
                           Até {format(parseISO(transacao.data_fim), "dd/MM/yyyy")}
                         </Badge>
                       )}
@@ -265,6 +324,40 @@ const GanhosDespesas = () => {
               </CardContent>
             </Card>
           ))}
+          </div>
+
+          {/* Cards de Resumo: Ganhos, Despesas, Saldo */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+            <Card className="bg-blue-500/10 border-blue-500/30">
+              <CardContent className="py-4">
+                <div className="text-center">
+                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Ganhos</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    R$ {totalGanhos.toFixed(2)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-red-500/10 border-red-500/30">
+              <CardContent className="py-4">
+                <div className="text-center">
+                  <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Despesas</p>
+                  <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                    R$ {totalDespesas.toFixed(2)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-green-500/10 border-green-500/30">
+              <CardContent className="py-4">
+                <div className="text-center">
+                  <p className="text-xs font-bold text-green-600 dark:text-green-400 mb-1">Saldo</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    R$ {saldo.toFixed(2)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}

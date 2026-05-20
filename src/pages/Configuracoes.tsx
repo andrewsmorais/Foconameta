@@ -205,32 +205,6 @@ const Configuracoes = () => {
         </CardContent>
       </Card>
 
-      {/* Veículos */}
-      <Card>
-        <CardContent className="pt-6">
-          <Link to="/veiculos">
-            <Button variant="outline" className="w-full justify-start text-base">
-              <Car className="mr-2 h-5 w-5" />
-              Adicionar Veículo
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
-
-      {/* Instalar App */}
-      <Card>
-        <CardContent className="pt-6">
-          <Button 
-            variant="outline" 
-            className="w-full justify-start text-base"
-            onClick={handleInstallClick}
-          >
-            <Download className="mr-2 h-5 w-5" />
-            Instalar App
-          </Button>
-        </CardContent>
-      </Card>
-
       {/* Como Usar */}
       <Card>
         <CardContent className="pt-6">

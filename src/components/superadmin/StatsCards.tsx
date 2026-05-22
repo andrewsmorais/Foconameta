@@ -14,6 +14,7 @@ import {
   Percent
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 interface StatsCardsProps {
   startDate: Date;
@@ -21,6 +22,7 @@ interface StatsCardsProps {
 }
 
 export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
+  const { t } = useTranslation();
   // Fetch user stats from Supabase
   const { data: userStats, isLoading } = useQuery({
     queryKey: ["admin-user-stats", startDate.toISOString(), endDate.toISOString()],
@@ -132,89 +134,89 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
   // Block 1: Users (Retention Metrics)
   const userCards = [
     {
-      title: "Total de Usuários",
+      title: t("stats.totalUsers"),
       value: userStats?.totalUsers || 0,
       icon: Users,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Cadastrados na plataforma",
+      description: t("stats.totalUsersDesc"),
     },
     {
-      title: "Usuários Ativos",
+      title: t("stats.activeUsers"),
       value: userStats?.activeUsers || 0,
       icon: Activity,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Login últimos 30 dias",
+      description: t("stats.activeUsersDesc"),
     },
     {
-      title: "Usuários Inativos",
+      title: t("stats.inactiveUsers"),
       value: userStats?.inactiveUsers || 0,
       icon: UserMinus,
       color: "text-[hsl(45,93%,47%)]",
       bgColor: "from-[hsl(45,93%,47%)]/10",
-      description: "Sem login há 30+ dias",
+      description: t("stats.inactiveUsersDesc"),
     },
     {
-      title: "Planos Free",
+      title: t("stats.freePlans"),
       value: userStats?.freeUsers || 0,
       icon: Gift,
       color: "text-muted-foreground",
       bgColor: "from-muted/30",
-      description: "Contas gratuitas",
+      description: t("stats.freePlansDesc"),
     },
     {
-      title: "Taxa de Conversão",
+      title: t("stats.conversionRate"),
       value: `${userStats?.conversionRate || 0}%`,
       icon: TrendingUp,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Pagantes / Total",
+      description: t("stats.conversionRateDesc"),
     },
   ];
 
   // Block 2: Subscriptions and Management
   const subscriptionCards = [
     {
-      title: "Plano Mensal",
+      title: t("stats.monthly"),
       value: userStats?.monthlyPlanCount || 0,
       icon: Calendar,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Ativos - R$ 19,90/mês",
+      description: t("stats.monthlyDesc"),
     },
     {
-      title: "Plano Anual",
+      title: t("stats.annual"),
       value: userStats?.annualPlanCount || 0,
       icon: UserCheck,
       color: "text-[hsl(142,76%,36%)]",
       bgColor: "from-[hsl(142,76%,36%)]/10",
-      description: "Ativos - R$ 97,90/ano",
+      description: t("stats.annualDesc"),
     },
     {
-      title: "MRR",
+      title: t("stats.mrr"),
       value: `R$ ${(userStats?.mrr || 0).toFixed(2).replace('.', ',')}`,
       icon: Target,
       color: "text-[hsl(217,91%,60%)]",
       bgColor: "from-[hsl(217,91%,60%)]/10",
-      description: "Receita Recorrente Mensal",
+      description: t("stats.mrrDesc"),
       highlight: true,
     },
     {
-      title: "Churn Rate",
+      title: t("stats.churnRate"),
       value: `${userStats?.churnRate || 0}%`,
       icon: Percent,
       color: "text-destructive",
       bgColor: "from-destructive/10",
-      description: "Taxa de cancelamento",
+      description: t("stats.churnRateDesc"),
     },
     {
-      title: "Churn (Qtd)",
+      title: t("stats.churnQty"),
       value: userStats?.churnedUsers || 0,
       icon: UserX,
       color: "text-destructive",
       bgColor: "from-destructive/10",
-      description: "Não renovaram",
+      description: t("stats.churnQtyDesc"),
     },
   ];
 
@@ -255,8 +257,8 @@ export const StatsCards = ({ startDate, endDate }: StatsCardsProps) => {
 
   return (
     <div className="space-y-6">
-      {renderCardBlock("Usuários e Retenção", userCards)}
-      {renderCardBlock("Assinaturas e Gestão", subscriptionCards)}
+      {renderCardBlock(t("stats.blockUsers"), userCards)}
+      {renderCardBlock(t("stats.blockSubs"), subscriptionCards)}
     </div>
   );
 };

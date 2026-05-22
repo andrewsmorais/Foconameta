@@ -184,10 +184,7 @@ const KM = () => {
       <div className="flex flex-wrap justify-center gap-3 mb-6">
         <AddTurnoDialog onSuccess={loadTurnos} />
         <Link to="/veiculos">
-          <Button className="gap-2">
-            <Car className="w-4 h-4" />
-            Adicionar Veículo
-          </Button>
+          <AdicionarVeiculoButton />
         </Link>
       </div>
 

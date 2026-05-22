@@ -6,12 +6,13 @@ import { TrendingUp, TrendingDown, DollarSign, CalendarIcon } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, eachDayOfInterval, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
+import { useTranslation } from "react-i18next";
+import { getDateLocale, formatCurrency } from "@/lib/dateLocale";
 
 interface MetaProgress {
   tipo: string;
@@ -39,6 +40,8 @@ interface DashboardMetrics {
 }
 
 const Dashboard = () => {
+  const { t } = useTranslation();
+  const ptBR = getDateLocale();
   const hoje = new Date();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: hoje,
@@ -76,8 +79,8 @@ const Dashboard = () => {
       if (dateRange.from > dateRange.to) {
         toast({
           variant: "destructive",
-          title: "Erro nas Datas",
-          description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+          title: t("dashboard.errorDates"),
+          description: t("dashboard.errorDatesDesc"),
         });
         return;
       }
@@ -289,7 +292,7 @@ const Dashboard = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar dados",
+        title: t("common.error"),
         description: error.message,
       });
     } finally {
@@ -298,9 +301,9 @@ const Dashboard = () => {
   };
 
   const pieData = [
-    { name: "Ganhos", value: metrics.totalGanhos, color: "hsl(var(--primary))" },
-    { name: "Despesas", value: metrics.totalDespesas, color: "hsl(var(--destructive))" },
-    { name: "Lucro", value: metrics.lucroLiquido, color: "hsl(var(--success))" },
+    { name: t("dashboard.ganhos"),   value: metrics.totalGanhos,   color: "hsl(var(--primary))" },
+    { name: t("dashboard.despesas"), value: metrics.totalDespesas, color: "hsl(var(--destructive))" },
+    { name: t("dashboard.lucro"),    value: metrics.lucroLiquido,  color: "hsl(var(--success))" },
   ];
 
   useEffect(() => {
@@ -308,13 +311,13 @@ const Dashboard = () => {
   }, [dateRange]);
 
   if (loading) {
-    return <div className="text-center py-8">Carregando...</div>;
+    return <div className="text-center py-8">{t("common.loading")}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -335,7 +338,7 @@ const Dashboard = () => {
                   format(dateRange.from, "dd/MM/yyyy")
                 )
               ) : (
-                <span>Selecione o período</span>
+                <span>{t("common.selectPeriod")}</span>
               )}
             </Button>
           </PopoverTrigger>
@@ -348,8 +351,8 @@ const Dashboard = () => {
                 if (range?.from && range?.to && range.from > range.to) {
                   toast({
                     variant: "destructive",
-                    title: "Erro nas Datas",
-                    description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+                    title: t("dashboard.errorDates"),
+                    description: t("dashboard.errorDatesDesc"),
                   });
                   return;
                 }
@@ -367,36 +370,36 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Ganhos Brutos</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("dashboard.ganhosBrutos")}</CardTitle>
             <TrendingUp className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
-              R$ {metrics.totalGanhos.toFixed(2)}
+              {formatCurrency(metrics.totalGanhos)}
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Despesas</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("dashboard.despesas")}</CardTitle>
             <TrendingDown className="w-4 h-4 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
-              R$ {metrics.totalDespesas.toFixed(2)}
+              {formatCurrency(metrics.totalDespesas)}
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Lucro Líquido</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("dashboard.lucroLiquido")}</CardTitle>
             <DollarSign className="w-4 h-4 text-success" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-success">
-              R$ {metrics.lucroLiquido.toFixed(2)}
+              {formatCurrency(metrics.lucroLiquido)}
             </div>
           </CardContent>
         </Card>
@@ -406,7 +409,7 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Composição Financeira</CardTitle>
+            <CardTitle>{t("dashboard.composicaoFinanceira")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -441,7 +444,7 @@ const Dashboard = () => {
         {/* Metas */}
         <Card>
           <CardHeader>
-            <CardTitle>Metas</CardTitle>
+            <CardTitle>{t("dashboard.metas")}</CardTitle>
           </CardHeader>
           <CardContent>
             {(() => {
@@ -456,7 +459,7 @@ const Dashboard = () => {
               if (metasParaDashboard.length === 0) {
                 return (
                   <div className="flex items-center justify-center h-[300px] text-muted-foreground">
-                    Nenhuma meta configurada para exibição no Dashboard.
+                    {t("dashboard.semMetas")}
                   </div>
                 );
               }

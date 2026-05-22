@@ -235,5 +235,13 @@
     "errSaveDesc": "Could not create the goal",
     "limiteTitle": "Limit reached",
     "limiteDesc": "You can display at most 3 goals on the Dashboard. Uncheck an existing goal before adding another."
+  },
+  "editMeta": {
+    "title": "Edit Goal",
+    "okTitle": "Goal updated",
+    "okDesc": "Goal updated successfully",
+    "errSave": "Failed to update goal",
+    "errSaveDesc": "Could not update the goal",
+    "errAuth": "User not authenticated"
   }
 }

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Meta {
   id: string;
@@ -30,6 +31,7 @@ interface EditMetaDialogProps {
 }
 
 export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMetaDialogProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
@@ -56,7 +58,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error(t("editMeta.errAuth"));
 
       // Verificar limite de 3 metas no dashboard (apenas se está tentando ativar)
       if (mostrarNoDashboard && !meta.mostrar_no_dashboard) {
@@ -72,8 +74,8 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
 
         if (metasDashboard && metasDashboard.length >= 3) {
           toast({
-            title: "Limite atingido",
-            description: "Você só pode exibir no máximo 3 metas no Dashboard. Desmarque uma meta existente antes de adicionar outra.",
+            title: t("metaDialog.limiteTitle"),
+            description: t("metaDialog.limiteDesc"),
             variant: "destructive",
           });
           setLoading(false);
@@ -96,8 +98,8 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
       if (error) throw error;
 
       toast({
-        title: "Meta atualizada",
-        description: "Meta atualizada com sucesso",
+        title: t("editMeta.okTitle"),
+        description: t("editMeta.okDesc"),
       });
 
       onOpenChange(false);
@@ -105,8 +107,8 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
     } catch (error) {
       console.error("Erro ao atualizar meta:", error);
       toast({
-        title: "Erro ao atualizar meta",
-        description: "Não foi possível atualizar a meta",
+        title: t("editMeta.errSave"),
+        description: t("editMeta.errSaveDesc"),
         variant: "destructive",
       });
     } finally {
@@ -119,11 +121,11 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar Meta</DialogTitle>
+          <DialogTitle>{t("editMeta.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="nome">Nome da Meta</Label>
+            <Label htmlFor="nome">{t("metaDialog.nome")}</Label>
             <Input
               id="nome"
               value={nome}
@@ -133,7 +135,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor da Meta</Label>
+            <Label htmlFor="valor">{t("metaDialog.valor")}</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
               <Input
@@ -150,7 +152,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="dataInicio">Data Início</Label>
+              <Label htmlFor="dataInicio">{t("metaDialog.dataInicio")}</Label>
               <Input
                 id="dataInicio"
                 type="date"
@@ -162,7 +164,7 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dataFim">Data Fim</Label>
+              <Label htmlFor="dataFim">{t("metaDialog.dataFim")}</Label>
               <Input
                 id="dataFim"
                 type="date"
@@ -175,14 +177,14 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="metrica">Métrica de Rastreamento</Label>
+            <Label htmlFor="metrica">{t("metaDialog.metrica")}</Label>
             <Select value={metricaRastreamento} onValueChange={setMetricaRastreamento}>
               <SelectTrigger id="metrica">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="lucro_liquido">Lucro Líquido</SelectItem>
-                <SelectItem value="ganhos_brutos">Ganhos Brutos</SelectItem>
+                <SelectItem value="lucro_liquido">{t("metaDialog.lucroLiquido")}</SelectItem>
+                <SelectItem value="ganhos_brutos">{t("metaDialog.ganhosBrutos")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -196,16 +198,16 @@ export function EditMetaDialog({ meta, open, onOpenChange, onSuccess }: EditMeta
               className="w-4 h-4 rounded"
             />
             <Label htmlFor="dashboard" className="cursor-pointer">
-              Mostrar no Dashboard
+              {t("metaDialog.mostrarDashboard")}
             </Label>
           </div>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar"}
+              {loading ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

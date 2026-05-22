@@ -225,5 +225,13 @@
     "errSaveDesc": "Não foi possível criar a meta",
     "limiteTitle": "Limite atingido",
     "limiteDesc": "Você só pode exibir no máximo 3 metas no Dashboard. Desmarque uma meta existente antes de adicionar outra."
+  },
+  "editMeta": {
+    "title": "Editar Meta",
+    "okTitle": "Meta atualizada",
+    "okDesc": "Meta atualizada com sucesso",
+    "errSave": "Erro ao atualizar meta",
+    "errSaveDesc": "Não foi possível atualizar a meta",
+    "errAuth": "Usuário não autenticado"
   }
 }

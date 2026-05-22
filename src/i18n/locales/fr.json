@@ -235,5 +235,13 @@
     "errSaveDesc": "Impossible de créer l'objectif",
     "limiteTitle": "Limite atteinte",
     "limiteDesc": "Vous ne pouvez afficher au maximum que 3 objectifs sur le tableau de bord. Décochez un objectif existant avant d'en ajouter un autre."
+  },
+  "editMeta": {
+    "title": "Modifier l'objectif",
+    "okTitle": "Objectif mis à jour",
+    "okDesc": "Objectif mis à jour avec succès",
+    "errSave": "Échec de la mise à jour de l'objectif",
+    "errSaveDesc": "Impossible de mettre à jour l'objectif",
+    "errAuth": "Utilisateur non authentifié"
   }
 }

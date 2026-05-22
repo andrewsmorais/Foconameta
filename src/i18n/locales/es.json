@@ -235,5 +235,13 @@
     "errSaveDesc": "No se pudo crear la meta",
     "limiteTitle": "Límite alcanzado",
     "limiteDesc": "Solo puedes mostrar como máximo 3 metas en el panel. Desmarca una meta existente antes de añadir otra."
+  },
+  "editMeta": {
+    "title": "Editar meta",
+    "okTitle": "Meta actualizada",
+    "okDesc": "Meta actualizada con éxito",
+    "errSave": "Error al actualizar la meta",
+    "errSaveDesc": "No se pudo actualizar la meta",
+    "errAuth": "Usuario no autenticado"
   }
 }

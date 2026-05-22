@@ -74,8 +74,8 @@ const Metas = () => {
     } catch (error) {
       console.error("Erro ao carregar metas:", error);
       toast({
-        title: "Erro ao carregar metas",
-        description: "Não foi possível carregar as metas",
+        title: t("metas.errLoad"),
+        description: t("metas.errLoadDesc"),
         variant: "destructive",
       });
     } finally {
@@ -99,16 +99,16 @@ const Metas = () => {
       if (error) throw error;
 
       toast({
-        title: "Meta excluída",
-        description: "Meta excluída com sucesso",
+        title: t("metas.deletedTitle"),
+        description: t("metas.deletedDesc"),
       });
 
       loadMetas();
     } catch (error) {
       console.error("Erro ao excluir meta:", error);
       toast({
-        title: "Erro ao excluir meta",
-        description: "Não foi possível excluir a meta",
+        title: t("metas.errDelete"),
+        description: t("metas.errDeleteDesc"),
         variant: "destructive",
       });
     } finally {
@@ -129,16 +129,16 @@ const Metas = () => {
       if (error) throw error;
 
       toast({
-        title: "Todas as metas foram excluídas",
-        description: "Tela limpa e pronta para configuração",
+        title: t("metas.allDeletedTitle"),
+        description: t("metas.allDeletedDesc"),
       });
 
       loadMetas();
     } catch (error) {
       console.error("Erro ao excluir todas as metas:", error);
       toast({
-        title: "Erro ao excluir metas",
-        description: "Não foi possível excluir todas as metas",
+        title: t("metas.errAllDelete"),
+        description: t("metas.errAllDeleteDesc"),
         variant: "destructive",
       });
     }

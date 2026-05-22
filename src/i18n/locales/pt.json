@@ -54,12 +54,54 @@
   "km": {
     "title": "Turnos",
     "novoTurno": "Novo Turno",
-    "addVeiculo": "Adicionar Veículo"
+    "addVeiculo": "Adicionar Veículo",
+    "errLoad": "Erro ao carregar turnos",
+    "deletedTitle": "Turno excluído!",
+    "deletedDesc": "O turno foi removido com sucesso",
+    "errDelete": "Erro ao excluir turno"
   },
-  "ganhosDespesas": { "title": "Ganhos & Despesas" },
-  "manutencoes": { "title": "Manutenções" },
-  "metas": { "title": "Metas" },
-  "relatorios": { "title": "Relatórios" },
+  "ganhosDespesas": {
+    "title": "Ganhos & Despesas",
+    "errLoad": "Erro ao carregar transações",
+    "deletedTitle": "Transação excluída",
+    "deletedDesc": "A transação foi removida com sucesso",
+    "errDelete": "Erro ao excluir"
+  },
+  "manutencoes": {
+    "title": "Manutenções",
+    "errLoad": "Erro ao carregar manutenções",
+    "deletedTitle": "Manutenção excluída!",
+    "deletedDesc": "O registro foi removido com sucesso",
+    "errDelete": "Erro ao excluir manutenção"
+  },
+  "metas": {
+    "title": "Metas",
+    "errLoad": "Erro ao carregar metas",
+    "errLoadDesc": "Não foi possível carregar as metas",
+    "deletedTitle": "Meta excluída",
+    "deletedDesc": "Meta excluída com sucesso",
+    "errDelete": "Erro ao excluir meta",
+    "errDeleteDesc": "Não foi possível excluir a meta",
+    "allDeletedTitle": "Todas as metas foram excluídas",
+    "allDeletedDesc": "Tela limpa e pronta para configuração",
+    "errAllDelete": "Erro ao excluir metas",
+    "errAllDeleteDesc": "Não foi possível excluir todas as metas"
+  },
+  "relatorios": {
+    "title": "Relatórios",
+    "errLoadVeic": "Erro ao carregar veículos",
+    "atencao": "Atenção",
+    "errFiltros": "Por favor, preencha todos os filtros (Tipo, Veículo e Período) para gerar o relatório.",
+    "errDatas": "Erro nas Datas",
+    "errDatasDesc": "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+    "relGerado": "Relatório gerado",
+    "registrosEncontrados": "{{count}} registros encontrados",
+    "errGerar": "Erro ao gerar relatório",
+    "semDados": "Nenhum dado para exportar",
+    "semDadosDesc": "Aplique os filtros primeiro",
+    "exportado": "Relatório exportado",
+    "exportadoDesc": "O arquivo PDF foi baixado com sucesso"
+  },
   "veiculos": {
     "title": "Veículos",
     "novoVeiculo": "Novo Veículo",
@@ -290,5 +332,30 @@
     "errValor": "Valor inválido",
     "errValorDesc": "Por favor, insira um valor válido",
     "errAuth": "Usuário não autenticado"
+  },
+  "superAdmin": {
+    "title": "Super Admin Dashboard",
+    "subtitle": "Gerenciamento completo da plataforma Bateu a Meta",
+    "verifying": "Verificando permissões...",
+    "selectPeriod": "Selecionar período",
+    "today": "Hoje",
+    "week": "Esta Semana",
+    "month": "Este Mês",
+    "last3": "Últimos 3 Meses",
+    "last6": "Últimos 6 Meses",
+    "lastYear": "Último Ano",
+    "custom": "Personalizado",
+    "users": "Usuários",
+    "webhooks": "Webhooks",
+    "recentActivities": "Atividades Recentes",
+    "recentActivitiesDesc": "Cadastros e assinaturas em tempo real",
+    "noActivities": "Nenhuma atividade recente",
+    "badgeNewUser": "Cadastro",
+    "badgeNewSub": "Assinatura",
+    "actNewUser": "Novo usuário",
+    "actNewSub": "Usuário",
+    "actNewUserDesc": "se cadastrou na plataforma",
+    "actNewSubDesc": "fez uma nova assinatura",
+    "actSignedPlan": "assinou o plano {{name}}"
   }
 }

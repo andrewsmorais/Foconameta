@@ -56,19 +56,53 @@
   "km": {
     "title": "Turnos",
     "novoTurno": "Nuevo turno",
-    "addVeiculo": "Añadir vehículo"
+    "addVeiculo": "Añadir vehículo",
+    "errLoad": "Error al cargar los turnos",
+    "deletedTitle": "¡Turno eliminado!",
+    "deletedDesc": "El turno se eliminó con éxito",
+    "errDelete": "Error al eliminar el turno"
   },
   "ganhosDespesas": {
-    "title": "Ingresos y Gastos"
+    "title": "Ingresos y Gastos",
+    "errLoad": "Error al cargar las transacciones",
+    "deletedTitle": "Transacción eliminada",
+    "deletedDesc": "La transacción se eliminó con éxito",
+    "errDelete": "Error al eliminar"
   },
   "manutencoes": {
-    "title": "Mantenimiento"
+    "title": "Mantenimiento",
+    "errLoad": "Error al cargar los mantenimientos",
+    "deletedTitle": "¡Mantenimiento eliminado!",
+    "deletedDesc": "El registro se eliminó con éxito",
+    "errDelete": "Error al eliminar el mantenimiento"
   },
   "metas": {
-    "title": "Metas"
+    "title": "Metas",
+    "errLoad": "Error al cargar las metas",
+    "errLoadDesc": "No se pudieron cargar las metas",
+    "deletedTitle": "Meta eliminada",
+    "deletedDesc": "Meta eliminada con éxito",
+    "errDelete": "Error al eliminar la meta",
+    "errDeleteDesc": "No se pudo eliminar la meta",
+    "allDeletedTitle": "Todas las metas eliminadas",
+    "allDeletedDesc": "Pantalla limpia y lista para configurar",
+    "errAllDelete": "Error al eliminar metas",
+    "errAllDeleteDesc": "No se pudieron eliminar todas las metas"
   },
   "relatorios": {
-    "title": "Informes"
+    "title": "Informes",
+    "errLoadVeic": "Error al cargar los vehículos",
+    "atencao": "Atención",
+    "errFiltros": "Por favor, completa todos los filtros (Tipo, Vehículo y Período) para generar el informe.",
+    "errDatas": "Error en las fechas",
+    "errDatasDesc": "La fecha de inicio no puede ser posterior a la fecha de fin. Ajusta el período.",
+    "relGerado": "Informe generado",
+    "registrosEncontrados": "{{count}} registros encontrados",
+    "errGerar": "Error al generar el informe",
+    "semDados": "No hay datos para exportar",
+    "semDadosDesc": "Aplica primero los filtros",
+    "exportado": "Informe exportado",
+    "exportadoDesc": "El archivo PDF se descargó con éxito"
   },
   "veiculos": {
     "title": "Vehículos",
@@ -300,5 +334,30 @@
     "errValor": "Importe inválido",
     "errValorDesc": "Por favor, introduce un importe válido",
     "errAuth": "Usuario no autenticado"
+  },
+  "superAdmin": {
+    "title": "Panel de Super Admin",
+    "subtitle": "Gestión completa de la plataforma Bateu a Meta",
+    "verifying": "Verificando permisos...",
+    "selectPeriod": "Seleccionar período",
+    "today": "Hoy",
+    "week": "Esta semana",
+    "month": "Este mes",
+    "last3": "Últimos 3 meses",
+    "last6": "Últimos 6 meses",
+    "lastYear": "Último año",
+    "custom": "Personalizado",
+    "users": "Usuarios",
+    "webhooks": "Webhooks",
+    "recentActivities": "Actividades recientes",
+    "recentActivitiesDesc": "Registros y suscripciones en tiempo real",
+    "noActivities": "Sin actividad reciente",
+    "badgeNewUser": "Registro",
+    "badgeNewSub": "Suscripción",
+    "actNewUser": "Nuevo usuario",
+    "actNewSub": "Usuario",
+    "actNewUserDesc": "se registró en la plataforma",
+    "actNewSubDesc": "inició una nueva suscripción",
+    "actSignedPlan": "se suscribió al plan {{name}}"
   }
 }

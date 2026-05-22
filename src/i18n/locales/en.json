@@ -56,19 +56,53 @@
   "km": {
     "title": "Shifts",
     "novoTurno": "New Shift",
-    "addVeiculo": "Add Vehicle"
+    "addVeiculo": "Add Vehicle",
+    "errLoad": "Failed to load shifts",
+    "deletedTitle": "Shift deleted!",
+    "deletedDesc": "The shift was removed successfully",
+    "errDelete": "Failed to delete shift"
   },
   "ganhosDespesas": {
-    "title": "Income & Expenses"
+    "title": "Income & Expenses",
+    "errLoad": "Failed to load transactions",
+    "deletedTitle": "Transaction deleted",
+    "deletedDesc": "The transaction was removed successfully",
+    "errDelete": "Failed to delete"
   },
   "manutencoes": {
-    "title": "Maintenance"
+    "title": "Maintenance",
+    "errLoad": "Failed to load maintenance records",
+    "deletedTitle": "Maintenance deleted!",
+    "deletedDesc": "The record was removed successfully",
+    "errDelete": "Failed to delete maintenance"
   },
   "metas": {
-    "title": "Goals"
+    "title": "Goals",
+    "errLoad": "Failed to load goals",
+    "errLoadDesc": "Could not load the goals",
+    "deletedTitle": "Goal deleted",
+    "deletedDesc": "Goal deleted successfully",
+    "errDelete": "Failed to delete goal",
+    "errDeleteDesc": "Could not delete the goal",
+    "allDeletedTitle": "All goals deleted",
+    "allDeletedDesc": "Screen cleared and ready to configure",
+    "errAllDelete": "Failed to delete goals",
+    "errAllDeleteDesc": "Could not delete all goals"
   },
   "relatorios": {
-    "title": "Reports"
+    "title": "Reports",
+    "errLoadVeic": "Failed to load vehicles",
+    "atencao": "Attention",
+    "errFiltros": "Please fill in all filters (Type, Vehicle and Period) to generate the report.",
+    "errDatas": "Date Error",
+    "errDatasDesc": "The start date cannot be later than the end date. Please adjust the period.",
+    "relGerado": "Report generated",
+    "registrosEncontrados": "{{count}} records found",
+    "errGerar": "Failed to generate report",
+    "semDados": "No data to export",
+    "semDadosDesc": "Apply filters first",
+    "exportado": "Report exported",
+    "exportadoDesc": "The PDF file was downloaded successfully"
   },
   "veiculos": {
     "title": "Vehicles",
@@ -300,5 +334,30 @@
     "errValor": "Invalid amount",
     "errValorDesc": "Please enter a valid amount",
     "errAuth": "User not authenticated"
+  },
+  "superAdmin": {
+    "title": "Super Admin Dashboard",
+    "subtitle": "Full management of the Bateu a Meta platform",
+    "verifying": "Verifying permissions...",
+    "selectPeriod": "Select period",
+    "today": "Today",
+    "week": "This Week",
+    "month": "This Month",
+    "last3": "Last 3 Months",
+    "last6": "Last 6 Months",
+    "lastYear": "Last Year",
+    "custom": "Custom",
+    "users": "Users",
+    "webhooks": "Webhooks",
+    "recentActivities": "Recent Activities",
+    "recentActivitiesDesc": "Sign-ups and subscriptions in real time",
+    "noActivities": "No recent activity",
+    "badgeNewUser": "Sign-up",
+    "badgeNewSub": "Subscription",
+    "actNewUser": "New user",
+    "actNewSub": "User",
+    "actNewUserDesc": "signed up on the platform",
+    "actNewSubDesc": "started a new subscription",
+    "actSignedPlan": "subscribed to the {{name}} plan"
   }
 }

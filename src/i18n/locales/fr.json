@@ -56,19 +56,53 @@
   "km": {
     "title": "Tournées",
     "novoTurno": "Nouvelle tournée",
-    "addVeiculo": "Ajouter un véhicule"
+    "addVeiculo": "Ajouter un véhicule",
+    "errLoad": "Échec du chargement des tournées",
+    "deletedTitle": "Tournée supprimée !",
+    "deletedDesc": "La tournée a été supprimée avec succès",
+    "errDelete": "Échec de la suppression de la tournée"
   },
   "ganhosDespesas": {
-    "title": "Revenus & Dépenses"
+    "title": "Revenus & Dépenses",
+    "errLoad": "Échec du chargement des transactions",
+    "deletedTitle": "Transaction supprimée",
+    "deletedDesc": "La transaction a été supprimée avec succès",
+    "errDelete": "Échec de la suppression"
   },
   "manutencoes": {
-    "title": "Entretien"
+    "title": "Entretien",
+    "errLoad": "Échec du chargement des entretiens",
+    "deletedTitle": "Entretien supprimé !",
+    "deletedDesc": "L'enregistrement a été supprimé avec succès",
+    "errDelete": "Échec de la suppression de l'entretien"
   },
   "metas": {
-    "title": "Objectifs"
+    "title": "Objectifs",
+    "errLoad": "Échec du chargement des objectifs",
+    "errLoadDesc": "Impossible de charger les objectifs",
+    "deletedTitle": "Objectif supprimé",
+    "deletedDesc": "Objectif supprimé avec succès",
+    "errDelete": "Échec de la suppression de l'objectif",
+    "errDeleteDesc": "Impossible de supprimer l'objectif",
+    "allDeletedTitle": "Tous les objectifs supprimés",
+    "allDeletedDesc": "Écran vide et prêt à être configuré",
+    "errAllDelete": "Échec de la suppression des objectifs",
+    "errAllDeleteDesc": "Impossible de supprimer tous les objectifs"
   },
   "relatorios": {
-    "title": "Rapports"
+    "title": "Rapports",
+    "errLoadVeic": "Échec du chargement des véhicules",
+    "atencao": "Attention",
+    "errFiltros": "Veuillez remplir tous les filtres (Type, Véhicule et Période) pour générer le rapport.",
+    "errDatas": "Erreur de dates",
+    "errDatasDesc": "La date de début ne peut pas être postérieure à la date de fin. Veuillez ajuster la période.",
+    "relGerado": "Rapport généré",
+    "registrosEncontrados": "{{count}} enregistrements trouvés",
+    "errGerar": "Échec de la génération du rapport",
+    "semDados": "Aucune donnée à exporter",
+    "semDadosDesc": "Appliquez d'abord les filtres",
+    "exportado": "Rapport exporté",
+    "exportadoDesc": "Le fichier PDF a été téléchargé avec succès"
   },
   "veiculos": {
     "title": "Véhicules",
@@ -300,5 +334,30 @@
     "errValor": "Montant invalide",
     "errValorDesc": "Veuillez saisir un montant valide",
     "errAuth": "Utilisateur non authentifié"
+  },
+  "superAdmin": {
+    "title": "Tableau de bord Super Admin",
+    "subtitle": "Gestion complète de la plateforme Bateu a Meta",
+    "verifying": "Vérification des autorisations...",
+    "selectPeriod": "Sélectionner la période",
+    "today": "Aujourd'hui",
+    "week": "Cette semaine",
+    "month": "Ce mois",
+    "last3": "3 derniers mois",
+    "last6": "6 derniers mois",
+    "lastYear": "Dernière année",
+    "custom": "Personnalisé",
+    "users": "Utilisateurs",
+    "webhooks": "Webhooks",
+    "recentActivities": "Activités récentes",
+    "recentActivitiesDesc": "Inscriptions et abonnements en temps réel",
+    "noActivities": "Aucune activité récente",
+    "badgeNewUser": "Inscription",
+    "badgeNewSub": "Abonnement",
+    "actNewUser": "Nouvel utilisateur",
+    "actNewSub": "Utilisateur",
+    "actNewUserDesc": "s'est inscrit sur la plateforme",
+    "actNewSubDesc": "a souscrit un nouvel abonnement",
+    "actSignedPlan": "a souscrit au plan {{name}}"
   }
 }

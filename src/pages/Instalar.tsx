@@ -4,10 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Download, Check, Share, MoreVertical, Plus, Monitor, Smartphone } from "lucide-react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 const pwaIcon = "/pwa-icon.png";
 
 const Instalar = () => {
   const { isInstallable, isInstalled, isIOS, isAndroid, deviceType, browserName, install } = usePWAInstall();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Auto-trigger install prompt when available
@@ -18,21 +20,21 @@ const Instalar = () => {
 
   const handleInstallClick = async () => {
     if (isInstalled) {
-      toast.success("Aplicativo já está instalado!");
+      toast.success(t("instalar.alreadyInstalled"));
       return;
     }
 
     if (isInstallable) {
       const success = await install();
       if (success) {
-        toast.success("🎉 Aplicativo instalado com sucesso!");
+        toast.success(t("instalar.installedOk"));
       } else {
-        toast.info("Instalação cancelada pelo usuário.");
+        toast.info(t("instalar.canceled"));
       }
     } else if (isIOS) {
-      toast.info("Siga as instruções abaixo para instalar no iOS");
+      toast.info(t("instalar.iosInstructions"));
     } else {
-      toast.info("Siga as instruções abaixo para instalar manualmente");
+      toast.info(t("instalar.manualInstructions"));
     }
   };
 
@@ -41,7 +43,7 @@ const Instalar = () => {
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center gap-3 text-foreground">
           <Smartphone className="w-6 h-6 text-[#15a249]" />
-          <span className="font-bold text-lg">iPhone / iPad (Safari)</span>
+          <span className="font-bold text-lg">{t("instalar.iosHeader")}</span>
         </div>
         
         <div className="space-y-4 text-muted-foreground">
@@ -50,11 +52,11 @@ const Instalar = () => {
               1
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Toque no ícone de Compartilhar</p>
-              <p className="text-sm mt-1">Na barra inferior do Safari, toque no ícone:</p>
+              <p className="font-medium text-foreground">{t("instalar.ios1Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.ios1Desc")}</p>
               <div className="mt-2 p-2 bg-background rounded border border-border inline-flex items-center gap-2">
                 <Share className="w-5 h-5" />
-                <span className="text-sm">Compartilhar</span>
+                <span className="text-sm">{t("instalar.ios1Btn")}</span>
               </div>
             </div>
           </div>
@@ -64,11 +66,11 @@ const Instalar = () => {
               2
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Selecione "Adicionar à Tela de Início"</p>
-              <p className="text-sm mt-1">Role para baixo e toque em:</p>
+              <p className="font-medium text-foreground">{t("instalar.ios2Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.ios2Desc")}</p>
               <div className="mt-2 p-2 bg-background rounded border border-border inline-flex items-center gap-2">
                 <Plus className="w-5 h-5" />
-                <span className="text-sm">Adicionar à Tela de Início</span>
+                <span className="text-sm">{t("instalar.ios2Btn")}</span>
               </div>
             </div>
           </div>
@@ -78,8 +80,8 @@ const Instalar = () => {
               3
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Confirme tocando em "Adicionar"</p>
-              <p className="text-sm mt-1">O app será adicionado à sua tela inicial</p>
+              <p className="font-medium text-foreground">{t("instalar.ios3Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.ios3Desc")}</p>
             </div>
           </div>
         </div>
@@ -92,7 +94,7 @@ const Instalar = () => {
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center gap-3 text-foreground">
           <Smartphone className="w-6 h-6 text-[#15a249]" />
-          <span className="font-bold text-lg">Android ({browserName})</span>
+          <span className="font-bold text-lg">{t("instalar.androidHeader", { browser: browserName })}</span>
         </div>
         
         <div className="space-y-4 text-muted-foreground">
@@ -101,11 +103,11 @@ const Instalar = () => {
               1
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Toque no menu do navegador</p>
-              <p className="text-sm mt-1">No canto superior direito, toque nos três pontos:</p>
+              <p className="font-medium text-foreground">{t("instalar.and1Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.and1Desc")}</p>
               <div className="mt-2 p-2 bg-background rounded border border-border inline-flex items-center gap-2">
                 <MoreVertical className="w-5 h-5" />
-                <span className="text-sm">Menu</span>
+                <span className="text-sm">{t("instalar.and1Btn")}</span>
               </div>
             </div>
           </div>
@@ -115,11 +117,11 @@ const Instalar = () => {
               2
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Selecione "Instalar aplicativo" ou "Adicionar à tela inicial"</p>
-              <p className="text-sm mt-1">A opção pode variar conforme o navegador</p>
+              <p className="font-medium text-foreground">{t("instalar.and2Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.and2Desc")}</p>
               <div className="mt-2 p-2 bg-background rounded border border-border inline-flex items-center gap-2">
                 <Download className="w-5 h-5" />
-                <span className="text-sm">Instalar aplicativo</span>
+                <span className="text-sm">{t("instalar.and2Btn")}</span>
               </div>
             </div>
           </div>
@@ -129,8 +131,8 @@ const Instalar = () => {
               3
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Confirme a instalação</p>
-              <p className="text-sm mt-1">O app será adicionado à sua tela inicial</p>
+              <p className="font-medium text-foreground">{t("instalar.and3Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.and3Desc")}</p>
             </div>
           </div>
         </div>
@@ -143,7 +145,7 @@ const Instalar = () => {
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center gap-3 text-foreground">
           <Monitor className="w-6 h-6 text-[#15a249]" />
-          <span className="font-bold text-lg">Computador ({browserName})</span>
+          <span className="font-bold text-lg">{t("instalar.desktopHeader", { browser: browserName })}</span>
         </div>
         
         <div className="space-y-4 text-muted-foreground">
@@ -152,11 +154,11 @@ const Instalar = () => {
               1
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Procure o ícone de instalação na barra de endereços</p>
-              <p className="text-sm mt-1">No Chrome/Edge, aparece um ícone de instalação à direita:</p>
+              <p className="font-medium text-foreground">{t("instalar.desk1Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.desk1Desc")}</p>
               <div className="mt-2 p-2 bg-background rounded border border-border inline-flex items-center gap-2">
                 <Download className="w-5 h-5" />
-                <span className="text-sm">Instalar</span>
+                <span className="text-sm">{t("instalar.desk1Btn")}</span>
               </div>
             </div>
           </div>
@@ -166,8 +168,8 @@ const Instalar = () => {
               2
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Ou acesse pelo menu do navegador</p>
-              <p className="text-sm mt-1">Menu (⋮) → "Instalar Bateu A Meta..." ou "Criar atalho"</p>
+              <p className="font-medium text-foreground">{t("instalar.desk2Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.desk2Desc")}</p>
             </div>
           </div>
 
@@ -176,8 +178,8 @@ const Instalar = () => {
               3
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">Confirme a instalação</p>
-              <p className="text-sm mt-1">O app será instalado como aplicativo no seu computador</p>
+              <p className="font-medium text-foreground">{t("instalar.desk3Title")}</p>
+              <p className="text-sm mt-1">{t("instalar.desk3Desc")}</p>
             </div>
           </div>
         </div>
@@ -205,7 +207,7 @@ const Instalar = () => {
             className="w-24 h-24 mx-auto rounded-2xl shadow-lg"
           />
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-            Instalar Bateu a Meta
+            {t("instalar.title")}
           </h1>
         </div>
 
@@ -215,7 +217,7 @@ const Instalar = () => {
             <CardContent className="flex items-center justify-center gap-3 p-6">
               <Check className="w-6 h-6 text-green-500" />
               <span className="text-green-500 font-medium text-lg">
-                Aplicativo já está instalado!
+                {t("instalar.installedBadge")}
               </span>
             </CardContent>
           </Card>
@@ -229,7 +231,7 @@ const Instalar = () => {
                 className="w-full text-lg py-6 bg-[#15a249] hover:bg-[#128a3d] text-white"
               >
                 <Download className="w-5 h-5 mr-2" />
-                Instalar Agora
+                {t("instalar.installNow")}
               </Button>
             )}
 
@@ -237,7 +239,7 @@ const Instalar = () => {
             {!isInstallable && (
               <div className="space-y-4 text-left">
                 <p className="text-center text-muted-foreground">
-                  Siga as instruções abaixo para instalar o aplicativo:
+                  {t("instalar.followToInstall")}
                 </p>
                 {renderInstructions()}
               </div>
@@ -247,7 +249,7 @@ const Instalar = () => {
             {isInstallable && (
               <details className="text-left">
                 <summary className="text-muted-foreground cursor-pointer text-center py-2">
-                  Não apareceu a opção de instalar? Clique aqui
+                  {t("instalar.noOption")}
                 </summary>
                 <div className="mt-4">
                   {renderInstructions()}
@@ -263,7 +265,7 @@ const Instalar = () => {
           className="w-full"
           onClick={() => window.location.href = "/dashboard"}
         >
-          Voltar para o Aplicativo
+          {t("instalar.backToApp")}
         </Button>
       </div>
     </div>

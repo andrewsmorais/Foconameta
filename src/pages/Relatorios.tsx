@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -881,7 +882,7 @@ const Relatorios = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Relatórios</h1>
+        <h1 className="text-3xl font-bold">{t("relatorios.title")}</h1>
         <Button onClick={exportarPDF} variant="outline" className="gap-2">
           <Download className="w-4 h-4" />
           Exportar PDF

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddManutencaoDialog } from "@/components/dialogs/AddManutencaoDialog";
@@ -260,7 +261,7 @@ const Manutencoes = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold text-center">Manutenções</h1>
+        <h1 className="text-3xl font-bold text-center">{t("manutencoes.title")}</h1>
         
         {/* Cards de Estado Fixo */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddGanhoDespesaDialog } from "@/components/dialogs/AddGanhoDespesaDialog";
 import { EditGanhoDespesaDialog } from "@/components/dialogs/EditGanhoDespesaDialog";
@@ -140,7 +141,7 @@ const GanhosDespesas = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center gap-2">
-        <h1 className="text-3xl font-bold text-center">Ganhos & Despesas</h1>
+        <h1 className="text-3xl font-bold text-center">{t("ganhosDespesas.title")}</h1>
         <AddGanhoDespesaDialog onSuccess={loadTransacoes} />
       </div>
 

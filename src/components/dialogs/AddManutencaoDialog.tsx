@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getLocalDateString } from "@/lib/utils";
 
 interface AddManutencaoDialogProps {
@@ -23,9 +24,9 @@ interface Veiculo {
 }
 
 const tiposManutencao = [
-  { value: "troca_oleo", label: "Troca de Óleo" },
-  { value: "balanceamento_alinhamento", label: "Balanceamento e Alinhamento" },
-  { value: "revisao", label: "Revisão" },
+  { value: "troca_oleo", label: t("manutencaoDialog.trocaOleo") },
+  { value: "balanceamento_alinhamento", label: t("manutencaoDialog.balanceamento") },
+  { value: "revisao", label: t("manutencaoDialog.revisao") },
   { value: "pneus", label: "Pneus" },
   { value: "freios", label: "Freios" },
   { value: "suspensao", label: "Suspensão" },
@@ -40,6 +41,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
   const [showCustomType, setShowCustomType] = useState(preSelectedType === "custom");
   const [customTypeName, setCustomTypeName] = useState("");
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     veiculo_id: "",
@@ -106,7 +108,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar veículos",
+        title: t("turnoDialog.errLoadVeiculos"),
         description: error.message,
       });
     }
@@ -127,8 +129,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.nome_oficina_produto) {
           toast({
             variant: "destructive",
-            title: "Campos obrigatórios faltando",
-            description: "Preencha todos os campos obrigatórios",
+            title: t("manutencaoDialog.errRequired"),
+            description: t("manutencaoDialog.errRequiredDesc"),
           });
           setLoading(false);
           return;
@@ -139,8 +141,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
             !formData.km_final || !formData.valor || !formData.data || !formData.km_atual) {
           toast({
             variant: "destructive",
-            title: "Campos obrigatórios faltando",
-            description: "Preencha: Veículo, Nome da Oficina, Peça Trocada, Motivo da Troca, Custo, Data e KM Atual",
+            title: t("manutencaoDialog.errRequired"),
+            description: t("manutencaoDialog.errRequiredCustom"),
           });
           setLoading(false);
           return;
@@ -149,8 +151,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         if (!formData.veiculo_id || !formData.tipo_manutencao || !formData.data || !formData.km_atual || !formData.valor) {
           toast({
             variant: "destructive",
-            title: "Campos obrigatórios faltando",
-            description: "Preencha todos os campos obrigatórios",
+            title: t("manutencaoDialog.errRequired"),
+            description: t("manutencaoDialog.errRequiredDesc"),
           });
           setLoading(false);
           return;
@@ -178,8 +180,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
       if (error) throw error;
 
       toast({
-        title: "Manutenção registrada!",
-        description: "A manutenção foi cadastrada com sucesso",
+        title: t("manutencaoDialog.okTitle"),
+        description: t("manutencaoDialog.okDesc"),
       });
 
       setOpen(false);
@@ -203,7 +205,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao registrar manutenção",
+        title: t("manutencaoDialog.errSave"),
         description: error.message,
       });
     } finally {
@@ -221,7 +223,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         <DialogTrigger asChild>
           <Button className="gap-2">
             <Plus className="w-4 h-4" />
-            Nova Manutenção
+            {t("manutencaoDialog.nova")}
           </Button>
         </DialogTrigger>
       )}
@@ -229,26 +231,26 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
         <DialogHeader>
           <DialogTitle>
             {preSelectedType === "custom" 
-              ? "Nova Manutenção Personalizada" 
+              ? t("manutencaoDialog.novaCustom") 
               : preSelectedType === "troca_oleo"
-              ? "Troca de Óleo"
+              ? t("manutencaoDialog.trocaOleo")
               : preSelectedType === "balanceamento_alinhamento"
-              ? "Balanceamento e Alinhamento"
+              ? t("manutencaoDialog.balanceamento")
               : preSelectedType === "revisao"
-              ? "Revisão"
-              : "Registrar Manutenção"}
+              ? t("manutencaoDialog.revisao")
+              : t("manutencaoDialog.registrar")}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="veiculo">Selecionar Veículo</Label>
+            <Label htmlFor="veiculo">{t("manutencaoDialog.selectVeiculo")}</Label>
             <Select
               value={formData.veiculo_id}
               onValueChange={(value) => setFormData({ ...formData, veiculo_id: value })}
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o veículo" />
+                <SelectValue placeholder={t("manutencaoDialog.selecionePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 {veiculos.map((veiculo) => (
@@ -262,7 +264,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
 
           {!preSelectedType && (
             <div className="space-y-3">
-              <Label>Tipo de Manutenção</Label>
+              <Label>{t("manutencaoDialog.tipo")}</Label>
               <div className="grid grid-cols-1 gap-3">
                 {/* Cards pré-prontos */}
                 <Button
@@ -275,8 +277,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 >
                   <div className="text-left">
-                    <div className="font-semibold">Troca de Óleo</div>
-                    <div className="text-xs opacity-80">Manutenção preventiva do motor</div>
+                    <div className="font-semibold">{t("manutencaoDialog.trocaOleo")}</div>
+                    <div className="text-xs opacity-80">{t("manutencaoDialog.tipoTrocaOleoDesc")}</div>
                   </div>
                 </Button>
                 
@@ -290,8 +292,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 >
                   <div className="text-left">
-                    <div className="font-semibold">Balanceamento e Alinhamento</div>
-                    <div className="text-xs opacity-80">Ajuste de pneus e direção</div>
+                    <div className="font-semibold">{t("manutencaoDialog.balanceamento")}</div>
+                    <div className="text-xs opacity-80">{t("manutencaoDialog.tipoBalanceamentoDesc")}</div>
                   </div>
                 </Button>
                 
@@ -305,8 +307,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 >
                   <div className="text-left">
-                    <div className="font-semibold">Revisão</div>
-                    <div className="text-xs opacity-80">Revisão completa do veículo</div>
+                    <div className="font-semibold">{t("manutencaoDialog.revisao")}</div>
+                    <div className="text-xs opacity-80">{t("manutencaoDialog.tipoRevisaoDesc")}</div>
                   </div>
                 </Button>
 
@@ -323,8 +325,8 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 >
                   <div className="text-left">
-                    <div className="font-semibold">+ Adicionar Outro Tipo</div>
-                    <div className="text-xs opacity-80">Criar manutenção personalizada</div>
+                    <div className="font-semibold">{t("manutencaoDialog.addOutro")}</div>
+                    <div className="text-xs opacity-80">{t("manutencaoDialog.addOutroDesc")}</div>
                   </div>
                 </Button>
               </div>
@@ -337,7 +339,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           {(preSelectedType === "troca_oleo" || preSelectedType === "balanceamento_alinhamento" || preSelectedType === "revisao") && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="nome_oficina_produto">Nome da Oficina</Label>
+                <Label htmlFor="nome_oficina_produto">{t("manutencaoDialog.nomeOficina")}</Label>
                 <Input
                   id="nome_oficina_produto"
                   type="text"
@@ -350,7 +352,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               {/* Óleo Trocado apenas para Troca de Óleo, Peça Trocada para Revisão */}
               {preSelectedType === "troca_oleo" && (
                 <div className="space-y-2">
-                  <Label htmlFor="peca_trocada">Óleo Trocado</Label>
+                  <Label htmlFor="peca_trocada">{t("manutencaoDialog.oleoTrocado")}</Label>
                   <Input
                     id="peca_trocada"
                     type="text"
@@ -361,7 +363,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               )}
               {preSelectedType === "revisao" && (
                 <div className="space-y-2">
-                  <Label htmlFor="peca_trocada">Peça Trocada</Label>
+                  <Label htmlFor="peca_trocada">{t("manutencaoDialog.pecaTrocada")}</Label>
                   <Input
                     id="peca_trocada"
                     type="text"
@@ -374,10 +376,10 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               <div className="space-y-2">
                 <Label htmlFor="observacoes">
                   {preSelectedType === "troca_oleo" 
-                    ? "Descrição do Óleo Trocado" 
+                    ? t("manutencaoDialog.descricaoOleo") 
                     : preSelectedType === "balanceamento_alinhamento"
-                    ? "Descrição do Balanceamento e Alinhamento"
-                    : "Descrição da Revisão"}
+                    ? t("manutencaoDialog.descricaoBalanceamento")
+                    : t("manutencaoDialog.descricaoRevisao")}
                 </Label>
                 <Textarea
                   id="observacoes"
@@ -391,10 +393,10 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           <div className="space-y-2">
             <Label htmlFor="valor">
               {preSelectedType === "troca_oleo" 
-                ? "Custo da Troca do Óleo" 
+                ? t("manutencaoDialog.custoOleo") 
                 : preSelectedType === "balanceamento_alinhamento"
-                ? "Custo do Balanceamento e Alinhamento"
-                : "Custo da Revisão"}
+                ? t("manutencaoDialog.custoBalanceamento")
+                : t("manutencaoDialog.custoRevisao")}
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
@@ -410,7 +412,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           </div>
 
               <div className="space-y-2">
-                <Label htmlFor="data">Data Atual</Label>
+                <Label htmlFor="data">{t("manutencaoDialog.dataAtual")}</Label>
                 <Input
                   id="data"
                   type="date"
@@ -424,10 +426,10 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               <div className="space-y-2">
                 <Label htmlFor="proxima_data_manutencao">
                   {preSelectedType === "troca_oleo" 
-                    ? "Próxima Data da Troca do Óleo" 
+                    ? t("manutencaoDialog.proximaDataOleo") 
                     : preSelectedType === "balanceamento_alinhamento"
-                    ? "Próxima Data Balanceamento e Alinhamento"
-                    : "Próxima Data para Revisão"}
+                    ? t("manutencaoDialog.proximaDataBalanc")
+                    : t("manutencaoDialog.proximaDataRevisao")}
                 </Label>
                 <Input
                   id="proxima_data_manutencao"
@@ -439,7 +441,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="km_atual">KM Atual</Label>
+                <Label htmlFor="km_atual">{t("manutencaoDialog.kmAtual")}</Label>
                 <Input
                   id="km_atual"
                   type="number"
@@ -453,10 +455,10 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               <div className="space-y-2">
                 <Label htmlFor="proximo_km">
                   {preSelectedType === "troca_oleo" 
-                    ? "Próximo KM da Troca do Óleo" 
+                    ? t("manutencaoDialog.proximoKmOleo") 
                     : preSelectedType === "balanceamento_alinhamento"
-                    ? "Próximo KM Balanceamento e Alinhamento"
-                    : "Próximo KM para Revisão"}
+                    ? t("manutencaoDialog.proximoKmBalanc")
+                    : t("manutencaoDialog.proximoKmRevisao")}
                 </Label>
                 <Input
                   id="proximo_km"
@@ -468,7 +470,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="comprovante">Anexar Comprovante</Label>
+                <Label htmlFor="comprovante">{t("manutencaoDialog.anexar")}</Label>
                 <Input
                   id="comprovante"
                   type="file"
@@ -481,7 +483,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Você pode anexar uma foto ou PDF do comprovante
+                  {t("manutencaoDialog.anexarHelp")}
                 </p>
               </div>
             </>
@@ -491,7 +493,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
           {preSelectedType === "custom" && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="nome_oficina_produto">Nome da Oficina</Label>
+                <Label htmlFor="nome_oficina_produto">{t("manutencaoDialog.nomeOficina")}</Label>
                 <Input
                   id="nome_oficina_produto"
                   type="text"
@@ -502,7 +504,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="peca_trocada_custom">Peça Trocada</Label>
+                <Label htmlFor="peca_trocada_custom">{t("manutencaoDialog.pecaTrocada")}</Label>
                 <Input
                   id="peca_trocada_custom"
                   type="text"
@@ -513,7 +515,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="observacoes">Descrição do Produto (Opcional)</Label>
+                <Label htmlFor="observacoes">{t("manutencaoDialog.descricaoProduto")}</Label>
                 <Textarea
                   id="observacoes"
                   value={formData.observacoes}
@@ -524,7 +526,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="km_final">Motivo da Troca</Label>
+                <Label htmlFor="km_final">{t("manutencaoDialog.motivoTroca")}</Label>
                 <Input
                   id="km_final"
                   type="text"
@@ -535,7 +537,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="valor">Custo da Manutenção</Label>
+                <Label htmlFor="valor">{t("manutencaoDialog.custoManutencao")}</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
                   <Input
@@ -550,7 +552,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="data">Data Atual</Label>
+                <Label htmlFor="data">{t("manutencaoDialog.dataAtual")}</Label>
                 <Input
                   id="data"
                   type="date"
@@ -562,7 +564,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="proxima_data_manutencao">Próxima Data para Manutenção (Opcional)</Label>
+                <Label htmlFor="proxima_data_manutencao">{t("manutencaoDialog.proximaDataManutencao")}</Label>
                 <Input
                   id="proxima_data_manutencao"
                   type="date"
@@ -573,7 +575,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="km_atual">KM Atual</Label>
+                <Label htmlFor="km_atual">{t("manutencaoDialog.kmAtual")}</Label>
                 <Input
                   id="km_atual"
                   type="number"
@@ -585,7 +587,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="proximo_km">Próximo KM para Manutenção (Opcional)</Label>
+                <Label htmlFor="proximo_km">{t("manutencaoDialog.proximoKmManutencao")}</Label>
                 <Input
                   id="proximo_km"
                   type="number"
@@ -596,7 +598,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="comprovante">Anexar Comprovante (Opcional)</Label>
+                <Label htmlFor="comprovante">{t("manutencaoDialog.anexarOpt")}</Label>
                 <Input
                   id="comprovante"
                   type="file"
@@ -609,7 +611,7 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
                   }}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Você pode anexar uma foto ou PDF do comprovante
+                  {t("manutencaoDialog.anexarHelp")}
                 </p>
               </div>
             </>
@@ -617,10 +619,10 @@ export const AddManutencaoDialog = ({ onSuccess, preSelectedType, triggerButton 
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar"}
+              {loading ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

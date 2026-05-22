@@ -56,13 +56,25 @@
   "km": {
     "title": "Shifts",
     "novoTurno": "New Shift",
-    "addVeiculo": "Add Vehicle"
+    "addVeiculo": "Add Vehicle",
+    "errLoad": "Failed to load shifts",
+    "deletedTitle": "Shift deleted!",
+    "deletedDesc": "The shift was removed successfully",
+    "errDelete": "Failed to delete shift"
   },
   "ganhosDespesas": {
-    "title": "Income & Expenses"
+    "title": "Income & Expenses",
+    "errLoad": "Failed to load transactions",
+    "deletedTitle": "Transaction deleted",
+    "deletedDesc": "The transaction was removed successfully",
+    "errDelete": "Failed to delete"
   },
   "manutencoes": {
-    "title": "Maintenance"
+    "title": "Maintenance",
+    "errLoad": "Failed to load maintenance records",
+    "deletedTitle": "Maintenance deleted!",
+    "deletedDesc": "The record was removed successfully",
+    "errDelete": "Failed to delete maintenance"
   },
   "metas": {
     "title": "Goals"

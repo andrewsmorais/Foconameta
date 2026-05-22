@@ -136,7 +136,7 @@ serve(async (req) => {
   }
 
   try {
-    const { email } = await req.json();
+    const body = await req.json(); const { email } = body; const language = body.language || "pt";
 
     if (!email) {
       return new Response(

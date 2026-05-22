@@ -1,37 +1,53 @@
-## Plano: Filtro por Data + Histórico em Ganhos & Despesas
+# Plano: Internacionalização Completa (PT-BR, EN, ES, FR)
 
-Replicar a estrutura visual e funcional do menu KM (Turnos) na página Ganhos & Despesas.
+## Visão geral
+Implementar suporte a 4 idiomas no app inteiro usando `react-i18next`, com detecção automática do idioma do sistema (celular/navegador) e opção de troca manual em **Configurações**. PT-BR continua como canônico (chaves baseadas no texto PT).
 
-### Arquivo afetado
-- `src/pages/GanhosDespesas.tsx` (apenas frontend, sem mudanças de banco)
+## Escopo
 
-### Mudanças
+### 1. Infraestrutura i18n
+Criar:
+- `src/i18n/index.ts` — inicialização do i18next com `LanguageDetector` (navigator/localStorage), fallback PT.
+- `src/i18n/languages.ts` — lista `{ code, label, flag }` para PT/EN/ES/FR.
+- `src/i18n/useLanguage.ts` — hook `useLanguage()` retornando `{ language, setLanguage, languages }`.
+- `src/i18n/locales/pt.json`, `en.json`, `es.json`, `fr.json` — dicionários organizados por namespace (common, nav, dashboard, km, ganhosDespesas, manutencoes, metas, relatorios, veiculos, configuracoes, auth, landing, planos, superAdmin, dialogs, toasts).
+- `src/lib/currentLanguage.ts` — `getCurrentLanguage()` para uso fora de React (passar p/ edge functions).
+- `src/lib/dateLocale.ts` — `getDateLocale()` (date-fns: ptBR/enUS/es/fr) e `getIntlLocale()` (`pt-BR`/`en-US`/`es-ES`/`fr-FR`) para `Intl.NumberFormat`/`DateTimeFormat`.
+- Importar `./i18n` no `src/main.tsx`.
 
-**1. Adicionar Filtro por Data (idêntico ao KM)**
-- Novo estado `filtroData` inicializado com `new Date()` (data de hoje).
-- Card "Filtrar por Data" com `Popover` + `Calendar` (locale ptBR), igual ao KM.
-- Texto auxiliar: "Exibindo transações de {data}".
-- `useEffect` recarrega ao mudar `filtroData`.
+### 2. UI — Seletor de idioma em Configurações
+Novo card "Idioma / Language" em `src/pages/Configuracoes.tsx` com `Select` (bandeira + nome). Persiste em `localStorage` via `useLanguage`.
 
-**2. Filtragem das transações**
-Uma transação é exibida na data selecionada quando:
-- `data` é igual à data filtrada, OU
-- É recorrente e `data` ≤ data filtrada, OU
-- Tem intervalo (`data_inicio` ≤ data filtrada ≤ `data_fim`).
+### 3. Substituição de strings hardcoded
+Trocar todas as strings visíveis por `t('chave')` em:
+- Páginas: `Dashboard`, `KM`, `GanhosDespesas`, `Manutencoes`, `Metas`, `Relatorios`, `Veiculos`, `Configuracoes`, `Auth`, `Planos`, `PagamentoSucesso`, `LandingPage`, `Obrigado`, `PoliticaPrivacidade`, `TermosDeUso`, `Instalar`, `NotFound`, `SuperAdmin`.
+- Componentes: `Layout`/Nav, todos os `dialogs/*`, `superadmin/*`, `PWAInstallDialog`, `PWAInstallBanner`, `OfflineIndicator`, `AvatarEditor`, `ThemeToggle`, etc.
+- Mensagens de `toast` e validações.
 
-Quando o filtro estiver vazio (usuário limpar), mostrar todas (comportamento atual com limite de 4 mais recentes — manter apenas quando sem filtro).
+PT continua canônico — chaves derivadas do texto PT (ex.: `dashboard.title`, `toasts.salvoSucesso`).
 
-**3. Histórico de Ganhos e Despesas (espelhando "Histórico de Turnos")**
-- Substituir a listagem atual (cards genéricos) pelo padrão visual do KM:
-  - Título: `Histórico de Ganhos e Despesas ({dd/MM/yyyy})`.
-  - Cada item em um `Card` com header (nome/categoria + botões editar/excluir à direita) e body com grid de campos em destaque verde (`text-[#15a249]`) seguindo o estilo do KM.
-  - Manter badges (Recorrente, Dashboard, Até dd/MM/yyyy) acima do grid.
-- Atualizar a frase de cabeçalho da página para refletir que agora há filtro por data (remover o texto "Exibindo os 4 Relatórios... mais recentes").
-- Cards de resumo opcionais (Ganhos do dia / Despesas do dia / Saldo) ao final, no mesmo estilo dos cards azul/vermelho/verde do KM — apenas se houver transações no dia.
+### 4. Datas, números e moeda
+- Substituir `toLocaleDateString('pt-BR'…)` por `Intl.DateTimeFormat(getIntlLocale(), …)`.
+- Substituir formatação `R$` fixa por `Intl.NumberFormat(getIntlLocale(), { style: 'currency', currency: 'BRL' })` (mantém BRL — app é brasileiro; só o formato dos separadores muda). Outros números via `Intl.NumberFormat`.
+- `date-fns/format` recebe `{ locale: getDateLocale() }`.
 
-### Sem alterações
-- Schema do banco, RLS, edge functions, dialogs de criação/edição.
-- Outras páginas.
+### 5. Edge Functions
+Edge functions que enviam e-mails/respostas para o usuário (`cakto-webhook`, `process-sale-webhook`, `resend-welcome-email`, `send-abandoned-cart-email`, `complete-registration`, `reset-user-password`, `send-webhook`) passam a:
+- Aceitar `language` no body (default `pt-BR`).
+- Selecionar template/strings conforme idioma (mini dicionário inline em cada função).
+- Frontend envia `language: getCurrentLanguage()` em todas as invocações.
 
-### Resultado esperado
-Página Ganhos & Despesas com layout e UX idênticos ao Menu KM (Turnos): filtro de data no topo, histórico filtrado por data, mesmo padrão visual de cards.
+### 6. HTML
+- `index.html`: `<html lang>` atualizado dinamicamente pelo i18n no boot.
+
+## Detalhes técnicos
+- Dependências novas: `react-i18next`, `i18next`, `i18next-browser-languagedetector`. (`date-fns` já presente.)
+- Detecção: ordem `localStorage` → `navigator` → fallback `pt`.
+- Mapeamento: `pt-*` → `pt`; `en-*` → `en`; `es-*` → `es`; `fr-*` → `fr`.
+- Chaves ausentes em locale fazem fallback para PT (sem quebrar UI).
+- Não alterar lógica de negócio, schema, RLS ou fluxos — só camada de apresentação + parâmetro `language` nas functions.
+
+## Observações
+- É um diff grande (≈30+ arquivos). Vou agrupar edições por área (infra → configurações → páginas → dialogs → edge functions) para manter coerência.
+- Moeda continua **BRL** em todos os idiomas (público-alvo brasileiro do app). Se quiser conversão real de moeda, é outro escopo.
+- Após aprovar, implemento direto sem novas perguntas.

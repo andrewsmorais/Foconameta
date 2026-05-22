@@ -149,7 +149,7 @@ serve(async (req) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    const body = await req.json();
+    const body = await req.json(); const language = body.language || "pt";
     const { email, nome, telefone, cpf, plan_id } = body;
 
     console.log("[Process Sale] Received request:", { email, nome, plan_id });

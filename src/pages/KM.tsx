@@ -16,6 +16,7 @@ import { ptBR } from "date-fns/locale";
 import { Pencil, Trash2, CalendarIcon, Car } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,6 +61,7 @@ interface Turno {
 }
 
 const KM = () => {
+  const { t } = useTranslation();
   const [turnos, setTurnos] = useState<Turno[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTurno, setEditingTurno] = useState<Turno | null>(null);
@@ -186,7 +188,7 @@ const KM = () => {
         <Link to="/veiculos">
           <Button className="gap-2">
             <Car className="w-4 h-4" />
-            Adicionar Veículo
+            {t("km.addVeiculo")}
           </Button>
         </Link>
       </div>

@@ -11,43 +11,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const menuItems = [{
-  icon: LayoutDashboard,
-  label: "Dashboard",
-  path: "/"
-}, {
-  icon: Route,
-  label: "Turnos",
-  path: "/km"
-}, {
-  icon: DollarSign,
-  label: "Ganhos & Despesas",
-  path: "/ganhos-despesas"
-}, {
-  icon: Wrench,
-  label: "Manutenções",
-  path: "/manutencoes"
-}, {
-  icon: Target,
-  label: "Metas",
-  path: "/metas"
-}, {
-  icon: FileText,
-  label: "Relatórios",
-  path: "/relatorios"
-}, {
-  icon: Settings,
-  label: "Configurações",
-  path: "/configuracoes"
-}];
+const baseMenuItems = [
+  { icon: LayoutDashboard, key: "dashboard",      path: "/" },
+  { icon: Route,           key: "turnos",         path: "/km" },
+  { icon: DollarSign,      key: "ganhosDespesas", path: "/ganhos-despesas" },
+  { icon: Wrench,          key: "manutencoes",    path: "/manutencoes" },
+  { icon: Target,          key: "metas",          path: "/metas" },
+  { icon: FileText,        key: "relatorios",     path: "/relatorios" },
+  { icon: Settings,        key: "configuracoes",  path: "/configuracoes" },
+] as const;
 export const Layout = ({
   children
 }: LayoutProps) => {
+  const { t } = useTranslation();
+  const menuItems = baseMenuItems.map((m) => ({ ...m, label: t(`nav.${m.key}`) }));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const location = useLocation();
@@ -136,7 +119,7 @@ export const Layout = ({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">Minha Conta</p>
+                    <p className="text-sm font-medium">{t("common.myAccount")}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {user?.email}
                     </p>
@@ -145,7 +128,7 @@ export const Layout = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Sair
+                  {t("common.logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -172,7 +155,7 @@ export const Layout = ({
             )}
           >
             <Shield className="w-5 h-5 mr-3" />
-            <span className="font-medium">Super Admin</span>
+            <span className="font-medium">{t("nav.superAdmin")}</span>
           </Link>
         )}
         </nav>
@@ -218,7 +201,7 @@ export const Layout = ({
             )}
           >
             <Shield className="w-5 h-5 mr-3" />
-            <span className="font-medium">Super Admin</span>
+            <span className="font-medium">{t("nav.superAdmin")}</span>
           </Link>
         )}
         </nav>
@@ -251,7 +234,7 @@ export const Layout = ({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">Minha Conta</p>
+                    <p className="text-sm font-medium">{t("common.myAccount")}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {user?.email}
                     </p>
@@ -260,7 +243,7 @@ export const Layout = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Sair
+                  {t("common.logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

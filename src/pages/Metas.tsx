@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,6 +27,7 @@ interface Meta {
 }
 
 const Metas = () => {
+  const { t } = useTranslation();
   const [metas, setMetas] = useState<Meta[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -175,7 +177,7 @@ const Metas = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-center">Metas</h1>
+        <h1 className="text-3xl font-bold text-center">{t("metas.title")}</h1>
         <p className="text-sm text-muted-foreground text-center">
           Exibindo os 4 Relatórios de Metas mais recentes. Acesse o Menu Relatórios para ver o histórico completo.
         </p>

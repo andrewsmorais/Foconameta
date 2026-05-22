@@ -62,7 +62,7 @@ const GanhosDespesas = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar transações",
+        title: t("ganhosDespesas.errLoad"),
         description: error.message,
       });
     } finally {
@@ -80,14 +80,14 @@ const GanhosDespesas = () => {
       if (error) throw error;
 
       toast({
-        title: "Transação excluída",
-        description: "A transação foi removida com sucesso",
+        title: t("ganhosDespesas.deletedTitle"),
+        description: t("ganhosDespesas.deletedDesc"),
       });
       loadTransacoes();
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao excluir",
+        title: t("ganhosDespesas.errDelete"),
         description: error.message,
       });
     }

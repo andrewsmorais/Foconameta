@@ -107,7 +107,7 @@ const KM = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar turnos",
+        title: t("km.errLoad"),
         description: error.message,
       });
     } finally {
@@ -129,15 +129,15 @@ const KM = () => {
       if (error) throw error;
 
       toast({
-        title: "Turno excluído!",
-        description: "O turno foi removido com sucesso",
+        title: t("km.deletedTitle"),
+        description: t("km.deletedDesc"),
       });
       
       loadTurnos();
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao excluir turno",
+        title: t("km.errDelete"),
         description: error.message,
       });
     }

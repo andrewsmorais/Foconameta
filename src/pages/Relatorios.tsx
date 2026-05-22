@@ -115,7 +115,7 @@ const Relatorios = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar veículos",
+        title: t("relatorios.errLoadVeic"),
         description: error.message,
       });
     }
@@ -134,8 +134,8 @@ const Relatorios = () => {
     if (!filtros.tipoRelatorio || !filtros.veiculo || !filtros.dataInicio || !filtros.dataFim) {
       toast({
         variant: "destructive",
-        title: "Atenção",
-        description: "Por favor, preencha todos os filtros (Tipo, Veículo e Período) para gerar o relatório.",
+        title: t("relatorios.atencao"),
+        description: t("relatorios.errFiltros"),
       });
       return false;
     }
@@ -144,8 +144,8 @@ const Relatorios = () => {
     if (new Date(filtros.dataInicio) > new Date(filtros.dataFim)) {
       toast({
         variant: "destructive",
-        title: "Erro nas Datas",
-        description: "A data de início não pode ser maior que a data final. Por favor, ajuste o período.",
+        title: t("relatorios.errDatas"),
+        description: t("relatorios.errDatasDesc"),
       });
       return false;
     }
@@ -341,13 +341,13 @@ const Relatorios = () => {
       setBuscaRealizada(true);
 
       toast({
-        title: "Relatório gerado",
-        description: `${metricsData.totalRegistros} registros encontrados`,
+        title: t("relatorios.relGerado"),
+        description: t("relatorios.registrosEncontrados", { count: metricsData.totalRegistros }),
       });
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao gerar relatório",
+        title: t("relatorios.errGerar"),
         description: error.message,
       });
     } finally {
@@ -359,8 +359,8 @@ const Relatorios = () => {
     if (resultados.length === 0) {
       toast({
         variant: "destructive",
-        title: "Nenhum dado para exportar",
-        description: "Aplique os filtros primeiro",
+        title: t("relatorios.semDados"),
+        description: t("relatorios.semDadosDesc"),
       });
       return;
     }
@@ -445,8 +445,8 @@ const Relatorios = () => {
     doc.save(`relatorio_${filtros.tipoRelatorio}_${format(new Date(), "yyyy-MM-dd")}.pdf`);
 
     toast({
-      title: "Relatório exportado",
-      description: "O arquivo PDF foi baixado com sucesso",
+      title: t("relatorios.exportado"),
+      description: t("relatorios.exportadoDesc"),
     });
   };
 

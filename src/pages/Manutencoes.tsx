@@ -99,7 +99,7 @@ const Manutencoes = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar manutenções",
+        title: t("manutencoes.errLoad"),
         description: error.message,
       });
     } finally {
@@ -138,8 +138,8 @@ const Manutencoes = () => {
       if (error) throw error;
 
       toast({
-        title: "Manutenção excluída!",
-        description: "O registro foi removido com sucesso",
+        title: t("manutencoes.deletedTitle"),
+        description: t("manutencoes.deletedDesc"),
       });
 
       setDeletingType(null);
@@ -147,7 +147,7 @@ const Manutencoes = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao excluir manutenção",
+        title: t("manutencoes.errDelete"),
         description: error.message,
       });
     }

@@ -13,6 +13,9 @@ import { AvatarEditor } from "@/components/AvatarEditor";
 import { Link } from "react-router-dom";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { PWAInstallDialog } from "@/components/PWAInstallDialog";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/i18n/useLanguage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -29,6 +32,8 @@ interface Profile {
 }
 
 const Configuracoes = () => {
+  const { t } = useTranslation();
+  const { language, setLanguage, languages } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<Profile>({
     nome_completo: "",
@@ -76,7 +81,7 @@ const Configuracoes = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar perfil",
+        title: t("configuracoes.erroCarregar"),
         description: error.message,
       });
     }
@@ -100,13 +105,13 @@ const Configuracoes = () => {
       if (error) throw error;
 
       toast({
-        title: "Sucesso",
-        description: "Dados atualizados com sucesso!",
+        title: t("common.success"),
+        description: t("configuracoes.dadosAtualizados"),
       });
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao salvar",
+        title: t("configuracoes.erroSalvar"),
         description: error.message,
       });
     } finally {
@@ -130,15 +135,15 @@ const Configuracoes = () => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Configurações</h1>
-        <p className="text-muted-foreground">Gerencie suas informações e preferências</p>
+        <h1 className="text-3xl font-bold">{t("configuracoes.title")}</h1>
+        <p className="text-muted-foreground">{t("configuracoes.subtitle")}</p>
       </div>
 
       {/* Foto de Perfil */}
       <Card>
         <CardHeader>
-          <CardTitle>Foto de Perfil</CardTitle>
-          <CardDescription>Clique na foto para editar com zoom e posicionamento</CardDescription>
+          <CardTitle>{t("configuracoes.foto")}</CardTitle>
+          <CardDescription>{t("configuracoes.fotoHelp")}</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center gap-6">
           <div className="relative">
@@ -157,7 +162,7 @@ const Configuracoes = () => {
           </div>
           <div>
             <p className="text-sm text-muted-foreground">
-              Recomendamos uma imagem quadrada de pelo menos 400x400 pixels
+              {t("configuracoes.fotoSize")}
             </p>
           </div>
         </CardContent>
@@ -166,12 +171,12 @@ const Configuracoes = () => {
       {/* Meus Dados */}
       <Card>
         <CardHeader>
-          <CardTitle>Meus Dados</CardTitle>
-          <CardDescription>Edite suas informações pessoais</CardDescription>
+          <CardTitle>{t("configuracoes.meusDados")}</CardTitle>
+          <CardDescription>{t("configuracoes.meusDadosDesc")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="nome">Nome Completo</Label>
+            <Label htmlFor="nome">{t("configuracoes.nomeCompleto")}</Label>
             <Input
               id="nome"
               value={profile.nome_completo}
@@ -180,7 +185,7 @@ const Configuracoes = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cpf">CPF</Label>
+            <Label htmlFor="cpf">{t("configuracoes.cpf")}</Label>
             <Input
               id="cpf"
               value={profile.cpf}
@@ -190,7 +195,7 @@ const Configuracoes = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="telefone">Número de Telefone</Label>
+            <Label htmlFor="telefone">{t("configuracoes.telefone")}</Label>
             <Input
               id="telefone"
               value={profile.telefone}
@@ -200,8 +205,31 @@ const Configuracoes = () => {
           </div>
 
           <Button onClick={handleSave} disabled={loading} className="w-full">
-            {loading ? "Salvando..." : "Salvar Alterações"}
+            {loading ? t("common.saving") : t("common.saveChanges")}
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Idioma */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("configuracoes.idioma")}</CardTitle>
+          <CardDescription>{t("configuracoes.idiomaDesc")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Select value={language} onValueChange={(v) => setLanguage(v as any)}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((l) => (
+                <SelectItem key={l.code} value={l.code}>
+                  <span className="mr-2">{l.flag}</span>
+                  {l.nativeLabel}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
@@ -213,7 +241,7 @@ const Configuracoes = () => {
             className="w-full justify-start text-base"
             onClick={() => setShowRefundPolicy(true)}
           >
-            Política de Reembolso
+            {t("configuracoes.politicaReembolso")}
           </Button>
           
           <Button 
@@ -221,7 +249,7 @@ const Configuracoes = () => {
             className="w-full justify-start text-base"
             onClick={() => setShowPrivacyPolicy(true)}
           >
-            Política de Privacidade (LGPD)
+            {t("configuracoes.politicaPrivacidade")}
           </Button>
           
           <Button 
@@ -230,7 +258,7 @@ const Configuracoes = () => {
             onClick={() => setShowAbout(true)}
           >
             <Info className="mr-2 h-5 w-5" />
-            Sobre o Aplicativo
+            {t("configuracoes.sobre")}
           </Button>
 
           <Button 
@@ -239,7 +267,7 @@ const Configuracoes = () => {
             onClick={() => setShowContact(true)}
           >
             <Phone className="mr-2 h-5 w-5" />
-            Contato
+            {t("configuracoes.contato")}
           </Button>
         </CardContent>
       </Card>
@@ -248,10 +276,8 @@ const Configuracoes = () => {
       <Dialog open={showAvatarEditor} onOpenChange={setShowAvatarEditor}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Editar Foto de Perfil</DialogTitle>
-            <DialogDescription>
-              Ajuste o zoom e posicionamento da sua foto
-            </DialogDescription>
+            <DialogTitle>{t("configuracoes.editarFoto")}</DialogTitle>
+            <DialogDescription>{t("configuracoes.editarFotoDesc")}</DialogDescription>
           </DialogHeader>
           <AvatarEditor onSave={handleAvatarSaved} onCancel={() => setShowAvatarEditor(false)} />
         </DialogContent>
@@ -261,12 +287,12 @@ const Configuracoes = () => {
       <AlertDialog open={showRefundPolicy} onOpenChange={setShowRefundPolicy}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Política de Reembolso</AlertDialogTitle>
+            <AlertDialogTitle>{t("configuracoes.politicaReembolso")}</AlertDialogTitle>
             <AlertDialogDescription className="text-foreground">
-              Você tem direito a reembolso total em até 7 dias após a compra, conforme garantido pela legislação do consumidor.
+              {t("configuracoes.reembolsoTexto")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <Button onClick={() => setShowRefundPolicy(false)}>Fechar</Button>
+          <Button onClick={() => setShowRefundPolicy(false)}>{t("common.close")}</Button>
         </AlertDialogContent>
       </AlertDialog>
 
@@ -274,12 +300,12 @@ const Configuracoes = () => {
       <AlertDialog open={showPrivacyPolicy} onOpenChange={setShowPrivacyPolicy}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Política de Privacidade (LGPD)</AlertDialogTitle>
+            <AlertDialogTitle>{t("configuracoes.politicaPrivacidade")}</AlertDialogTitle>
             <AlertDialogDescription className="text-foreground">
-              Seus dados pessoais são coletados e tratados de acordo com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018). Armazenamos apenas as informações necessárias para o funcionamento do aplicativo e garantimos a segurança dos seus dados. Você tem direito de acessar, corrigir ou excluir suas informações a qualquer momento.
+              {t("configuracoes.lgpdTexto")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <Button onClick={() => setShowPrivacyPolicy(false)}>Fechar</Button>
+          <Button onClick={() => setShowPrivacyPolicy(false)}>{t("common.close")}</Button>
         </AlertDialogContent>
       </AlertDialog>
 
@@ -287,12 +313,12 @@ const Configuracoes = () => {
       <AlertDialog open={showAbout} onOpenChange={setShowAbout}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Sobre o Aplicativo</AlertDialogTitle>
+            <AlertDialogTitle>{t("configuracoes.sobre")}</AlertDialogTitle>
             <AlertDialogDescription className="text-foreground">
-              O aplicativo Bateu A Meta foi feito com a finalidade de auxiliar o controle financeiro de motoristas de aplicativos.
+              {t("configuracoes.sobreTexto")}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <Button onClick={() => setShowAbout(false)}>Fechar</Button>
+          <Button onClick={() => setShowAbout(false)}>{t("common.close")}</Button>
         </AlertDialogContent>
       </AlertDialog>
 
@@ -300,11 +326,11 @@ const Configuracoes = () => {
       <AlertDialog open={showContact} onOpenChange={setShowContact}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Contato</AlertDialogTitle>
+            <AlertDialogTitle>{t("configuracoes.contato")}</AlertDialogTitle>
             <AlertDialogDescription className="space-y-4 text-foreground">
               <div className="flex items-center gap-2">
                 <Instagram className="h-5 w-5" />
-                <span className="font-semibold">Instagram:</span>
+                <span className="font-semibold">{t("configuracoes.instagram")}:</span>
                 <a 
                   href="https://instagram.com/bateuameta" 
                   target="_blank" 
@@ -316,7 +342,7 @@ const Configuracoes = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5" />
-                <span className="font-semibold">Celular (WhatsApp):</span>
+                <span className="font-semibold">{t("configuracoes.whatsapp")}:</span>
                 <a 
                   href="https://wa.me/5512981387508" 
                   target="_blank" 
@@ -328,7 +354,7 @@ const Configuracoes = () => {
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <Button onClick={() => setShowContact(false)}>Fechar</Button>
+          <Button onClick={() => setShowContact(false)}>{t("common.close")}</Button>
         </AlertDialogContent>
       </AlertDialog>
 

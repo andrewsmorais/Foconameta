@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Car, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 interface Veiculo {
   id: string;
@@ -14,6 +15,7 @@ interface Veiculo {
 }
 
 const Veiculos = () => {
+  const { t } = useTranslation();
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -34,7 +36,7 @@ const Veiculos = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar veículos",
+        title: t("common.error"),
         description: error.message,
       });
     } finally {
@@ -48,14 +50,14 @@ const Veiculos = () => {
       if (error) throw error;
 
       toast({
-        title: "Veículo removido",
-        description: "O veículo foi excluído com sucesso",
+        title: t("veiculos.removido"),
+        description: t("veiculos.removidoDesc"),
       });
       loadVeiculos();
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao remover veículo",
+        title: t("common.error"),
         description: error.message,
       });
     }
@@ -66,13 +68,13 @@ const Veiculos = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-8">Carregando...</div>;
+    return <div className="text-center py-8">{t("common.loading")}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Veículos</h1>
+        <h1 className="text-3xl font-bold">{t("veiculos.title")}</h1>
         <AddVeiculoDialog onSuccess={loadVeiculos} />
       </div>
 
@@ -80,7 +82,7 @@ const Veiculos = () => {
         <Card>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-center">
-              Nenhum veículo cadastrado. Clique em "Novo Veículo" para começar.
+              {t("veiculos.empty")}
             </p>
           </CardContent>
         </Card>
@@ -105,11 +107,11 @@ const Veiculos = () => {
               <CardContent>
                 <div className="space-y-1">
                   <p className="text-sm">
-                    <span className="font-medium">Placa:</span> {veiculo.placa}
+                    <span className="font-medium">{t("veiculos.placa")}:</span> {veiculo.placa}
                   </p>
                   {veiculo.ano && (
                     <p className="text-sm">
-                      <span className="font-medium">Ano:</span> {veiculo.ano}
+                      <span className="font-medium">{t("veiculos.ano")}:</span> {veiculo.ano}
                     </p>
                   )}
                 </div>

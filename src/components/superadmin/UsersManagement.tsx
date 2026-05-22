@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, Copy, Eye, MessageCircle, StickyNote, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 interface UserData {
   id: string;
@@ -37,6 +38,7 @@ interface UserData {
 }
 
 export const UsersManagement = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
@@ -89,7 +91,7 @@ export const UsersManagement = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           window.location.href = "/auth";
-          throw new Error("Sessão expirada");
+          throw new Error(t("users.toastSessionExpired"));
         }
 
         const { data, error } = await supabase.functions.invoke("get-admin-users", {
@@ -100,7 +102,7 @@ export const UsersManagement = () => {
         
         if (error) {
           if (error.message?.includes("Invalid token") || error.message?.includes("session_not_found")) {
-            toast.error("Sessão expirada. Redirecionando para login...");
+            toast.error(t("users.toastSessionExpired"));
             window.location.href = "/auth";
           }
           console.error("Error fetching admin users:", error);
@@ -221,12 +223,12 @@ export const UsersManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Usuário atualizado com sucesso!");
+      toast.success(t("users.toastUpdated"));
       setIsEditOpen(false);
       setSelectedUser(null);
     },
     onError: (error) => {
-      toast.error("Erro ao atualizar usuário: " + error.message);
+      toast.error(t("users.toastUpdateErr") + error.message);
     },
   });
 
@@ -241,11 +243,11 @@ export const UsersManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Notas salvas!");
+      toast.success(t("users.toastNotesSaved"));
       setIsNotesOpen(false);
     },
     onError: (error) => {
-      toast.error("Erro ao salvar notas: " + error.message);
+      toast.error(t("users.toastNotesErr") + error.message);
     },
   });
 
@@ -268,8 +270,8 @@ export const UsersManagement = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      const senha = data?.password || "Verifique o e-mail";
-      toast.success(`Usuário criado! Senha: ${senha}. E-mail enviado.`);
+      const senha = data?.password || "—";
+      toast.success(t("users.toastCreated", { senha }));
       setIsAddOpen(false);
       setAddForm({
         email: "",
@@ -281,7 +283,7 @@ export const UsersManagement = () => {
       });
     },
     onError: (error) => {
-      toast.error("Erro ao criar usuário: " + error.message);
+      toast.error(t("users.toastCreateErr") + error.message);
     },
   });
 
@@ -290,9 +292,9 @@ export const UsersManagement = () => {
     mutationFn: async (userId: string) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Sessão expirada. Redirecionando para login...");
+        toast.error(t("users.toastSessionExpired"));
         window.location.href = "/auth";
-        throw new Error("Sessão expirada");
+        throw new Error(t("users.toastSessionExpired"));
       }
 
       const { data, error } = await supabase.functions.invoke("delete-user", {
@@ -308,12 +310,12 @@ export const UsersManagement = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      toast.success("Usuário excluído completamente!");
+      toast.success(t("users.toastDeleted"));
       setIsDeleteOpen(false);
       setSelectedUser(null);
     },
     onError: (error) => {
-      toast.error("Erro ao excluir usuário: " + error.message);
+      toast.error(t("users.toastDeleteErr") + error.message);
     },
   });
 
@@ -330,10 +332,10 @@ export const UsersManagement = () => {
     },
     onSuccess: (newStatus) => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success(newStatus === "active" ? "Usuário desbloqueado!" : "Usuário bloqueado!");
+      toast.success(newStatus === "active" ? t("users.toastUnblocked") : t("users.toastBlocked"));
     },
     onError: (error) => {
-      toast.error("Erro ao atualizar status: " + error.message);
+      toast.error(t("users.toastStatusErr") + error.message);
     },
   });
 
@@ -342,9 +344,9 @@ export const UsersManagement = () => {
     mutationFn: async (userId: string) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Sessão expirada. Redirecionando para login...");
+        toast.error(t("users.toastSessionExpired"));
         window.location.href = "/auth";
-        throw new Error("Sessão expirada");
+        throw new Error(t("users.toastSessionExpired"));
       }
 
       const { data, error } = await supabase.functions.invoke("reset-user-password", {
@@ -359,11 +361,11 @@ export const UsersManagement = () => {
     },
     onSuccess: (data) => {
       setGeneratedPassword(data?.password || "1234");
-      toast.success("Senha resetada com sucesso!");
+      toast.success(t("users.toastResetOk"));
     },
     onError: () => {
       setGeneratedPassword("1234");
-      toast.success("Senha definida como provisória: 1234");
+      toast.success(t("users.toastResetFallback"));
     },
   });
 
@@ -436,24 +438,24 @@ export const UsersManagement = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copiado para a área de transferência!");
+    toast.success(t("users.toastCopied"));
   };
 
   const exportToCSV = () => {
     if (!filteredUsers || filteredUsers.length === 0) {
-      toast.error("Nenhum usuário para exportar");
+      toast.error(t("users.toastNoExport"));
       return;
     }
 
     const headers = [
-      "Nome",
-      "Email",
-      "Telefone",
-      "CPF",
-      "Plano",
-      "Dias Restantes",
-      "Status",
-      "Notas Admin"
+      t("users.csvHeaders.nome"),
+      t("users.csvHeaders.email"),
+      t("users.csvHeaders.telefone"),
+      t("users.csvHeaders.cpf"),
+      t("users.csvHeaders.plano"),
+      t("users.csvHeaders.dias"),
+      t("users.csvHeaders.status"),
+      t("users.csvHeaders.notas"),
     ];
 
     const rows = filteredUsers.map((user: UserData) => [
@@ -461,9 +463,9 @@ export const UsersManagement = () => {
       user.email || "",
       user.telefone || "",
       user.cpf || "",
-      user.planPrice >= 90 ? "Anual R$ 97,90" : user.planPrice > 0 ? "Mensal R$ 19,90" : "Free",
+      user.planPrice >= 90 ? t("users.csvAnnual") : user.planPrice > 0 ? t("users.csvMonthly") : t("users.csvFree"),
       user.daysRemaining !== null && user.daysRemaining !== undefined ? String(user.daysRemaining) : "",
-      user.status === "active" ? "Ativo" : "Bloqueado",
+      user.status === "active" ? t("users.statusActive") : t("users.statusBlocked"),
       user.admin_notes || ""
     ]);
 
@@ -482,7 +484,7 @@ export const UsersManagement = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success("Arquivo CSV exportado com sucesso!");
+    toast.success(t("users.toastCsvOk"));
   };
 
   const formatWhatsAppLink = (phone: string | null) => {
@@ -495,13 +497,13 @@ export const UsersManagement = () => {
   const getDaysRemainingBadge = (days: number | null | undefined) => {
     if (days === null || days === undefined) return null;
     if (days <= 0) {
-      return <Badge variant="destructive">Expirado</Badge>;
+      return <Badge variant="destructive">{t("users.expired")}</Badge>;
     } else if (days <= 7) {
-      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30">{t("users.daysShort", { count: days })}</Badge>;
     } else if (days <= 30) {
-      return <Badge variant="outline" className="bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30">{t("users.daysShort", { count: days })}</Badge>;
     } else {
-      return <Badge variant="outline" className="bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30">{t("users.daysShort", { count: days })}</Badge>;
     }
   };
 

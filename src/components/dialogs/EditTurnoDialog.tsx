@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface EditTurnoDialogProps {
   turno: any;
@@ -47,6 +48,7 @@ const tiposCombustivel = [
 ];
 
 export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTurnoDialogProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const { toast } = useToast();
@@ -137,7 +139,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar fontes de ganho",
+        title: t("editTurno.errLoadFontes"),
         description: error.message,
       });
     }
@@ -159,7 +161,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar veículos",
+        title: t("turnoDialog.errLoadVeiculos"),
         description: error.message,
       });
     }
@@ -188,8 +190,8 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     if (!formData.veiculo_id) {
       toast({
         variant: "destructive",
-        title: "Veículo obrigatório",
-        description: "Selecione um veículo antes de salvar o turno.",
+        title: t("editTurno.errVeiculo"),
+        description: t("editTurno.errVeiculoDesc"),
       });
       return;
     }
@@ -199,16 +201,16 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
       if (!fonte.fonte_ganho) {
         toast({
           variant: "destructive",
-          title: "Fonte de ganho obrigatória",
-          description: "Selecione uma fonte de ganho em todas as entradas.",
+          title: t("editTurno.errFonte"),
+          description: t("editTurno.errFonteDesc"),
         });
         return;
       }
       if (fonte.fonte_ganho === "outros" && !fonte.fonte_ganho_outros.trim()) {
         toast({
           variant: "destructive",
-          title: "Nome da fonte obrigatório",
-          description: "Informe o nome da fonte de ganho personalizada.",
+          title: t("editTurno.errFonteCustom"),
+          description: t("editTurno.errFonteCustomDesc"),
         });
         return;
       }
@@ -218,7 +220,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error(t("editTurno.errAuth"));
 
       // Calculate totals from all income sources
       const totalQuantidadeCorridas = fontesGanhoList.reduce((sum, fonte) => 
@@ -275,8 +277,8 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
       if (fontesError) throw fontesError;
 
       toast({
-        title: "Turno atualizado!",
-        description: "As alterações foram salvas com sucesso",
+        title: t("editTurno.okTitle"),
+        description: t("editTurno.okDesc"),
       });
 
       onOpenChange(false);
@@ -284,7 +286,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao atualizar turno",
+        title: t("editTurno.errSave"),
         description: error.message,
       });
     } finally {
@@ -296,19 +298,19 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Editar Turno</DialogTitle>
+          <DialogTitle>{t("editTurno.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="veiculo">Veículo</Label>
+              <Label htmlFor="veiculo">{t("turnoDialog.veiculo")}</Label>
               <Select
                 value={formData.veiculo_id}
                 onValueChange={(value) => setFormData({ ...formData, veiculo_id: value })}
                 required
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione o veículo" />
+                  <SelectValue placeholder={t("turnoDialog.selectVeiculo")} />
                 </SelectTrigger>
                 <SelectContent>
                   {veiculos.map((veiculo) => (
@@ -321,7 +323,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="data">Data</Label>
+              <Label htmlFor="data">{t("turnoDialog.data")}</Label>
               <Input
                 id="data"
                 type="date"
@@ -332,7 +334,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="outras_despesas">Outras Despesas</Label>
+              <Label htmlFor="outras_despesas">{t("turnoDialog.outrasDespesas")}</Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
                 <Input
@@ -346,7 +348,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="km_inicial">KM Inicial</Label>
+              <Label htmlFor="km_inicial">{t("turnoDialog.kmInicial")}</Label>
               <Input
                 id="km_inicial"
                 type="number"
@@ -358,7 +360,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="km_final">KM Final</Label>
+              <Label htmlFor="km_final">{t("turnoDialog.kmFinal")}</Label>
               <Input
                 id="km_final"
                 type="number"
@@ -370,7 +372,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="hora_inicio">Hora Início</Label>
+              <Label htmlFor="hora_inicio">{t("turnoDialog.horaInicio")}</Label>
               <Input
                 id="hora_inicio"
                 type="time"
@@ -381,7 +383,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="hora_fim">Hora Fim</Label>
+              <Label htmlFor="hora_fim">{t("turnoDialog.horaFim")}</Label>
               <Input
                 id="hora_fim"
                 type="time"
@@ -392,14 +394,14 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tipo_combustivel">Tipo de Combustível</Label>
+              <Label htmlFor="tipo_combustivel">{t("turnoDialog.tipoCombustivel")}</Label>
               <Select
                 value={formData.tipo_combustivel}
                 onValueChange={(value) => setFormData({ ...formData, tipo_combustivel: value })}
                 required
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
+                  <SelectValue placeholder={t("turnoDialog.selecione")} />
                 </SelectTrigger>
                 <SelectContent>
                   {tiposCombustivel.map((tipo) => (
@@ -412,7 +414,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="preco_combustivel">Preço Combustível</Label>
+              <Label htmlFor="preco_combustivel">{t("turnoDialog.precoCombustivel")}</Label>
               <Input
                 id="preco_combustivel"
                 type="text"
@@ -423,7 +425,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="consumo_combustivel">Consumo</Label>
+              <Label htmlFor="consumo_combustivel">{t("turnoDialog.consumo")}</Label>
               <Input
                 id="consumo_combustivel"
                 type="text"
@@ -435,10 +437,10 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
 
             <div className="space-y-4 md:col-span-2">
               <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold">Fontes de Ganho</Label>
+                <Label className="text-lg font-semibold">{t("turnoDialog.fontesGanho")}</Label>
                 <Button type="button" variant="outline" size="sm" onClick={addFonteGanho}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Adicionar Fonte
+                  {t("turnoDialog.addFonte")}
                 </Button>
               </div>
 
@@ -457,14 +459,14 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor={`fonte_ganho_${index}`}>Fonte de Ganho</Label>
+                    <Label htmlFor={`fonte_ganho_${index}`}>{t("turnoDialog.fonteGanho")}</Label>
                     <Select
                       value={fonte.fonte_ganho}
                       onValueChange={(value) => updateFonteGanho(index, "fonte_ganho", value)}
                       required
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione" />
+                        <SelectValue placeholder={t("turnoDialog.selecione")} />
                       </SelectTrigger>
                       <SelectContent>
                         {fontesGanho.map((f) => (
@@ -478,7 +480,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
 
                   {fonte.fonte_ganho === "outros" && (
                     <div className="space-y-2">
-                      <Label htmlFor={`fonte_ganho_outros_${index}`}>Nome da Fonte</Label>
+                      <Label htmlFor={`fonte_ganho_outros_${index}`}>{t("turnoDialog.nomeFonte")}</Label>
                       <Input
                         id={`fonte_ganho_outros_${index}`}
                         value={fonte.fonte_ganho_outros}
@@ -489,7 +491,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor={`quantidade_corridas_${index}`}>{fontesEntrega.includes(fonte.fonte_ganho) ? "Quantidade de Entregas" : "Quantidade de Corridas"}</Label>
+                    <Label htmlFor={`quantidade_corridas_${index}`}>{fontesEntrega.includes(fonte.fonte_ganho) ? t("turnoDialog.qtdEntregas") : t("turnoDialog.qtdCorridas")}</Label>
                     <Input
                       id={`quantidade_corridas_${index}`}
                       type="number"
@@ -501,7 +503,7 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor={`valor_ganho_${index}`}>Valor Ganho</Label>
+                    <Label htmlFor={`valor_ganho_${index}`}>{t("turnoDialog.valorGanho")}</Label>
                     <Input
                       id={`valor_ganho_${index}`}
                       type="text"
@@ -520,10 +522,10 @@ export const EditTurnoDialog = ({ turno, open, onOpenChange, onSuccess }: EditTu
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar"}
+              {loading ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

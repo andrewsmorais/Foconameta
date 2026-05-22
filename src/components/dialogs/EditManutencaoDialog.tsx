@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface EditManutencaoDialogProps {
   manutencao: {
@@ -45,6 +46,7 @@ const tiposManutencao = [
 ];
 
 export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess }: EditManutencaoDialogProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [showCustomType, setShowCustomType] = useState(false);
@@ -115,7 +117,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao carregar veículos",
+        title: t("turnoDialog.errLoadVeiculos"),
         description: error.message,
       });
     }
@@ -127,8 +129,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     if (!formData.veiculo_id) {
       toast({
         variant: "destructive",
-        title: "Veículo obrigatório",
-        description: "Selecione um veículo antes de salvar a manutenção.",
+        title: t("editManutencao.errVeiculo"),
+        description: t("editManutencao.errVeiculoDesc"),
       });
       return;
     }
@@ -157,8 +159,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
       if (error) throw error;
 
       toast({
-        title: "Manutenção atualizada!",
-        description: "As alterações foram salvas com sucesso",
+        title: t("editManutencao.okTitle"),
+        description: t("editManutencao.okDesc"),
       });
 
       onOpenChange(false);
@@ -166,7 +168,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao atualizar manutenção",
+        title: t("editManutencao.errSave"),
         description: error.message,
       });
     } finally {
@@ -178,18 +180,18 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Editar Manutenção</DialogTitle>
+          <DialogTitle>{t("editManutencao.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="veiculo">Veículo</Label>
+            <Label htmlFor="veiculo">{t("turnoDialog.veiculo")}</Label>
             <Select
               value={formData.veiculo_id}
               onValueChange={(value) => setFormData({ ...formData, veiculo_id: value })}
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o veículo" />
+                <SelectValue placeholder={t("manutencaoDialog.selecionePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 {veiculos.map((veiculo) => (
@@ -202,7 +204,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-3">
-            <Label>Tipo de Manutenção</Label>
+            <Label>{t("manutencaoDialog.tipo")}</Label>
             <div className="grid grid-cols-1 gap-3">
               {/* Cards pré-prontos */}
               <Button
@@ -215,8 +217,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
                 }}
               >
                 <div className="text-left">
-                  <div className="font-semibold">Troca de Óleo</div>
-                  <div className="text-xs opacity-80">Manutenção preventiva do motor</div>
+                  <div className="font-semibold">{t("manutencaoDialog.trocaOleo")}</div>
+                  <div className="text-xs opacity-80">{t("manutencaoDialog.tipoTrocaOleoDesc")}</div>
                 </div>
               </Button>
               
@@ -230,8 +232,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
                 }}
               >
                 <div className="text-left">
-                  <div className="font-semibold">Balanceamento e Alinhamento</div>
-                  <div className="text-xs opacity-80">Ajuste de pneus e direção</div>
+                  <div className="font-semibold">{t("manutencaoDialog.balanceamento")}</div>
+                  <div className="text-xs opacity-80">{t("manutencaoDialog.tipoBalanceamentoDesc")}</div>
                 </div>
               </Button>
               
@@ -245,8 +247,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
                 }}
               >
                 <div className="text-left">
-                  <div className="font-semibold">Revisão</div>
-                  <div className="text-xs opacity-80">Revisão completa do veículo</div>
+                  <div className="font-semibold">{t("manutencaoDialog.revisao")}</div>
+                  <div className="text-xs opacity-80">{t("manutencaoDialog.tipoRevisaoDesc")}</div>
                 </div>
               </Button>
 
@@ -263,8 +265,8 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
                 }}
               >
                 <div className="text-left">
-                  <div className="font-semibold">+ Adicionar Outro Tipo</div>
-                  <div className="text-xs opacity-80">Criar manutenção personalizada</div>
+                  <div className="font-semibold">{t("manutencaoDialog.addOutro")}</div>
+                  <div className="text-xs opacity-80">{t("manutencaoDialog.addOutroDesc")}</div>
                 </div>
               </Button>
             </div>
@@ -272,7 +274,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="data">Data</Label>
+            <Label htmlFor="data">{t("turnoDialog.data")}</Label>
             <Input
               id="data"
               type="date"
@@ -284,7 +286,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="km_atual">KM Inicial</Label>
+            <Label htmlFor="km_atual">{t("editManutencao.kmInicial")}</Label>
             <Input
               id="km_atual"
               type="number"
@@ -296,7 +298,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="km_final">KM Final (opcional)</Label>
+            <Label htmlFor="km_final">{t("editManutencao.kmFinalOpt")}</Label>
             <Input
               id="km_final"
               type="number"
@@ -309,12 +311,12 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           <div className="space-y-2">
             <Label htmlFor="valor">
               {formData.tipo_manutencao === "troca_oleo" 
-                ? "Custo da Troca do Óleo" 
+                ? t("manutencaoDialog.custoOleo")
                 : formData.tipo_manutencao === "balanceamento_alinhamento"
-                ? "Custo do Balanceamento e Alinhamento"
+                ? t("manutencaoDialog.custoBalanceamento")
                 : formData.tipo_manutencao === "revisao"
-                ? "Custo da Revisão"
-                : "Valor"}
+                ? t("manutencaoDialog.custoRevisao")
+                : t("editManutencao.valor")}
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">R$</span>
@@ -330,7 +332,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nome_oficina_produto">Nome da Oficina/Produto (opcional)</Label>
+            <Label htmlFor="nome_oficina_produto">{t("editManutencao.nomeOficinaProdutoOpt")}</Label>
             <Input
               id="nome_oficina_produto"
               type="text"
@@ -343,7 +345,7 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           {formData.tipo_manutencao !== "balanceamento_alinhamento" && (
             <div className="space-y-2">
               <Label htmlFor="peca_trocada">
-                {formData.tipo_manutencao === "troca_oleo" ? "Óleo Trocado (opcional)" : "Peça Trocada (opcional)"}
+                {formData.tipo_manutencao === "troca_oleo" ? t("editManutencao.oleoTrocadoOpt") : t("editManutencao.pecaTrocadaOpt")}
               </Label>
               <Input
                 id="peca_trocada"
@@ -357,12 +359,12 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           <div className="space-y-2">
             <Label htmlFor="proximo_km">
               {formData.tipo_manutencao === "troca_oleo" 
-                ? "Próximo KM da Troca do Óleo (opcional)" 
+                ? t("editManutencao.proximoKmOleoOpt")
                 : formData.tipo_manutencao === "balanceamento_alinhamento"
-                ? "Próximo KM Balanceamento e Alinhamento (opcional)"
+                ? t("editManutencao.proximoKmBalancOpt")
                 : formData.tipo_manutencao === "revisao"
-                ? "Próximo KM para Revisão (opcional)"
-                : "Próximo KM para Manutenção (opcional)"}
+                ? t("editManutencao.proximoKmRevisaoOpt")
+                : t("editManutencao.proximoKmManutOpt")}
             </Label>
             <Input
               id="proximo_km"
@@ -376,12 +378,12 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
           <div className="space-y-2">
             <Label htmlFor="observacoes">
               {formData.tipo_manutencao === "troca_oleo" 
-                ? "Descrição do Óleo Trocado (opcional)" 
+                ? t("editManutencao.descricaoOleoOpt")
                 : formData.tipo_manutencao === "balanceamento_alinhamento"
-                ? "Descrição do Balanceamento e Alinhamento (opcional)"
+                ? t("editManutencao.descricaoBalancOpt")
                 : formData.tipo_manutencao === "revisao"
-                ? "Descrição da Revisão (opcional)"
-                : "Observações (opcional)"}
+                ? t("editManutencao.descricaoRevisaoOpt")
+                : t("editManutencao.observacoesOpt")}
             </Label>
             <Textarea
               id="observacoes"
@@ -393,10 +395,10 @@ export const EditManutencaoDialog = ({ manutencao, open, onOpenChange, onSuccess
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar Alterações"}
+              {loading ? t("common.saving") : t("common.saveChanges")}
             </Button>
           </div>
         </form>

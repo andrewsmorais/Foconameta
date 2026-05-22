@@ -16,10 +16,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, Pencil } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/dateLocale";
 
 interface Transacao {
   id: string;
@@ -41,6 +42,8 @@ interface EditGanhoDespesaDialogProps {
 }
 
 export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespesaDialogProps) => {
+  const { t } = useTranslation();
+  const dfLocale = getDateLocale();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     tipo: transacao.tipo,
@@ -83,14 +86,14 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
   const handleSubmit = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error(t("editGanhoDespesa.errAuth"));
 
       const valorNumerico = parseFloat(formData.valor.replace(",", "."));
       if (isNaN(valorNumerico) || valorNumerico <= 0) {
         toast({
           variant: "destructive",
-          title: "Valor inválido",
-          description: "Por favor, insira um valor válido",
+          title: t("editGanhoDespesa.errValor"),
+          description: t("editGanhoDespesa.errValorDesc"),
         });
         return;
       }
@@ -121,15 +124,15 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
       if (error) throw error;
 
       toast({
-        title: "Transação atualizada",
-        description: "A transação foi atualizada com sucesso",
+        title: t("editGanhoDespesa.okTitle"),
+        description: t("editGanhoDespesa.okDesc"),
       });
       setOpen(false);
       onSuccess();
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erro ao atualizar",
+        title: t("editGanhoDespesa.errSave"),
         description: error.message,
       });
     }
@@ -144,13 +147,13 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Editar Transação</DialogTitle>
+          <DialogTitle>{t("editGanhoDespesa.title")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Categoria (Tipo) */}
           <div className="space-y-2">
-            <Label>Categoria</Label>
+            <Label>{t("editGanhoDespesa.categoria")}</Label>
             <Select
               value={formData.tipo}
               onValueChange={(value) => setFormData((prev) => ({ ...prev, tipo: value }))}
@@ -159,15 +162,15 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ganho">Ganho</SelectItem>
-                <SelectItem value="despesa">Despesa</SelectItem>
+                <SelectItem value="ganho">{t("editGanhoDespesa.ganho")}</SelectItem>
+                <SelectItem value="despesa">{t("editGanhoDespesa.despesa")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Nome */}
           <div className="space-y-2">
-            <Label>Nome da Despesa ou Ganho</Label>
+            <Label>{t("editGanhoDespesa.nome")}</Label>
             <Input
               value={formData.nome}
               onChange={(e) => setFormData((prev) => ({ ...prev, nome: e.target.value }))}
@@ -176,7 +179,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
 
           {/* Valor */}
           <div className="space-y-2">
-            <Label>Valor</Label>
+            <Label>{t("editGanhoDespesa.valor")}</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                 R$
@@ -191,7 +194,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
 
           {/* Data */}
           <div className="space-y-2">
-            <Label>Data</Label>
+            <Label>{t("editGanhoDespesa.data")}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -202,7 +205,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.data ? format(formData.data, "dd/MM/yyyy", { locale: ptBR }) : "Selecione"}
+                  {formData.data ? format(formData.data, "dd/MM/yyyy", { locale: dfLocale }) : t("editGanhoDespesa.selecione")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -210,7 +213,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                   mode="single"
                   selected={formData.data}
                   onSelect={(date) => date && setFormData((prev) => ({ ...prev, data: date }))}
-                  locale={ptBR}
+                  locale={dfLocale}
                 />
               </PopoverContent>
             </Popover>
@@ -218,7 +221,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
 
           {/* Recorrente */}
           <div className="flex items-center justify-between">
-            <Label>Recorrente</Label>
+            <Label>{t("editGanhoDespesa.recorrente")}</Label>
             <Switch
               checked={formData.recorrente}
               onCheckedChange={(checked) =>
@@ -231,7 +234,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
           {!formData.recorrente && (
             <>
               <div className="space-y-2">
-                <Label>Data Início</Label>
+                <Label>{t("editGanhoDespesa.dataInicio")}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -243,8 +246,8 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formData.data_inicio
-                        ? format(formData.data_inicio, "dd/MM/yyyy", { locale: ptBR })
-                        : "Selecione"}
+                        ? format(formData.data_inicio, "dd/MM/yyyy", { locale: dfLocale })
+                        : t("editGanhoDespesa.selecione")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -254,14 +257,14 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                       onSelect={(date) =>
                         setFormData((prev) => ({ ...prev, data_inicio: date }))
                       }
-                      locale={ptBR}
+                      locale={dfLocale}
                     />
                   </PopoverContent>
                 </Popover>
               </div>
 
               <div className="space-y-2">
-                <Label>Data Fim</Label>
+                <Label>{t("editGanhoDespesa.dataFim")}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -273,8 +276,8 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formData.data_fim
-                        ? format(formData.data_fim, "dd/MM/yyyy", { locale: ptBR })
-                        : "Selecione"}
+                        ? format(formData.data_fim, "dd/MM/yyyy", { locale: dfLocale })
+                        : t("editGanhoDespesa.selecione")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -284,7 +287,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
                       onSelect={(date) =>
                         setFormData((prev) => ({ ...prev, data_fim: date }))
                       }
-                      locale={ptBR}
+                      locale={dfLocale}
                     />
                   </PopoverContent>
                 </Popover>
@@ -294,7 +297,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
 
           {/* Incluir no Dashboard */}
           <div className="flex items-center justify-between">
-            <Label>Incluir este item nos cálculos do Dashboard</Label>
+            <Label>{t("editGanhoDespesa.incluirDashboard")}</Label>
             <Switch
               checked={formData.incluir_dashboard}
               onCheckedChange={(checked) =>
@@ -305,7 +308,7 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
 
           {/* Observações */}
           <div className="space-y-2">
-            <Label>Observação (Opcional)</Label>
+            <Label>{t("editGanhoDespesa.observacaoOpt")}</Label>
             <Textarea
               value={formData.observacoes}
               onChange={(e) =>
@@ -318,10 +321,10 @@ export const EditGanhoDespesaDialog = ({ transacao, onSuccess }: EditGanhoDespes
           {/* Botões */}
           <div className="flex gap-2 pt-4">
             <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>
-              Cancelar
+              {t("common.cancel")}
             </Button>
             <Button className="flex-1" onClick={handleSubmit}>
-              Salvar
+              {t("common.save")}
             </Button>
           </div>
         </div>

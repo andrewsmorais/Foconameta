@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserPlus, CreditCard, Activity, Bell } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/dateLocale";
 
 interface ActivityItem {
   id: string;
@@ -18,6 +19,8 @@ interface ActivityItem {
 }
 
 export const RecentActivities = () => {
+  const { t } = useTranslation();
+  const dfLocale = getDateLocale();
   const [realtimeActivities, setRealtimeActivities] = useState<ActivityItem[]>([]);
 
   const { data: initialActivities, isLoading } = useQuery({
@@ -36,9 +39,9 @@ export const RecentActivities = () => {
         activities.push({
           id: `profile-${profile.id}`,
           type: "new_user",
-          description: profile.nome_completo || "Novo usuário",
+          description: profile.nome_completo || t("superAdmin.actNewUser"),
           timestamp: profile.created_at || new Date().toISOString(),
-          details: "se cadastrou na plataforma",
+          details: t("superAdmin.actNewUserDesc"),
         });
       });
 
@@ -61,9 +64,9 @@ export const RecentActivities = () => {
           activities.push({
             id: `sub-${sub.id}`,
             type: "new_subscription",
-            description: profile?.nome_completo || "Usuário",
+            description: profile?.nome_completo || t("superAdmin.actNewSub"),
             timestamp: sub.created_at || new Date().toISOString(),
-            details: `assinou o plano ${plan.name}`,
+            details: t("superAdmin.actSignedPlan", { name: plan.name }),
           });
         }
       }
@@ -86,9 +89,9 @@ export const RecentActivities = () => {
           const newActivity: ActivityItem = {
             id: `profile-${payload.new.id}`,
             type: "new_user",
-            description: payload.new.nome_completo || "Novo usuário",
+            description: payload.new.nome_completo || t("superAdmin.actNewUser"),
             timestamp: payload.new.created_at || new Date().toISOString(),
-            details: "se cadastrou na plataforma",
+            details: t("superAdmin.actNewUserDesc"),
           };
           setRealtimeActivities((prev) => [newActivity, ...prev].slice(0, 5));
         }
@@ -106,9 +109,9 @@ export const RecentActivities = () => {
           const newActivity: ActivityItem = {
             id: `sub-${payload.new.id}`,
             type: "new_subscription",
-            description: profile?.nome_completo || "Usuário",
+            description: profile?.nome_completo || t("superAdmin.actNewSub"),
             timestamp: payload.new.created_at || new Date().toISOString(),
-            details: "fez uma nova assinatura",
+            details: t("superAdmin.actNewSubDesc"),
           };
           setRealtimeActivities((prev) => [newActivity, ...prev].slice(0, 5));
         }
@@ -166,9 +169,9 @@ export const RecentActivities = () => {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-xl text-[hsl(217,91%,60%)]">
-            Atividades Recentes
+            {t("superAdmin.recentActivities")}
           </CardTitle>
-          <CardDescription>Cadastros e assinaturas em tempo real</CardDescription>
+          <CardDescription>{t("superAdmin.recentActivitiesDesc")}</CardDescription>
         </div>
         <Bell className="h-6 w-6 text-[hsl(217,91%,60%)] animate-pulse" />
       </CardHeader>
@@ -177,7 +180,7 @@ export const RecentActivities = () => {
           {allActivities.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
               <Activity className="h-12 w-12 mb-2 opacity-50" />
-              <p>Nenhuma atividade recente</p>
+              <p>{t("superAdmin.noActivities")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -193,7 +196,7 @@ export const RecentActivities = () => {
                         {activity.description}
                       </span>
                       <Badge variant="outline" className={getBadgeColor(activity.type)}>
-                        {activity.type === "new_user" ? "Cadastro" : "Assinatura"}
+                        {activity.type === "new_user" ? t("superAdmin.badgeNewUser") : t("superAdmin.badgeNewSub")}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -202,7 +205,7 @@ export const RecentActivities = () => {
                     <p className="text-xs text-muted-foreground mt-1">
                       {formatDistanceToNow(new Date(activity.timestamp), {
                         addSuffix: true,
-                        locale: ptBR,
+                        locale: dfLocale,
                       })}
                     </p>
                   </div>

@@ -12,10 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, subDays, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/dateLocale";
 
 export default function SuperAdmin() {
+  const { t } = useTranslation();
+  const dfLocale = getDateLocale();
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   
@@ -63,7 +66,7 @@ export default function SuperAdmin() {
         setDateRange({ start: now, end: now });
         break;
       case "week":
-        setDateRange({ start: startOfWeek(now, { locale: ptBR }), end: endOfWeek(now, { locale: ptBR }) });
+        setDateRange({ start: startOfWeek(now, { locale: dfLocale }), end: endOfWeek(now, { locale: dfLocale }) });
         break;
       case "month":
         setDateRange({ start: startOfMonth(now), end: endOfMonth(now) });
@@ -88,7 +91,7 @@ export default function SuperAdmin() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Verificando permissões...</p>
+          <p className="mt-4 text-muted-foreground">{t("superAdmin.verifying")}</p>
         </div>
       </div>
     );
@@ -114,10 +117,10 @@ export default function SuperAdmin() {
             </Button>
             <div>
               <h1 className="text-4xl font-bold text-[hsl(217,91%,60%)]">
-                Super Admin Dashboard
+                {t("superAdmin.title")}
               </h1>
               <p className="text-muted-foreground mt-2">
-                Gerenciamento completo da plataforma Bateu a Meta
+                {t("superAdmin.subtitle")}
               </p>
             </div>
           </div>
@@ -127,16 +130,16 @@ export default function SuperAdmin() {
             <Calendar className="h-5 w-5 text-muted-foreground" />
             <Select value={selectedPeriod} onValueChange={handlePeriodChange}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecionar período" />
+                <SelectValue placeholder={t("superAdmin.selectPeriod")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="today">Hoje</SelectItem>
-                <SelectItem value="week">Esta Semana</SelectItem>
-                <SelectItem value="month">Este Mês</SelectItem>
-                <SelectItem value="3months">Últimos 3 Meses</SelectItem>
-                <SelectItem value="6months">Últimos 6 Meses</SelectItem>
-                <SelectItem value="year">Último Ano</SelectItem>
-                <SelectItem value="custom">Personalizado</SelectItem>
+                <SelectItem value="today">{t("superAdmin.today")}</SelectItem>
+                <SelectItem value="week">{t("superAdmin.week")}</SelectItem>
+                <SelectItem value="month">{t("superAdmin.month")}</SelectItem>
+                <SelectItem value="3months">{t("superAdmin.last3")}</SelectItem>
+                <SelectItem value="6months">{t("superAdmin.last6")}</SelectItem>
+                <SelectItem value="year">{t("superAdmin.lastYear")}</SelectItem>
+                <SelectItem value="custom">{t("superAdmin.custom")}</SelectItem>
               </SelectContent>
             </Select>
             
@@ -156,7 +159,7 @@ export default function SuperAdmin() {
                         setDateRange({ start: range.from, end: range.to });
                       }
                     }}
-                    locale={ptBR}
+                    locale={dfLocale}
                     numberOfMonths={2}
                   />
                 </PopoverContent>
@@ -185,11 +188,11 @@ export default function SuperAdmin() {
           <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-grid">
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
-              Usuários
+              {t("superAdmin.users")}
             </TabsTrigger>
             <TabsTrigger value="webhooks" className="gap-2">
               <Webhook className="h-4 w-4" />
-              Webhooks
+              {t("superAdmin.webhooks")}
             </TabsTrigger>
           </TabsList>
 

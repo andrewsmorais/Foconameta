@@ -3,9 +3,11 @@ import { useOfflineContext } from '@/contexts/OfflineContext';
 import { Wifi, WifiOff, RefreshCw, Cloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const OfflineIndicator: React.FC = () => {
   const { isOnline, isSyncing, pendingCount, forceSync } = useOfflineContext();
+  const { t } = useTranslation();
 
   if (isOnline && pendingCount === 0 && !isSyncing) {
     return null;
@@ -28,9 +30,9 @@ export const OfflineIndicator: React.FC = () => {
         "text-sm font-medium",
         isOnline ? "text-primary" : "text-destructive"
       )}>
-        {!isOnline && "Modo Offline"}
-        {isOnline && isSyncing && "Sincronizando..."}
-        {isOnline && !isSyncing && pendingCount > 0 && `${pendingCount} pendente(s)`}
+        {!isOnline && t('offline.offlineMode')}
+        {isOnline && isSyncing && t('common.carregando')}
+        {isOnline && !isSyncing && pendingCount > 0 && t('offline.syncedFail', { count: pendingCount })}
       </span>
 
       {isOnline && pendingCount > 0 && !isSyncing && (

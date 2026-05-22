@@ -334,5 +334,30 @@
     "errValor": "Importe inválido",
     "errValorDesc": "Por favor, introduce un importe válido",
     "errAuth": "Usuario no autenticado"
+  },
+  "superAdmin": {
+    "title": "Panel de Super Admin",
+    "subtitle": "Gestión completa de la plataforma Bateu a Meta",
+    "verifying": "Verificando permisos...",
+    "selectPeriod": "Seleccionar período",
+    "today": "Hoy",
+    "week": "Esta semana",
+    "month": "Este mes",
+    "last3": "Últimos 3 meses",
+    "last6": "Últimos 6 meses",
+    "lastYear": "Último año",
+    "custom": "Personalizado",
+    "users": "Usuarios",
+    "webhooks": "Webhooks",
+    "recentActivities": "Actividades recientes",
+    "recentActivitiesDesc": "Registros y suscripciones en tiempo real",
+    "noActivities": "Sin actividad reciente",
+    "badgeNewUser": "Registro",
+    "badgeNewSub": "Suscripción",
+    "actNewUser": "Nuevo usuario",
+    "actNewSub": "Usuario",
+    "actNewUserDesc": "se registró en la plataforma",
+    "actNewSubDesc": "inició una nueva suscripción",
+    "actSignedPlan": "se suscribió al plan {{name}}"
   }
 }

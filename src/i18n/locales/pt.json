@@ -332,5 +332,30 @@
     "errValor": "Valor inválido",
     "errValorDesc": "Por favor, insira um valor válido",
     "errAuth": "Usuário não autenticado"
+  },
+  "superAdmin": {
+    "title": "Super Admin Dashboard",
+    "subtitle": "Gerenciamento completo da plataforma Bateu a Meta",
+    "verifying": "Verificando permissões...",
+    "selectPeriod": "Selecionar período",
+    "today": "Hoje",
+    "week": "Esta Semana",
+    "month": "Este Mês",
+    "last3": "Últimos 3 Meses",
+    "last6": "Últimos 6 Meses",
+    "lastYear": "Último Ano",
+    "custom": "Personalizado",
+    "users": "Usuários",
+    "webhooks": "Webhooks",
+    "recentActivities": "Atividades Recentes",
+    "recentActivitiesDesc": "Cadastros e assinaturas em tempo real",
+    "noActivities": "Nenhuma atividade recente",
+    "badgeNewUser": "Cadastro",
+    "badgeNewSub": "Assinatura",
+    "actNewUser": "Novo usuário",
+    "actNewSub": "Usuário",
+    "actNewUserDesc": "se cadastrou na plataforma",
+    "actNewSubDesc": "fez uma nova assinatura",
+    "actSignedPlan": "assinou o plano {{name}}"
   }
 }

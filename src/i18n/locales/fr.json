@@ -334,5 +334,30 @@
     "errValor": "Montant invalide",
     "errValorDesc": "Veuillez saisir un montant valide",
     "errAuth": "Utilisateur non authentifié"
+  },
+  "superAdmin": {
+    "title": "Tableau de bord Super Admin",
+    "subtitle": "Gestion complète de la plateforme Bateu a Meta",
+    "verifying": "Vérification des autorisations...",
+    "selectPeriod": "Sélectionner la période",
+    "today": "Aujourd'hui",
+    "week": "Cette semaine",
+    "month": "Ce mois",
+    "last3": "3 derniers mois",
+    "last6": "6 derniers mois",
+    "lastYear": "Dernière année",
+    "custom": "Personnalisé",
+    "users": "Utilisateurs",
+    "webhooks": "Webhooks",
+    "recentActivities": "Activités récentes",
+    "recentActivitiesDesc": "Inscriptions et abonnements en temps réel",
+    "noActivities": "Aucune activité récente",
+    "badgeNewUser": "Inscription",
+    "badgeNewSub": "Abonnement",
+    "actNewUser": "Nouvel utilisateur",
+    "actNewSub": "Utilisateur",
+    "actNewUserDesc": "s'est inscrit sur la plateforme",
+    "actNewSubDesc": "a souscrit un nouvel abonnement",
+    "actSignedPlan": "a souscrit au plan {{name}}"
   }
 }

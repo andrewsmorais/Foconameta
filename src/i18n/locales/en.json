@@ -334,5 +334,30 @@
     "errValor": "Invalid amount",
     "errValorDesc": "Please enter a valid amount",
     "errAuth": "User not authenticated"
+  },
+  "superAdmin": {
+    "title": "Super Admin Dashboard",
+    "subtitle": "Full management of the Bateu a Meta platform",
+    "verifying": "Verifying permissions...",
+    "selectPeriod": "Select period",
+    "today": "Today",
+    "week": "This Week",
+    "month": "This Month",
+    "last3": "Last 3 Months",
+    "last6": "Last 6 Months",
+    "lastYear": "Last Year",
+    "custom": "Custom",
+    "users": "Users",
+    "webhooks": "Webhooks",
+    "recentActivities": "Recent Activities",
+    "recentActivitiesDesc": "Sign-ups and subscriptions in real time",
+    "noActivities": "No recent activity",
+    "badgeNewUser": "Sign-up",
+    "badgeNewSub": "Subscription",
+    "actNewUser": "New user",
+    "actNewSub": "User",
+    "actNewUserDesc": "signed up on the platform",
+    "actNewSubDesc": "started a new subscription",
+    "actSignedPlan": "subscribed to the {{name}} plan"
   }
 }

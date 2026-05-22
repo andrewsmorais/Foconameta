@@ -4,6 +4,7 @@ import { syncFromServer, syncPendingOperations } from '@/lib/syncService';
 import * as db from '@/lib/indexedDB';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 interface OfflineContextType {
   isOnline: boolean;
@@ -66,14 +67,14 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // First, push pending operations
       const pending = await db.getPendingOperations();
       if (pending.length > 0) {
-        toast.info(`Sincronizando ${pending.length} alterações...`);
+        toast.info(i18n.t('offline.syncing', { count: pending.length }));
         const { success, failed } = await syncPendingOperations();
         
         if (success > 0) {
-          toast.success(`${success} alterações sincronizadas`);
+          toast.success(i18n.t('offline.syncedOk', { count: success }));
         }
         if (failed > 0) {
-          toast.error(`${failed} alterações falharam`);
+          toast.error(i18n.t('offline.syncedFail', { count: failed }));
         }
       }
 
@@ -83,7 +84,7 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await updatePendingCount();
     } catch (err) {
       console.error('[OfflineContext] Sync failed:', err);
-      toast.error('Erro ao sincronizar dados');
+      toast.error(i18n.t('offline.syncError'));
     } finally {
       setIsSyncing(false);
     }
@@ -112,7 +113,7 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (isOnline) {
       await performSync();
     } else {
-      toast.warning('Você está offline. Sincronização pendente.');
+      toast.warning(i18n.t('offline.pendingWarn'));
     }
   }, [isOnline, performSync]);
 

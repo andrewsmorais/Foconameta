@@ -9,13 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { CheckCircle } from "lucide-react";
-
-const authSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(4, "Senha deve ter no mínimo 4 caracteres"),
-});
+import { useTranslation } from "react-i18next";
 
 const Auth = () => {
+  const { t } = useTranslation();
+  const authSchema = z.object({
+    email: z.string().email(t("auth.invalidEmail")),
+    password: z.string().min(4, t("auth.invalidPassword")),
+  });
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,8 +53,8 @@ const Auth = () => {
     if (!email) {
       toast({
         variant: "destructive",
-        title: "Erro",
-        description: "Por favor, informe seu email",
+        title: t("common.error"),
+        description: t("auth.errEmailRequired"),
       });
       return;
     }
@@ -68,21 +69,21 @@ const Auth = () => {
       if (error) {
         toast({
           variant: "destructive",
-          title: "Erro",
+          title: t("common.error"),
           description: error.message,
         });
       } else {
         toast({
-          title: "Email enviado!",
-          description: "Verifique sua caixa de entrada para redefinir sua senha",
+          title: t("auth.emailSent"),
+          description: t("auth.emailSentDesc"),
         });
         setIsForgotPassword(false);
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Erro",
-        description: "Ocorreu um erro inesperado",
+        title: t("common.error"),
+        description: t("auth.errUnexpected"),
       });
     } finally {
       setLoading(false);
@@ -98,7 +99,7 @@ const Auth = () => {
       if (error instanceof z.ZodError) {
         toast({
           variant: "destructive",
-          title: "Erro de validação",
+          title: t("auth.errValidation"),
           description: error.errors[0].message,
         });
         return;
@@ -117,13 +118,13 @@ const Auth = () => {
         if (error.message.includes("Invalid login credentials")) {
           toast({
             variant: "destructive",
-            title: "Erro ao fazer login",
-            description: "Email ou senha incorretos",
+            title: t("auth.errLogin"),
+            description: t("auth.errInvalidCreds"),
           });
         } else {
           toast({
             variant: "destructive",
-            title: "Erro ao fazer login",
+            title: t("auth.errLogin"),
             description: error.message,
           });
         }
@@ -136,14 +137,14 @@ const Auth = () => {
 
         if (subData?.hasActiveSubscription) {
           toast({
-            title: "Login realizado com sucesso!",
-            description: "Bem-vindo de volta",
+            title: t("auth.loginOk"),
+            description: t("auth.welcomeBack"),
           });
           navigate("/dashboard");
         } else {
           toast({
-            title: "Login realizado!",
-            description: "Escolha seu plano para continuar",
+            title: t("auth.loginOkChoosePlan"),
+            description: t("auth.choosePlan"),
           });
           navigate("/planos");
         }
@@ -151,8 +152,8 @@ const Auth = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Erro",
-        description: "Ocorreu um erro inesperado",
+        title: t("common.error"),
+        description: t("auth.errUnexpected"),
       });
     } finally {
       setLoading(false);
@@ -175,9 +176,9 @@ const Auth = () => {
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-8 w-8 text-green-500 flex-shrink-0" />
                 <div>
-                  <p className="font-bold text-green-500">Pagamento confirmado!</p>
+                  <p className="font-bold text-green-500">{t("auth.paymentConfirmed")}</p>
                   <p className="text-sm text-muted-foreground">
-                    Verifique seu email para os dados de acesso. Senha provisória: 1234
+                    {t("auth.paymentConfirmedDesc")}
                   </p>
                 </div>
               </div>
@@ -188,19 +189,17 @@ const Auth = () => {
         <Card className="w-full">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl md:text-4xl font-bold text-center">
-              {isForgotPassword ? "Recuperar Senha" : "Entrar"}
+              {isForgotPassword ? t("auth.forgotTitle") : t("auth.title")}
             </CardTitle>
             <CardDescription className="text-center">
-              {isForgotPassword
-                ? "Digite seu email para receber o link de recuperação"
-                : "Entre com suas credenciais para acessar o dashboard"}
+              {isForgotPassword ? t("auth.forgotSubtitle") : t("auth.subtitle")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {isForgotPassword ? (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("auth.email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -210,7 +209,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Enviando..." : "Enviar Link de Recuperação"}
+                  {loading ? t("auth.sending") : t("auth.sendReset")}
                 </Button>
                 <div className="text-center">
                   <button
@@ -218,7 +217,7 @@ const Auth = () => {
                     onClick={() => setIsForgotPassword(false)}
                     className="text-primary hover:underline text-sm"
                   >
-                    Voltar ao login
+                    {t("auth.backToLogin")}
                   </button>
                 </div>
               </form>
@@ -226,7 +225,7 @@ const Auth = () => {
               <>
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("auth.email")}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -236,7 +235,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Senha</Label>
+                    <Label htmlFor="password">{t("auth.password")}</Label>
                     <Input
                       id="password"
                       type="password"
@@ -251,21 +250,21 @@ const Auth = () => {
                       onClick={() => setIsForgotPassword(true)}
                       className="text-primary hover:underline text-sm"
                     >
-                      Esqueci minha senha
+                      {t("auth.forgotLink")}
                     </button>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Processando..." : "Entrar"}
+                    {loading ? t("auth.processing") : t("auth.submit")}
                   </Button>
                 </form>
 
                 <div className="mt-4 text-center text-sm text-muted-foreground">
-                  <p>Ainda não é cliente?</p>
+                  <p>{t("auth.notClient")}</p>
                   <button
                     onClick={() => navigate("/#pricing")}
                     className="text-primary hover:underline font-medium"
                   >
-                    Assine agora e comece a usar
+                    {t("auth.subscribeCta")}
                   </button>
                 </div>
               </>

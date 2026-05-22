@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Webhook, Plus, Edit, Trash2, TestTube } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const WebhookConfig = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newWebhook, setNewWebhook] = useState({
@@ -39,12 +41,12 @@ export const WebhookConfig = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["webhooks"] });
-      toast.success("Webhook adicionado com sucesso!");
+      toast.success(t("webhooks.toastAdded"));
       setIsAddOpen(false);
       setNewWebhook({ name: "", url: "", event_type: "sale_approved" });
     },
     onError: (error) => {
-      toast.error("Erro ao adicionar webhook: " + error.message);
+      toast.error(t("webhooks.toastAddErr") + error.message);
     },
   });
 
@@ -58,7 +60,7 @@ export const WebhookConfig = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["webhooks"] });
-      toast.success("Status atualizado!");
+      toast.success(t("webhooks.toastStatus"));
     },
   });
 
@@ -72,7 +74,7 @@ export const WebhookConfig = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["webhooks"] });
-      toast.success("Webhook excluído!");
+      toast.success(t("webhooks.toastDeleted"));
     },
   });
 
@@ -94,10 +96,10 @@ export const WebhookConfig = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Webhook de teste enviado!");
+      toast.success(t("webhooks.toastTest"));
     },
     onError: (error) => {
-      toast.error("Erro ao testar webhook: " + error.message);
+      toast.error(t("webhooks.toastTestErr") + error.message);
     },
   });
 
@@ -108,32 +110,32 @@ export const WebhookConfig = () => {
           <div>
             <CardTitle className="text-2xl flex items-center gap-2">
               <Webhook className="h-6 w-6" />
-              Configuração de Webhooks
+              {t("webhooks.title")}
             </CardTitle>
             <CardDescription>
-              Configure URLs para receber notificações de eventos da plataforma
+              {t("webhooks.desc")}
             </CardDescription>
           </div>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2">
                 <Plus className="h-4 w-4" />
-                Adicionar Webhook
+                {t("webhooks.addBtn")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Novo Webhook</DialogTitle>
+                <DialogTitle>{t("webhooks.newTitle")}</DialogTitle>
                 <DialogDescription>
-                  Adicione uma URL para receber notificações de vendas aprovadas
+                  {t("webhooks.newDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Nome</Label>
+                  <Label htmlFor="name">{t("webhooks.name")}</Label>
                   <Input
                     id="name"
-                    placeholder="Ex: Sistema de CRM"
+                    placeholder={t("webhooks.namePh")}
                     value={newWebhook.name}
                     onChange={(e) =>
                       setNewWebhook({ ...newWebhook, name: e.target.value })
@@ -141,10 +143,10 @@ export const WebhookConfig = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="url">URL do Webhook</Label>
+                  <Label htmlFor="url">{t("webhooks.url")}</Label>
                   <Input
                     id="url"
-                    placeholder="https://seu-sistema.com/webhook"
+                    placeholder={t("webhooks.urlPh")}
                     value={newWebhook.url}
                     onChange={(e) =>
                       setNewWebhook({ ...newWebhook, url: e.target.value })
@@ -152,14 +154,14 @@ export const WebhookConfig = () => {
                   />
                 </div>
                 <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-                  <p className="text-sm font-semibold">Dados enviados no webhook:</p>
+                  <p className="text-sm font-semibold">{t("webhooks.dataSent")}</p>
                   <ul className="text-xs text-muted-foreground space-y-1">
-                    <li>• Nome do usuário</li>
-                    <li>• Telefone</li>
-                    <li>• Email</li>
-                    <li>• CPF</li>
-                    <li>• Senha gerada automaticamente</li>
-                    <li>• Timestamp do evento</li>
+                    <li>• {t("webhooks.dataNome")}</li>
+                    <li>• {t("webhooks.dataTel")}</li>
+                    <li>• {t("webhooks.dataEmail")}</li>
+                    <li>• {t("webhooks.dataCpf")}</li>
+                    <li>• {t("webhooks.dataSenha")}</li>
+                    <li>• {t("webhooks.dataTimestamp")}</li>
                   </ul>
                 </div>
                 <Button
@@ -167,7 +169,7 @@ export const WebhookConfig = () => {
                   disabled={!newWebhook.name || !newWebhook.url}
                   className="w-full"
                 >
-                  Adicionar
+                  {t("webhooks.btnAdd")}
                 </Button>
               </div>
             </DialogContent>
@@ -179,11 +181,11 @@ export const WebhookConfig = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>URL</TableHead>
-                <TableHead>Evento</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
+                <TableHead>{t("webhooks.thName")}</TableHead>
+                <TableHead>{t("webhooks.thUrl")}</TableHead>
+                <TableHead>{t("webhooks.thEvent")}</TableHead>
+                <TableHead>{t("webhooks.thStatus")}</TableHead>
+                <TableHead className="text-right">{t("webhooks.thActions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -194,7 +196,7 @@ export const WebhookConfig = () => {
                   <TableCell>
                     <Badge variant="outline">
                       {webhook.event_type === "sale_approved"
-                        ? "Venda Aprovada"
+                        ? t("webhooks.evSaleApproved")
                         : webhook.event_type}
                     </Badge>
                   </TableCell>
@@ -215,7 +217,7 @@ export const WebhookConfig = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => testWebhookMutation.mutate(webhook)}
-                        title="Testar Webhook"
+                        title={t("webhooks.testTitle")}
                       >
                         <TestTube className="h-4 w-4" />
                       </Button>
@@ -223,7 +225,7 @@ export const WebhookConfig = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          if (confirm("Tem certeza que deseja excluir este webhook?")) {
+                          if (confirm(t("webhooks.confirmDelete"))) {
                             deleteWebhookMutation.mutate(webhook.id);
                           }
                         }}
@@ -237,7 +239,7 @@ export const WebhookConfig = () => {
               {webhooks?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    Nenhum webhook configurado. Clique em "Adicionar Webhook" para começar.
+                    {t("webhooks.empty")}
                   </TableCell>
                 </TableRow>
               )}

@@ -5,7 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp } from "lucide-react";
 import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/dateLocale";
 
 interface RevenueChartProps {
   startDate: Date;
@@ -13,6 +14,8 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
+  const { t } = useTranslation();
+  const dfLocale = getDateLocale();
   // Fetch subscription data to calculate revenue
   const { data: chartData, isLoading } = useQuery({
     queryKey: ["admin-revenue-chart", startDate.toISOString(), endDate.toISOString()],
@@ -30,7 +33,7 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
       // Initialize last 6 months
       for (let i = 5; i >= 0; i--) {
         const monthDate = subMonths(new Date(), i);
-        const monthKey = format(monthDate, "MMM/yy", { locale: ptBR });
+        const monthKey = format(monthDate, "MMM/yy", { locale: dfLocale });
         monthlyData[monthKey] = { receita: 0, count: 0 };
       }
 
@@ -39,7 +42,7 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
         if (!sub.started_at || !sub.plans?.price) return;
         
         const subDate = new Date(sub.started_at);
-        const monthKey = format(subDate, "MMM/yy", { locale: ptBR });
+        const monthKey = format(subDate, "MMM/yy", { locale: dfLocale });
         
         if (monthlyData[monthKey]) {
           monthlyData[monthKey].receita += sub.plans.price;
@@ -75,10 +78,10 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-xl text-[hsl(217,91%,60%)]">
-            Evolução da Receita
+            {t("revenue.title")}
           </CardTitle>
           <CardDescription>
-            Últimos 6 meses - baseado em assinaturas criadas
+            {t("revenue.desc")}
           </CardDescription>
         </div>
         <TrendingUp className="h-6 w-6 text-[hsl(142,76%,36%)]" />
@@ -87,7 +90,7 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
         <div className="h-[300px]">
           {!chartData || chartData.length === 0 ? (
             <div className="flex items-center justify-center h-full text-muted-foreground">
-              Nenhum dado de receita disponível ainda
+              {t("revenue.noData")}
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +115,7 @@ export const RevenueChart = ({ startDate, endDate }: RevenueChartProps) => {
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   formatter={(value: number, name: string) => [
                     `R$ ${value.toFixed(2).replace('.', ',')}`, 
-                    name === 'lucro' ? 'Lucro Líquido (est.)' : 'Receita Bruta'
+                    name === 'lucro' ? t("revenue.net") : t("revenue.gross")
                   ]}
                 />
                 <Bar 

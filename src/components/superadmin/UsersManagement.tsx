@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Edit, Trash2, Lock, Unlock, UserPlus, Key, Search, Copy, Eye, MessageCircle, StickyNote, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 interface UserData {
   id: string;
@@ -37,6 +38,7 @@ interface UserData {
 }
 
 export const UsersManagement = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
@@ -89,7 +91,7 @@ export const UsersManagement = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           window.location.href = "/auth";
-          throw new Error("Sessão expirada");
+          throw new Error(t("users.toastSessionExpired"));
         }
 
         const { data, error } = await supabase.functions.invoke("get-admin-users", {
@@ -100,7 +102,7 @@ export const UsersManagement = () => {
         
         if (error) {
           if (error.message?.includes("Invalid token") || error.message?.includes("session_not_found")) {
-            toast.error("Sessão expirada. Redirecionando para login...");
+            toast.error(t("users.toastSessionExpired"));
             window.location.href = "/auth";
           }
           console.error("Error fetching admin users:", error);
@@ -221,12 +223,12 @@ export const UsersManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Usuário atualizado com sucesso!");
+      toast.success(t("users.toastUpdated"));
       setIsEditOpen(false);
       setSelectedUser(null);
     },
     onError: (error) => {
-      toast.error("Erro ao atualizar usuário: " + error.message);
+      toast.error(t("users.toastUpdateErr") + error.message);
     },
   });
 
@@ -241,11 +243,11 @@ export const UsersManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success("Notas salvas!");
+      toast.success(t("users.toastNotesSaved"));
       setIsNotesOpen(false);
     },
     onError: (error) => {
-      toast.error("Erro ao salvar notas: " + error.message);
+      toast.error(t("users.toastNotesErr") + error.message);
     },
   });
 
@@ -268,8 +270,8 @@ export const UsersManagement = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      const senha = data?.password || "Verifique o e-mail";
-      toast.success(`Usuário criado! Senha: ${senha}. E-mail enviado.`);
+      const senha = data?.password || "—";
+      toast.success(t("users.toastCreated", { senha }));
       setIsAddOpen(false);
       setAddForm({
         email: "",
@@ -281,7 +283,7 @@ export const UsersManagement = () => {
       });
     },
     onError: (error) => {
-      toast.error("Erro ao criar usuário: " + error.message);
+      toast.error(t("users.toastCreateErr") + error.message);
     },
   });
 
@@ -290,9 +292,9 @@ export const UsersManagement = () => {
     mutationFn: async (userId: string) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Sessão expirada. Redirecionando para login...");
+        toast.error(t("users.toastSessionExpired"));
         window.location.href = "/auth";
-        throw new Error("Sessão expirada");
+        throw new Error(t("users.toastSessionExpired"));
       }
 
       const { data, error } = await supabase.functions.invoke("delete-user", {
@@ -308,12 +310,12 @@ export const UsersManagement = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-      toast.success("Usuário excluído completamente!");
+      toast.success(t("users.toastDeleted"));
       setIsDeleteOpen(false);
       setSelectedUser(null);
     },
     onError: (error) => {
-      toast.error("Erro ao excluir usuário: " + error.message);
+      toast.error(t("users.toastDeleteErr") + error.message);
     },
   });
 
@@ -330,10 +332,10 @@ export const UsersManagement = () => {
     },
     onSuccess: (newStatus) => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast.success(newStatus === "active" ? "Usuário desbloqueado!" : "Usuário bloqueado!");
+      toast.success(newStatus === "active" ? t("users.toastUnblocked") : t("users.toastBlocked"));
     },
     onError: (error) => {
-      toast.error("Erro ao atualizar status: " + error.message);
+      toast.error(t("users.toastStatusErr") + error.message);
     },
   });
 
@@ -342,9 +344,9 @@ export const UsersManagement = () => {
     mutationFn: async (userId: string) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Sessão expirada. Redirecionando para login...");
+        toast.error(t("users.toastSessionExpired"));
         window.location.href = "/auth";
-        throw new Error("Sessão expirada");
+        throw new Error(t("users.toastSessionExpired"));
       }
 
       const { data, error } = await supabase.functions.invoke("reset-user-password", {
@@ -359,11 +361,11 @@ export const UsersManagement = () => {
     },
     onSuccess: (data) => {
       setGeneratedPassword(data?.password || "1234");
-      toast.success("Senha resetada com sucesso!");
+      toast.success(t("users.toastResetOk"));
     },
     onError: () => {
       setGeneratedPassword("1234");
-      toast.success("Senha definida como provisória: 1234");
+      toast.success(t("users.toastResetFallback"));
     },
   });
 
@@ -436,24 +438,24 @@ export const UsersManagement = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copiado para a área de transferência!");
+    toast.success(t("users.toastCopied"));
   };
 
   const exportToCSV = () => {
     if (!filteredUsers || filteredUsers.length === 0) {
-      toast.error("Nenhum usuário para exportar");
+      toast.error(t("users.toastNoExport"));
       return;
     }
 
     const headers = [
-      "Nome",
-      "Email",
-      "Telefone",
-      "CPF",
-      "Plano",
-      "Dias Restantes",
-      "Status",
-      "Notas Admin"
+      t("users.csvHeaders.nome"),
+      t("users.csvHeaders.email"),
+      t("users.csvHeaders.telefone"),
+      t("users.csvHeaders.cpf"),
+      t("users.csvHeaders.plano"),
+      t("users.csvHeaders.dias"),
+      t("users.csvHeaders.status"),
+      t("users.csvHeaders.notas"),
     ];
 
     const rows = filteredUsers.map((user: UserData) => [
@@ -461,9 +463,9 @@ export const UsersManagement = () => {
       user.email || "",
       user.telefone || "",
       user.cpf || "",
-      user.planPrice >= 90 ? "Anual R$ 97,90" : user.planPrice > 0 ? "Mensal R$ 19,90" : "Free",
+      user.planPrice >= 90 ? t("users.csvAnnual") : user.planPrice > 0 ? t("users.csvMonthly") : t("users.csvFree"),
       user.daysRemaining !== null && user.daysRemaining !== undefined ? String(user.daysRemaining) : "",
-      user.status === "active" ? "Ativo" : "Bloqueado",
+      user.status === "active" ? t("users.statusActive") : t("users.statusBlocked"),
       user.admin_notes || ""
     ]);
 
@@ -482,7 +484,7 @@ export const UsersManagement = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success("Arquivo CSV exportado com sucesso!");
+    toast.success(t("users.toastCsvOk"));
   };
 
   const formatWhatsAppLink = (phone: string | null) => {
@@ -495,13 +497,13 @@ export const UsersManagement = () => {
   const getDaysRemainingBadge = (days: number | null | undefined) => {
     if (days === null || days === undefined) return null;
     if (days <= 0) {
-      return <Badge variant="destructive">Expirado</Badge>;
+      return <Badge variant="destructive">{t("users.expired")}</Badge>;
     } else if (days <= 7) {
-      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30">{t("users.daysShort", { count: days })}</Badge>;
     } else if (days <= 30) {
-      return <Badge variant="outline" className="bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-[hsl(217,91%,60%)]/10 text-[hsl(217,91%,60%)] border-[hsl(217,91%,60%)]/30">{t("users.daysShort", { count: days })}</Badge>;
     } else {
-      return <Badge variant="outline" className="bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30">{days} dias</Badge>;
+      return <Badge variant="outline" className="bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30">{t("users.daysShort", { count: days })}</Badge>;
     }
   };
 
@@ -528,30 +530,30 @@ export const UsersManagement = () => {
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <CardTitle className="text-2xl">Gerenciamento de Usuários</CardTitle>
+              <CardTitle className="text-2xl">{t("users.title")}</CardTitle>
               <CardDescription>
-                Controle total sobre os usuários da plataforma - CRUD completo
+                {t("users.desc")}
               </CardDescription>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" className="gap-2" onClick={exportToCSV}>
                 <Download className="h-4 w-4" />
-                Exportar CSV
+                {t("users.exportCsv")}
               </Button>
               <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                 <DialogTrigger asChild>
                   <Button className="gap-2">
                     <UserPlus className="h-4 w-4" />
-                    Adicionar Usuário
+                    {t("users.addUser")}
                   </Button>
                 </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Adicionar Novo Usuário</DialogTitle>
+                  <DialogTitle>{t("users.addUserTitle")}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="add-email">Email</Label>
+                    <Label htmlFor="add-email">{t("users.email")}</Label>
                     <Input
                       id="add-email"
                       type="email"
@@ -560,7 +562,7 @@ export const UsersManagement = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="add-nome">Nome Completo</Label>
+                    <Label htmlFor="add-nome">{t("users.fullName")}</Label>
                     <Input
                       id="add-nome"
                       value={addForm.nome_completo}
@@ -569,7 +571,7 @@ export const UsersManagement = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="add-telefone">Telefone</Label>
+                      <Label htmlFor="add-telefone">{t("users.phone")}</Label>
                       <Input
                         id="add-telefone"
                         value={addForm.telefone}
@@ -577,7 +579,7 @@ export const UsersManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="add-cpf">CPF</Label>
+                      <Label htmlFor="add-cpf">{t("users.cpf")}</Label>
                       <Input
                         id="add-cpf"
                         value={addForm.cpf}
@@ -586,31 +588,31 @@ export const UsersManagement = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="add-plan">Plano</Label>
+                    <Label htmlFor="add-plan">{t("users.plan")}</Label>
                     <Select
                       value={addForm.plan_id}
                       onValueChange={(value) => setAddForm({ ...addForm, plan_id: value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um plano" />
+                        <SelectValue placeholder={t("users.planPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="7ce2d64b-e97a-429e-9448-3af009895d70">Free (Sem cobrança)</SelectItem>
-                        <SelectItem value="49a734d8-af86-4a0b-accf-755d947cc1d8">Mensal R$ 19,90</SelectItem>
-                        <SelectItem value="08033a83-5a65-4248-ae25-89e8bc35fe04">Anual R$ 97,90</SelectItem>
+                        <SelectItem value="7ce2d64b-e97a-429e-9448-3af009895d70">{t("users.planFree")}</SelectItem>
+                        <SelectItem value="49a734d8-af86-4a0b-accf-755d947cc1d8">{t("users.planMensal")}</SelectItem>
+                        <SelectItem value="08033a83-5a65-4248-ae25-89e8bc35fe04">{t("users.planAnual")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsAddOpen(false)}>
-                    Cancelar
+                    {t("users.cancel")}
                   </Button>
                   <Button
                     onClick={() => createUserMutation.mutate(addForm)}
                     disabled={!addForm.email || !addForm.nome_completo || createUserMutation.isPending}
                   >
-                    {createUserMutation.isPending ? "Criando..." : "Criar Usuário"}
+                    {createUserMutation.isPending ? t("users.creating") : t("users.create")}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -623,7 +625,7 @@ export const UsersManagement = () => {
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar por nome, email, CPF ou telefone..."
+                placeholder={t("users.searchPh")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -632,28 +634,28 @@ export const UsersManagement = () => {
             <div className="flex flex-wrap items-center gap-3">
               <Select value={planFilter} onValueChange={setPlanFilter}>
                 <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Plano" />
+                  <SelectValue placeholder={t("users.filterPlan")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos os Planos</SelectItem>
-                  <SelectItem value="free">Free</SelectItem>
-                  <SelectItem value="mensal">Mensal</SelectItem>
-                  <SelectItem value="anual">Anual</SelectItem>
+                  <SelectItem value="all">{t("users.allPlans")}</SelectItem>
+                  <SelectItem value="free">{t("users.free")}</SelectItem>
+                  <SelectItem value="mensal">{t("users.mensal")}</SelectItem>
+                  <SelectItem value="anual">{t("users.anual")}</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={sortOrder} onValueChange={setSortOrder}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Ordenar" />
+                  <SelectValue placeholder={t("users.sort")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Mais recente</SelectItem>
-                  <SelectItem value="oldest">Mais antigo</SelectItem>
-                  <SelectItem value="name_az">Nome A-Z</SelectItem>
-                  <SelectItem value="name_za">Nome Z-A</SelectItem>
+                  <SelectItem value="newest">{t("users.newest")}</SelectItem>
+                  <SelectItem value="oldest">{t("users.oldest")}</SelectItem>
+                  <SelectItem value="name_az">{t("users.nameAZ")}</SelectItem>
+                  <SelectItem value="name_za">{t("users.nameZA")}</SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex items-center gap-2">
-                <Label className="text-sm text-muted-foreground whitespace-nowrap">De:</Label>
+                <Label className="text-sm text-muted-foreground whitespace-nowrap">{t("users.from")}</Label>
                 <Input
                   type="date"
                   value={dateFrom}
@@ -662,7 +664,7 @@ export const UsersManagement = () => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label className="text-sm text-muted-foreground whitespace-nowrap">Até:</Label>
+                <Label className="text-sm text-muted-foreground whitespace-nowrap">{t("users.to")}</Label>
                 <Input
                   type="date"
                   value={dateTo}
@@ -682,7 +684,7 @@ export const UsersManagement = () => {
                   }}
                   className="text-muted-foreground"
                 >
-                  Limpar filtros
+                  {t("users.clearFilters")}
                 </Button>
               )}
             </div>
@@ -692,29 +694,29 @@ export const UsersManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Telefone</TableHead>
-                  <TableHead>Data do Plano</TableHead>
-                  <TableHead>CPF</TableHead>
-                  <TableHead>Plano</TableHead>
-                  <TableHead>Dias Restantes</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
+                  <TableHead>{t("users.thName")}</TableHead>
+                  <TableHead>{t("users.thEmail")}</TableHead>
+                  <TableHead>{t("users.thPhone")}</TableHead>
+                  <TableHead>{t("users.thPlanDate")}</TableHead>
+                  <TableHead>{t("users.thCpf")}</TableHead>
+                  <TableHead>{t("users.thPlan")}</TableHead>
+                  <TableHead>{t("users.thDaysLeft")}</TableHead>
+                  <TableHead>{t("users.thStatus")}</TableHead>
+                  <TableHead className="text-right">{t("users.thActions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
-                      Nenhum usuário encontrado
+                      {t("users.noUsers")}
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredUsers?.map((user: UserData) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
-                        {user.nome_completo || "Não informado"}
+                        {user.nome_completo || t("users.notInformed")}
                       </TableCell>
                       <TableCell className="text-sm">
                         {user.email || user.id.slice(0, 8) + "..."}
@@ -738,7 +740,7 @@ export const UsersManagement = () => {
                       <TableCell>{user.cpf || "-"}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className={user.planPrice > 0 ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30" : ""}>
-                          {user.planPrice >= 90 ? "Anual" : user.planPrice > 0 ? "Mensal" : "Free"}
+                          {user.planPrice >= 90 ? t("users.anual") : user.planPrice > 0 ? t("users.mensal") : t("users.free")}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -749,7 +751,7 @@ export const UsersManagement = () => {
                           variant={user.status === "active" ? "default" : "destructive"}
                           className={user.status === "active" ? "bg-[hsl(142,76%,36%)]/10 text-[hsl(142,76%,36%)] border-[hsl(142,76%,36%)]/30" : ""}
                         >
-                          {user.status === "active" ? "Ativo" : "Bloqueado"}
+                          {user.status === "active" ? t("users.statusActive") : t("users.statusBlocked")}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -758,7 +760,7 @@ export const UsersManagement = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleEditClick(user)}
-                            title="Editar"
+                            title={t("users.edit")}
                           >
                             <Edit className="h-4 w-4 text-[hsl(217,91%,60%)]" />
                           </Button>
@@ -766,7 +768,7 @@ export const UsersManagement = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleNotesClick(user)}
-                            title="Notas do Admin"
+                            title={t("users.notes")}
                           >
                             <StickyNote className={`h-4 w-4 ${user.admin_notes ? "text-yellow-500" : "text-muted-foreground"}`} />
                           </Button>
@@ -777,7 +779,7 @@ export const UsersManagement = () => {
                               setSelectedUser(user);
                               setIsViewPasswordOpen(true);
                             }}
-                            title="Ver Senha do Usuário"
+                            title={t("users.viewPassword")}
                           >
                             <Eye className={`h-4 w-4 ${user.provisional_password ? "text-green-500" : "text-muted-foreground"}`} />
                           </Button>
@@ -785,7 +787,7 @@ export const UsersManagement = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleResetPasswordClick(user)}
-                            title="Resetar Senha"
+                            title={t("users.resetPassword")}
                           >
                             <Key className="h-4 w-4" />
                           </Button>
@@ -798,7 +800,7 @@ export const UsersManagement = () => {
                                 status: user.status || "active",
                               })
                             }
-                            title={user.status === "active" ? "Bloquear" : "Desbloquear"}
+                            title={user.status === "active" ? t("users.block") : t("users.unblock")}
                           >
                             {user.status === "active" ? (
                               <Lock className="h-4 w-4" />
@@ -810,7 +812,7 @@ export const UsersManagement = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDeleteClick(user)}
-                            title="Excluir"
+                            title={t("users.delete")}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -829,14 +831,14 @@ export const UsersManagement = () => {
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Editar Usuário</DialogTitle>
+            <DialogTitle>{t("users.editTitle")}</DialogTitle>
             <DialogDescription>
-              Atualize as informações do usuário
+              {t("users.editDesc")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-email">Email</Label>
+              <Label htmlFor="edit-email">{t("users.email")}</Label>
               <Input
                 id="edit-email"
                 type="email"
@@ -846,7 +848,7 @@ export const UsersManagement = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-nome">Nome Completo</Label>
+              <Label htmlFor="edit-nome">{t("users.fullName")}</Label>
               <Input
                 id="edit-nome"
                 value={editForm.nome_completo}
@@ -855,7 +857,7 @@ export const UsersManagement = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-telefone">Telefone</Label>
+                <Label htmlFor="edit-telefone">{t("users.phone")}</Label>
                 <Input
                   id="edit-telefone"
                   value={editForm.telefone}
@@ -863,7 +865,7 @@ export const UsersManagement = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-cpf">CPF</Label>
+                <Label htmlFor="edit-cpf">{t("users.cpf")}</Label>
                 <Input
                   id="edit-cpf"
                   value={editForm.cpf}
@@ -872,25 +874,25 @@ export const UsersManagement = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-plan">Plano</Label>
+              <Label htmlFor="edit-plan">{t("users.plan")}</Label>
               <Select
                 value={editForm.plan_id}
                 onValueChange={(value) => setEditForm({ ...editForm, plan_id: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione um plano" />
+                  <SelectValue placeholder={t("users.planPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="7ce2d64b-e97a-429e-9448-3af009895d70">Free (Sem cobrança)</SelectItem>
-                  <SelectItem value="49a734d8-af86-4a0b-accf-755d947cc1d8">Mensal R$ 19,90</SelectItem>
-                  <SelectItem value="08033a83-5a65-4248-ae25-89e8bc35fe04">Anual R$ 97,90</SelectItem>
+                  <SelectItem value="7ce2d64b-e97a-429e-9448-3af009895d70">{t("users.planFree")}</SelectItem>
+                  <SelectItem value="49a734d8-af86-4a0b-accf-755d947cc1d8">{t("users.planMensal")}</SelectItem>
+                  <SelectItem value="08033a83-5a65-4248-ae25-89e8bc35fe04">{t("users.planAnual")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditOpen(false)}>
-              Cancelar
+              {t("users.cancel")}
             </Button>
             <Button
               onClick={() => {
@@ -910,7 +912,7 @@ export const UsersManagement = () => {
               }}
               disabled={updateUserMutation.isPending}
             >
-              {updateUserMutation.isPending ? "Salvando..." : "Salvar"}
+              {updateUserMutation.isPending ? t("users.saving") : t("users.save")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -922,17 +924,17 @@ export const UsersManagement = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="h-5 w-5 text-primary" />
-              Senha do Usuário
+              {t("users.passwordTitle")}
             </DialogTitle>
             <DialogDescription>
-              {selectedUser?.nome_completo || "Usuário"} ({selectedUser?.email})
+              {selectedUser?.nome_completo || t("users.userFallback")} ({selectedUser?.email})
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4">
             {selectedUser?.provisional_password ? (
               <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Senha atual:</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("users.currentPassword")}</p>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 text-xl font-mono bg-background px-4 py-3 rounded border text-center tracking-widest">
                     {selectedUser.provisional_password}
@@ -949,10 +951,10 @@ export const UsersManagement = () => {
             ) : (
               <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                 <p className="text-sm text-yellow-600 dark:text-yellow-400">
-                  ⚠️ Senha não disponível. Este usuário foi criado antes da funcionalidade de visualização de senha ou alterou a senha manualmente.
+                  {t("users.noPassword")}
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Clique em "Gerar Nova Senha" para criar uma senha que você poderá visualizar.
+                  {t("users.generateNewHint")}
                 </p>
               </div>
             )}
@@ -960,7 +962,7 @@ export const UsersManagement = () => {
           
           <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setIsViewPasswordOpen(false)}>
-              Fechar
+              {t("users.close")}
             </Button>
             <Button
               onClick={() => {
@@ -969,7 +971,7 @@ export const UsersManagement = () => {
               }}
             >
               <Key className="h-4 w-4 mr-2" />
-              Gerar Nova Senha
+              {t("users.generateNew")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -981,23 +983,23 @@ export const UsersManagement = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <StickyNote className="h-5 w-5 text-yellow-500" />
-              Notas do Admin
+              {t("users.notesTitle")}
             </DialogTitle>
             <DialogDescription>
-              Anotações internas sobre {selectedUser?.nome_completo || "o usuário"}
+              {t("users.notesDescAbout", { name: selectedUser?.nome_completo || t("users.userFallback") })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="Adicione notas sobre este usuário..."
+              placeholder={t("users.notesPh")}
               rows={6}
             />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsNotesOpen(false)}>
-              Cancelar
+              {t("users.cancel")}
             </Button>
             <Button
               onClick={() => {
@@ -1010,7 +1012,7 @@ export const UsersManagement = () => {
               }}
               disabled={updateNotesMutation.isPending}
             >
-              {updateNotesMutation.isPending ? "Salvando..." : "Salvar Notas"}
+              {updateNotesMutation.isPending ? t("users.saving") : t("users.saveNotes")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1022,17 +1024,17 @@ export const UsersManagement = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Key className="h-5 w-5" />
-              Resetar Senha
+              {t("users.resetTitle")}
             </DialogTitle>
             <DialogDescription>
-              Gerar nova senha para {selectedUser?.nome_completo || "o usuário"}
+              {t("users.resetDescFor", { name: selectedUser?.nome_completo || t("users.userFallback") })}
             </DialogDescription>
           </DialogHeader>
           
           {generatedPassword ? (
             <div className="space-y-4">
               <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Nova senha gerada:</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("users.newPasswordGen")}</p>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 text-lg font-mono bg-background px-3 py-2 rounded">
                     {generatedPassword}
@@ -1047,21 +1049,20 @@ export const UsersManagement = () => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Envie esta senha para o usuário. Ela foi salva no sistema.
+                {t("users.sendToUser")}
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Ao resetar a senha, uma nova senha será gerada automaticamente.
-                Você precisará compartilhar esta nova senha com o usuário.
+                {t("users.resetHint")}
               </p>
             </div>
           )}
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsResetPasswordOpen(false)}>
-              Fechar
+              {t("users.close")}
             </Button>
             {!generatedPassword && (
               <Button
@@ -1072,7 +1073,7 @@ export const UsersManagement = () => {
                 }}
                 disabled={resetPasswordMutation.isPending}
               >
-                {resetPasswordMutation.isPending ? "Gerando..." : "Gerar Nova Senha"}
+                {resetPasswordMutation.isPending ? t("users.generating") : t("users.generateNew")}
               </Button>
             )}
           </DialogFooter>
@@ -1083,14 +1084,13 @@ export const UsersManagement = () => {
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogTitle>{t("users.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir o usuário "{selectedUser?.nome_completo}"?
-              Esta ação não pode ser desfeita.
+              {t("users.deleteDesc", { name: selectedUser?.nome_completo || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>{t("users.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => {
@@ -1099,7 +1099,7 @@ export const UsersManagement = () => {
                 }
               }}
             >
-              {deleteUserMutation.isPending ? "Excluindo..." : "Excluir"}
+              {deleteUserMutation.isPending ? t("users.deleting") : t("users.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

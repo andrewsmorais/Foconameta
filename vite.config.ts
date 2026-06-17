@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "apple-touch-icon.png", "robots.txt"],
       manifest: {
-        name: "Bateu A Meta",
-        short_name: "Bateu A Meta",
+        name: "Foco na Meta",
+        short_name: "Foco na Meta",
         description: "Dashboard para Motoristas de Apps. Transforme corridas em lucro líquido real.",
         theme_color: "#121212",
         background_color: "#121212",

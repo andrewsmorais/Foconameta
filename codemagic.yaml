@@ -8,21 +8,14 @@ workflows:
         - assinatura_ios
       node: latest
       xcode: latest
-      cocoapods: default
     scripts:
       - name: Instalar dependências
         script: npm install --legacy-peer-deps
       - name: Build Web
         script: npm run build
-      - name: Forçar recriação da pasta iOS
+      - name: Sincronizar iOS nativo
         script: |
-          npx cap add ios || echo "A plataforma iOS já existe, prosseguindo..."
           npx cap sync ios
-          npx cap update ios
-      - name: Preparar CocoaPods
-        script: |
-          cd ios/App
-          pod install
       - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App

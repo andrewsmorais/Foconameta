@@ -16,9 +16,14 @@ workflows:
         script: npm run build
       - name: Sincronizar código com iOS nativo
         script: npx cap sync ios
-    build:
-      ios:
-        project: ios/App/App.xcworkspace
-        scheme: App
+      - name: Preparar CocoaPods
+        script: |
+          cd ios/App
+          pod install
+      - name: Compilar o App (Gerar IPA)
+        script: |
+          cd ios/App
+          xcode-project build-ipa --workspace "App.xcworkspace" --scheme "App"
     artifacts:
       - build/ios/ipa/*.ipa
+      - ios/App/build/ios/ipa/*.ipa

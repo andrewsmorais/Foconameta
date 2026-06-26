@@ -14,16 +14,22 @@ workflows:
         script: npm install --legacy-peer-deps
       - name: Build Web
         script: npm run build
-      - name: Sincronizar código com iOS nativo
-        script: npx cap sync ios
-      - name: Preparar CocoaPods
+      - name: Sincronizar iOS nativo
         script: |
-          cd ios/App
+          npx cap sync ios || npx cap add ios
+      - name: Preparar CocoaPods (Busca Dinâmica)
+        script: |
+          POD_PATH=$(find . -name "Podfile" | head -n 1)
+          echo "Podfile encontrado em: $POD_PATH"
+          cd $(dirname "$POD_PATH")
           pod install
-      - name: Compilar o App (Gerar IPA)
+      - name: Compilar o App (Busca Dinâmica)
         script: |
-          cd ios/App
-          xcode-project build-ipa --workspace "App.xcworkspace" --scheme "App"
+          WORKSPACE_PATH=$(find . -name "*.xcworkspace" | head -n 1)
+          WORKSPACE_DIR=$(dirname "$WORKSPACE_PATH")
+          WORKSPACE_NAME=$(basename "$WORKSPACE_PATH")
+          echo "Compilando workspace: $WORKSPACE_NAME no diretório: $WORKSPACE_DIR"
+          cd "$WORKSPACE_DIR"
+          xcode-project build-ipa --workspace "$WORKSPACE_NAME" --scheme "App"
     artifacts:
-      - build/ios/ipa/*.ipa
-      - ios/App/build/ios/ipa/*.ipa
+      - "**/build/ios/ipa/*.ipa"

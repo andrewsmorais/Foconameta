@@ -15,9 +15,17 @@ workflows:
         script: npm run build
       - name: Sincronizar iOS nativo
         script: npx cap sync ios
-    build:
-      ios:
-        project: ios/App/App.xcodeproj
-        scheme: App
+      - name: Configurar chaves de assinatura (Keychain)
+        script: |
+          keychain initialize
+          keychain add-certificates
+      - name: Aplicar perfis de assinatura no Xcode
+        script: |
+          cd ios/App
+          xcode-project use-profiles
+      - name: Compilar o App (Gerar IPA)
+        script: |
+          cd ios/App
+          xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
     artifacts:
-      - build/ios/ipa/*.ipa
+      - "**/build/ios/ipa/*.ipa"

@@ -14,24 +14,10 @@ workflows:
       - name: Build Web
         script: npm run build
       - name: Sincronizar iOS nativo
-        script: |
-          npx cap sync ios
-      - name: Compilar o App (Radar de Arquivos)
-        script: |
-          cd ios/App
-          echo "--- CONTEÚDO DA PASTA IOS/APP ---"
-          ls -F
-          echo "---------------------------------"
-          
-          if [ -d "App.xcworkspace" ]; then
-            echo "Detectado: Workspace"
-            xcode-project build-ipa --workspace "App.xcworkspace" --scheme "App"
-          elif [ -d "App.xcodeproj" ]; then
-            echo "Detectado: Project"
-            xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
-          else
-            echo "ERRO: Nenhum arquivo de projeto encontrado!"
-            exit 1
-          fi
+        script: npx cap sync ios
+    build:
+      ios:
+        project: ios/App/App.xcodeproj
+        scheme: App
     artifacts:
-      - "**/build/ios/ipa/*.ipa"
+      - build/ios/ipa/*.ipa

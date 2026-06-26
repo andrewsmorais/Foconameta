@@ -308,11 +308,11 @@ const LandingPage = () => {
 
   const faqs = [
     {
-      question: "O aplicativo Bateu A Meta funciona no iPhone e no Android?",
-      answer: "Sim! O Bateu A Meta é um PWA (Progressive Web App) moderno e totalmente otimizado para ambos os sistemas (iOS e Android). Você instala ele diretamente no seu celular ou desktop."
+      question: "O aplicativo Foco na Meta funciona no iPhone e no Android?",
+      answer: "Sim! O Foco na Meta é um PWA (Progressive Web App) moderno e totalmente otimizado para ambos os sistemas (iOS e Android). Você instala ele diretamente no seu celular ou desktop."
     },
     {
-      question: "Por quanto tempo terei acesso ao Bateu A Meta?",
+      question: "Por quanto tempo terei acesso ao Foco na Meta?",
       answer: "Ao adquirir o plano, você terá acesso por um ano completo. Após esse período, basta renovar para continuar usando."
     },
     {
@@ -324,7 +324,7 @@ const LandingPage = () => {
       answer: "Após a confirmação do pagamento, você receberá imediatamente um e-mail de boas-vindas com o seu login e a senha provisória para acessar o Dashboard."
     },
     {
-      question: "Para quem o aplicativo Bateu A Meta é indicado?",
+      question: "Para quem o aplicativo Foco na Meta é indicado?",
       answer: "Para todos os profissionais que trabalham com aplicativos de entrega ou transporte (Uber, 99, iFood, Loggi, etc.) e que precisam transformar corridas em lucro real."
     }
   ];
@@ -335,8 +335,8 @@ const LandingPage = () => {
       <header className="sticky top-0 z-50 bg-[#fafafa] backdrop-blur border-b border-gray-200">
         <div className="container mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Bateu a Meta" className="w-10 h-10 object-contain" />
-            <span className="font-bold text-lg text-black">Bateu a Meta</span>
+            <img src={logo} alt="Foco na Meta" className="w-10 h-10 object-contain" />
+            <span className="font-bold text-lg text-black">Foco na Meta</span>
           </div>
           <Button 
             onClick={() => navigate("/auth")}
@@ -352,7 +352,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-3 md:space-y-6 px-2 md:px-4">
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl text-center text-brand-blue">
-              Bateu A Meta
+              Foco na Meta
             </h1>
             <p className="text-lg md:text-2xl lg:text-3xl font-bold max-w-3xl text-center text-brand-red mt-4 md:mt-6">
               Aposente o caderninho e as planilhas complicadas!
@@ -373,7 +373,7 @@ const LandingPage = () => {
                 {/* Thumbnail do YouTube */}
                 <img
                   src="https://img.youtube.com/vi/OZ4nlZDXYUE/maxresdefault.jpg"
-                  alt="Assistir vídeo - Bateu a Meta"
+                  alt="Assistir vídeo - Foco na Meta"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {/* Overlay escuro */}
@@ -406,7 +406,7 @@ const LandingPage = () => {
                   <iframe
                     className="w-full h-full"
                     src="https://www.youtube.com/embed/OZ4nlZDXYUE?rel=0&modestbranding=1&autoplay=1"
-                    title="Bateu a Meta - VSL"
+                    title="Foco na Meta - VSL"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -795,7 +795,7 @@ const LandingPage = () => {
             <div className="order-1 flex justify-center">
               <img 
                 src={fundadorImg} 
-                alt="Fundador do Bateu a Meta"
+                alt="Fundador do Foco na Meta"
                 className="w-52 md:w-full max-w-md rounded-2xl shadow-xl"
               />
             </div>
@@ -807,7 +807,7 @@ const LandingPage = () => {
               </h2>
               <p className="text-black text-base md:text-lg leading-relaxed font-medium">
                 Meu nome é <span className="text-[#3c83f7]">Andrews Morais</span>, eu também sou motorista e sei que o segredo do lucro está no controle. 
-                Criei o <span className="text-[#3c83f7]">Bateu a Meta</span> para ser nosso braço direito na gestão financeira: 
+                Criei o <span className="text-[#3c83f7]">Foco na Meta</span> para ser nosso braço direito na gestão financeira: 
                 prático, barato e direto ao ponto. Chega de 'bater lata' sem saber o seu 
                 lucro real. Vamos juntos bater nossas metas com <span className="text-[#3c83f7]">inteligência!</span>
               </p>
@@ -821,7 +821,7 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-2 md:space-y-4 mb-8 md:mb-12">
             <h2 className="text-lg md:text-3xl lg:text-4xl font-bold leading-tight max-w-4xl mx-auto text-black">
-              <span className="text-brand-red">Veja Quem Já Bateu A Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em <span className="text-brand-blue">lucro líquido real</span>.
+              <span className="text-brand-red">Veja Quem Já Foco na Meta!</span> Motoristas que, agora, têm controle total e transformaram as corridas em <span className="text-brand-blue">lucro líquido real</span>.
             </h2>
           </div>
 
@@ -1142,7 +1142,7 @@ const LandingPage = () => {
           </div>
 
           <p className="text-sm text-gray-400 pt-4">
-            © {new Date().getFullYear()} Bateu A Meta. Todos os direitos reservados.
+            © {new Date().getFullYear()} Foco na Meta. Todos os direitos reservados.
           </p>
         </div>
       </section>

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Bateu a Meta"
+    "name": "Foco na Meta"
   },
   "common": {
     "loading": "Cargando...",
@@ -210,7 +210,7 @@
     "politicaReembolso": "Política de reembolso",
     "politicaPrivacidade": "Política de privacidad (LGPD)",
     "sobre": "Acerca de la aplicación",
-    "sobreTexto": "La aplicación Bateu A Meta fue creada para ayudar a los conductores de aplicaciones a gestionar sus finanzas.",
+    "sobreTexto": "La aplicación Foco na Meta fue creada para ayudar a los conductores de aplicaciones a gestionar sus finanzas.",
     "contato": "Contacto",
     "instagram": "Instagram",
     "whatsapp": "Móvil (WhatsApp)",
@@ -417,7 +417,7 @@
   },
   "superAdmin": {
     "title": "Panel de Super Admin",
-    "subtitle": "Gestión completa de la plataforma Bateu a Meta",
+    "subtitle": "Gestión completa de la plataforma Foco na Meta",
     "verifying": "Verificando permisos...",
     "selectPeriod": "Seleccionar período",
     "today": "Hoy",
@@ -627,10 +627,10 @@
     "alreadyInstalled": "¡La app ya está instalada!",
     "followOnScreen": "Siga las instrucciones en pantalla para instalar",
     "installNow": "Instalar Ahora",
-    "installTitle": "Instalar Bateu A Meta",
+    "installTitle": "Instalar Foco na Meta",
     "installDesc": "Instale la app para acceso rápido y experiencia completa",
     "installedTitle": "¡App ya instalada!",
-    "installedSub": "Bateu A Meta ya está en su pantalla de inicio",
+    "installedSub": "Foco na Meta ya está en su pantalla de inicio",
     "iosDetected": "iPhone/iPad detectado",
     "iosUseSafari": "En iOS, use Safari para instalar la app",
     "androidDetected": "Android detectado ({{browser}})",
@@ -660,7 +660,7 @@
     "canceled": "Instalación cancelada por el usuario.",
     "iosInstructions": "Siga las instrucciones a continuación para instalar en iOS",
     "manualInstructions": "Siga las instrucciones a continuación para instalar manualmente",
-    "title": "Instalar Bateu a Meta",
+    "title": "Instalar Foco na Meta",
     "installedBadge": "¡La aplicación ya está instalada!",
     "installNow": "Instalar Ahora",
     "followToInstall": "Siga las instrucciones a continuación para instalar la aplicación:",
@@ -689,7 +689,7 @@
     "desk1Desc": "En Chrome/Edge, aparece un icono a la derecha:",
     "desk1Btn": "Instalar",
     "desk2Title": "O acceda por el menú del navegador",
-    "desk2Desc": "Menú (⋮) → \"Instalar Bateu A Meta...\" o \"Crear acceso directo\"",
+    "desk2Desc": "Menú (⋮) → \"Instalar Foco na Meta...\" o \"Crear acceso directo\"",
     "desk3Title": "Confirme la instalación",
     "desk3Desc": "La app se instalará como aplicación en su computadora"
   }

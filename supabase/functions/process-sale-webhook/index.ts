@@ -26,12 +26,12 @@ async function sendWelcomeEmail(email: string, name: string, password: string): 
       <html>
       <head>
         <meta charset="utf-8">
-        <title>Bem-vindo ao Bateu A Meta!</title>
+        <title>Bem-vindo ao Foco na Meta!</title>
       </head>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5;">
         <!-- Header Verde -->
         <div style="background: linear-gradient(135deg, #15a249 0%, #0d7a35 100%); padding: 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Bateu A Meta</h1>
+          <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Foco na Meta</h1>
         </div>
         
         <!-- Conteúdo Principal -->
@@ -104,7 +104,7 @@ async function sendWelcomeEmail(email: string, name: string, password: string): 
               Tamo junto no trecho! 🚗
             </p>
             <p style="font-size: 16px; color: #666; margin: 5px 0 0 0;">
-              Andrews Morais & Equipe Bateu a Meta
+              Andrews Morais & Equipe Foco na Meta
             </p>
           </div>
         </div>
@@ -119,9 +119,9 @@ async function sendWelcomeEmail(email: string, name: string, password: string): 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        sender: { name: "Bateu A Meta", email: "suporte@bateuameta.com" },
+        sender: { name: "Foco na Meta", email: "suporte@bateuameta.com" },
         to: [{ email: email, name: name || "Usuário" }],
-        subject: "Bem-vindo ao Bateu a Meta, " + (name || "Motorista") + "! 🎉 Seus dados de acesso estão aqui",
+        subject: "Bem-vindo ao Foco na Meta, " + (name || "Motorista") + "! 🎉 Seus dados de acesso estão aqui",
         htmlContent: emailHtml,
       }),
     });

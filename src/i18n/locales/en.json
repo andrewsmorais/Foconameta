@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Bateu a Meta"
+    "name": "Foco na Meta"
   },
   "common": {
     "loading": "Loading...",
@@ -210,7 +210,7 @@
     "politicaReembolso": "Refund Policy",
     "politicaPrivacidade": "Privacy Policy (LGPD)",
     "sobre": "About the App",
-    "sobreTexto": "Bateu A Meta was built to help app drivers manage their finances.",
+    "sobreTexto": "Foco na Meta was built to help app drivers manage their finances.",
     "contato": "Contact",
     "instagram": "Instagram",
     "whatsapp": "Mobile (WhatsApp)",
@@ -417,7 +417,7 @@
   },
   "superAdmin": {
     "title": "Super Admin Dashboard",
-    "subtitle": "Full management of the Bateu a Meta platform",
+    "subtitle": "Full management of the Foco na Meta platform",
     "verifying": "Verifying permissions...",
     "selectPeriod": "Select period",
     "today": "Today",
@@ -627,10 +627,10 @@
     "alreadyInstalled": "App is already installed!",
     "followOnScreen": "Follow the on-screen instructions to install",
     "installNow": "Install Now",
-    "installTitle": "Install Bateu A Meta",
+    "installTitle": "Install Foco na Meta",
     "installDesc": "Install the app for quick access and full experience",
     "installedTitle": "App already installed!",
-    "installedSub": "Bateu A Meta is already on your home screen",
+    "installedSub": "Foco na Meta is already on your home screen",
     "iosDetected": "iPhone/iPad detected",
     "iosUseSafari": "On iOS, use Safari to install the app",
     "androidDetected": "Android detected ({{browser}})",
@@ -660,7 +660,7 @@
     "canceled": "Installation canceled by user.",
     "iosInstructions": "Follow the instructions below to install on iOS",
     "manualInstructions": "Follow the instructions below to install manually",
-    "title": "Install Bateu a Meta",
+    "title": "Install Foco na Meta",
     "installedBadge": "App is already installed!",
     "installNow": "Install Now",
     "followToInstall": "Follow the instructions below to install the app:",
@@ -689,7 +689,7 @@
     "desk1Desc": "In Chrome/Edge, an install icon appears on the right:",
     "desk1Btn": "Install",
     "desk2Title": "Or use the browser menu",
-    "desk2Desc": "Menu (⋮) → \"Install Bateu A Meta...\" or \"Create shortcut\"",
+    "desk2Desc": "Menu (⋮) → \"Install Foco na Meta...\" or \"Create shortcut\"",
     "desk3Title": "Confirm installation",
     "desk3Desc": "The app will be installed on your computer"
   }

@@ -17,7 +17,7 @@ const PoliticaPrivacidade = () => {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">1. Introdução</h2>
             <p>
-              A <strong>Bateu A Meta</strong> ("nós", "nosso") valoriza a privacidade dos seus usuários. 
+              A <strong>Foco na Meta</strong> ("nós", "nosso") valoriza a privacidade dos seus usuários. 
               Esta Política de Privacidade descreve como coletamos, utilizamos, armazenamos e protegemos 
               suas informações pessoais ao utilizar nosso aplicativo e serviços.
             </p>

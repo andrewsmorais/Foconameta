@@ -67,7 +67,7 @@ async function sendAbandonedCartEmail(
         
         <!-- Header com Logo -->
         <div style="background: #ffffff; padding: 30px; text-align: center; border-top: 4px solid #25D366;">
-          <h1 style="color: #25D366; margin: 0; font-size: 32px; font-weight: bold;">🚗 Bateu A Meta</h1>
+          <h1 style="color: #25D366; margin: 0; font-size: 32px; font-weight: bold;">🚗 Foco na Meta</h1>
         </div>
         
         <!-- Conteúdo Principal -->
@@ -80,7 +80,7 @@ async function sendAbandonedCartEmail(
           
           <!-- Mensagem do Andrews -->
           <p style="font-size: 16px; color: #333; line-height: 1.8; margin: 0 0 15px 0;">
-            Aqui é o <strong>Andrews Morais</strong>. Notei que você começou a preencher seu acesso ao <strong>Bateu a Meta</strong>, mas não finalizou.
+            Aqui é o <strong>Andrews Morais</strong>. Notei que você começou a preencher seu acesso ao <strong>Foco na Meta</strong>, mas não finalizou.
           </p>
           
           <p style="font-size: 16px; color: #333; line-height: 1.8; margin: 0 0 15px 0;">
@@ -147,7 +147,7 @@ async function sendAbandonedCartEmail(
               Tamo junto no trecho! 🚗
             </p>
             <p style="font-size: 16px; color: #666; margin: 10px 0 0 0;">
-              Andrews Morais & Equipe Bateu a Meta
+              Andrews Morais & Equipe Foco na Meta
             </p>
           </div>
           
@@ -184,7 +184,7 @@ async function sendAbandonedCartEmail(
       },
       body: JSON.stringify({
         sender: {
-          name: "Andrews Morais | Bateu a Meta",
+          name: "Andrews Morais | Foco na Meta",
           email: "suporte@bateuameta.com",
         },
         to: [{ email }],

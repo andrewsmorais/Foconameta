@@ -103,7 +103,7 @@ export const Layout = ({
       <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-sidebar border-r border-sidebar-border">
         <div className="flex items-center justify-between h-16 px-6 border-b border-sidebar-border">
           <h1 className="text-lg font-bold text-sidebar-foreground">
-            Bateu a Meta
+            Foco na Meta
           </h1>
           <div className="flex items-center gap-1">
             <ThemeToggle />
@@ -173,7 +173,7 @@ export const Layout = ({
           isIOSPWA && "ios-pwa-sidebar-header"
         )}>
           <h1 className="text-lg font-bold text-sidebar-foreground">
-            Bateu a Meta
+            Foco na Meta
           </h1>
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="text-sidebar-foreground">
             <X className="w-5 h-5" />
@@ -218,7 +218,7 @@ export const Layout = ({
             <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
               <Menu className="w-5 h-5" />
             </Button>
-            <h1 className="ml-4 text-lg font-bold">Bateu a Meta</h1>
+            <h1 className="ml-4 text-lg font-bold">Foco na Meta</h1>
           </div>
           <div className="flex items-center gap-1">
             <ThemeToggle />

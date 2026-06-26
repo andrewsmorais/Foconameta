@@ -370,7 +370,7 @@ const Relatorios = () => {
 
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.text(`Relatório de ${tipoLabel} - Bateu a Meta`, 14, 20);
+    doc.text(`Relatório de ${tipoLabel} - Foco na Meta`, 14, 20);
 
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");

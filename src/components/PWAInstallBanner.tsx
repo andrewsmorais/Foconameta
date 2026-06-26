@@ -64,7 +64,7 @@ export const PWAInstallBanner = () => {
         <div className="flex items-start gap-4">
           <img 
             src={pwaIcon} 
-            alt="Bateu a Meta" 
+            alt="Foco na Meta" 
             className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
           />
           

@@ -337,7 +337,7 @@ const Configuracoes = () => {
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  @Bateu A Meta
+                  @Foco na Meta
                 </a>
               </div>
               <div className="flex items-center gap-2">

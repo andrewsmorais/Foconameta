@@ -1,0 +1,16 @@
+workflows:
+  ios-build:
+    name: iOS Build
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - assinatura_ios
+      node: latest
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Instalar dependências
+        script: npm install --legacy-peer-deps
+      - name: Build do App
+        script: npm run build

@@ -41,10 +41,10 @@ workflows:
         script: |
           cd ios/App
           xcodebuild -resolvePackageDependencies -project "App.xcodeproj" -scheme "App"
-      - name: Compilar o App (Diagnóstico Bruto)
+      - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App
           xcode-project use-profiles
-          xcodebuild archive -project "App.xcodeproj" -scheme "App" -archivePath "build/App.xcarchive" CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM "CODE_SIGN_IDENTITY=Apple Distribution"
+          xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
     artifacts:
       - "**/build/ios/ipa/*.ipa"

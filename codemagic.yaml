@@ -56,11 +56,34 @@ workflows:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM
             
-          # 3. Exporta o .xcarchive para .ipa final
+          # 3. Gera as opcoes de exportacao atualizadas (app-store-connect)
+          cat <<EOF > custom_export_options.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>teamID</key>
+              <string>3V989HNC76</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>br.com.foconameta.app</key>
+                  <string>FocoNaMeta_AppStore</string>
+              </dict>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+          </dict>
+          </plist>
+          EOF
+            
+          # 4. Exporta o .xcarchive para .ipa final
           echo "Exportando para IPA..."
           xcodebuild -exportArchive \
             -archivePath "build/App.xcarchive" \
-            -exportOptionsPlist /Users/builder/export_options.plist \
+            -exportOptionsPlist custom_export_options.plist \
             -exportPath "build/ios/ipa"
     artifacts:
       - "**/build/ios/ipa/*.ipa"

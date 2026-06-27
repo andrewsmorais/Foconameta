@@ -17,8 +17,22 @@ workflows:
         script: npx cap sync ios
       - name: Configurar chaves de assinatura (Keychain)
         script: |
-          keychain initialize
-          keychain add-certificates
+          # 1. Decodifica os arquivos
+          echo $CERTIFICATE_P12 | base64 --decode > certificate.p12
+          echo $PROVISIONING_PROFILE | base64 --decode > profile.mobileprovision
+          
+          # 2. Cria o cofre e instala o certificado
+          keychain_name="build.keychain"
+          keychain_password="password"
+          security create-keychain -p "$keychain_password" $keychain_name
+          security default-keychain -s $keychain_name
+          security unlock-keychain -p "$keychain_password" $keychain_name
+          security import certificate.p12 -k $keychain_name -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-keychain-partition-list -S apple-tool:,apple: -s -k "$keychain_password" $keychain_name
+          
+          # 3. Instala o Provisioning Profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
       - name: Aplicar perfis de assinatura no Xcode
         script: |
           cd ios/App

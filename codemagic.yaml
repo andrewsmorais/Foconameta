@@ -4,10 +4,11 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
-      groups:
-        - assinatura_ios
       node: latest
       xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: br.com.foconameta.app
     scripts:
       - name: Instalar dependências
         script: npm install --legacy-peer-deps
@@ -15,24 +16,10 @@ workflows:
         script: npm run build
       - name: Sincronizar iOS nativo
         script: npx cap sync ios
-      - name: Configurar chaves de assinatura (Keychain)
-        script: |
-          # 1. Decodifica os arquivos
-          echo $CERTIFICATE_P12 | base64 --decode > certificate.p12
-          echo $PROVISIONING_PROFILE | base64 --decode > profile.mobileprovision
-          
-          # 2. Cria o cofre e instala o certificado
-          keychain_name="build.keychain"
-          keychain_password="password"
-          security create-keychain -p "$keychain_password" $keychain_name
-          security default-keychain -s $keychain_name
-          security unlock-keychain -p "$keychain_password" $keychain_name
-          security import certificate.p12 -k $keychain_name -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-keychain-partition-list -S apple-tool:,apple: -s -k "$keychain_password" $keychain_name
-          
-          # 3. Instala o Provisioning Profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+      - name: Configurar Keychain
+        script: keychain initialize
+      - name: Adicionar Certificados Globais
+        script: keychain add-certificates
       - name: Aplicar perfis de assinatura no Xcode
         script: |
           cd ios/App
@@ -44,42 +31,6 @@ workflows:
       - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App
-          # 1. Aplica os perfis lidos do painel e gera o export_options.plist
-          xcode-project use-profiles
-          
-          # 2. Arquiva o projeto (Gera o .xcarchive)
-          echo "Gerando Arquivo (.xcarchive)..."
-          xcodebuild archive \
-            -project "App.xcodeproj" \
-            -scheme "App" \
-            -archivePath "build/App.xcarchive" \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM
-            
-          # 3. Gera as opcoes de exportacao atualizadas (app-store-connect)
-          cat <<EOF > custom_export_options.plist
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>app-store-connect</string>
-              <key>teamID</key>
-              <string>3V989HNC76</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>br.com.foconameta.app</key>
-                  <string>FocoNaMeta_AppStore</string>
-              </dict>
-          </dict>
-          </plist>
-          EOF
-            
-          # 4. Exporta o .xcarchive para .ipa final
-          echo "Exportando para IPA..."
-          xcodebuild -exportArchive \
-            -archivePath "build/App.xcarchive" \
-            -exportOptionsPlist custom_export_options.plist \
-            -exportPath "build/ios/ipa"
+          xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
     artifacts:
       - "**/build/ios/ipa/*.ipa"

@@ -41,6 +41,6 @@ workflows:
         script: |
           cd ios/App
           xcode-project use-profiles
-          xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
+          xcode-project build-ipa --project "App.xcodeproj" --scheme "App" --log-stream stdout
     artifacts:
       - "**/build/ios/ipa/*.ipa"

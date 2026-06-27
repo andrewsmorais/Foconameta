@@ -71,10 +71,6 @@ workflows:
                   <key>br.com.foconameta.app</key>
                   <string>FocoNaMeta_AppStore</string>
               </dict>
-              <key>signingCertificate</key>
-              <string>Apple Distribution</string>
-              <key>signingStyle</key>
-              <string>manual</string>
           </dict>
           </plist>
           EOF

@@ -41,10 +41,10 @@ workflows:
         script: |
           cd ios/App
           xcodebuild -resolvePackageDependencies -project "App.xcodeproj" -scheme "App"
-      - name: Compilar o App (Gerar IPA)
+      - name: Debug de Compilacao Swift (Verifica se o codigo esta quebrado)
         script: |
           cd ios/App
-          xcode-project use-profiles
-          xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
+          echo "Iniciando compilação de diagnóstico (ignorando chaves e assinaturas)..."
+          xcodebuild clean build -project "App.xcodeproj" -scheme "App" -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO | tee diagnostic.log
     artifacts:
       - "**/build/ios/ipa/*.ipa"

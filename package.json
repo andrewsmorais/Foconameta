@@ -13,9 +13,9 @@
   "dependencies": {
     "@capacitor/android": "^8.4.1",
     "@capacitor/app": "^8.1.0",
-    "@capacitor/cli": "^8.0.0",
-    "@capacitor/core": "^8.0.0",
-    "@capacitor/device": "^8.0.2",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/device": "^8.4.1",
     "@capacitor/ios": "^8.4.1",
     "@hookform/resolvers": "^3.10.0",
     "@mercadopago/sdk-js": "^0.0.3",

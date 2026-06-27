@@ -42,7 +42,7 @@ const Obrigado = () => {
                   <p className="text-gray-700 text-base md:text-lg leading-relaxed">
                     <strong className="text-gray-900">Fala, parceiro!</strong> Sou o Andrews Morais. 
                     Também sou motorista de aplicativo e sei que o nosso tempo vale ouro. 
-                    Criei o <strong className="text-primary">Foco na Meta</strong> para a gente ter controle real do lucro. 
+                    Criei o <strong className="text-primary">Meu Faturamento App</strong> para a gente ter controle real do lucro. 
                     Parabéns pela decisão! Se precisar de ajuda, o suporte é direto comigo.
                   </p>
                 </div>
@@ -141,7 +141,7 @@ const Obrigado = () => {
       {/* Footer */}
       <footer className="py-4 px-4 text-center border-t border-gray-100 bg-white">
         <p className="text-sm text-gray-500">
-          © {new Date().getFullYear()} Foco na Meta
+          © {new Date().getFullYear()} Meu Faturamento App
         </p>
       </footer>
     </div>

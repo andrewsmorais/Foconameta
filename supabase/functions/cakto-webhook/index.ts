@@ -163,11 +163,11 @@ async function sendWelcomeEmail(email: string, nome: string, registrationLink: s
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Pagamento confirmado - Foco na Meta</title>
+      <title>Pagamento confirmado - Meu Faturamento App</title>
     </head>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5;">
       <div style="background: linear-gradient(135deg, #15a249 0%, #0d7a35 100%); padding: 30px; text-align: center;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Foco na Meta</h1>
+        <h1 style="color: white; margin: 0; font-size: 28px;">🚗 Meu Faturamento App</h1>
       </div>
 
       <div style="background: #ffffff; padding: 30px;">
@@ -216,7 +216,7 @@ async function sendWelcomeEmail(email: string, nome: string, registrationLink: s
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="font-size: 16px; color: #333; margin: 0; font-weight: bold;">Tamo junto no trecho! 🚗</p>
-          <p style="font-size: 16px; color: #666; margin: 5px 0 0 0;">Andrews Morais & Equipe Foco na Meta</p>
+          <p style="font-size: 16px; color: #666; margin: 5px 0 0 0;">Andrews Morais & Equipe Meu Faturamento App</p>
         </div>
       </div>
     </body>
@@ -233,11 +233,11 @@ async function sendWelcomeEmail(email: string, nome: string, registrationLink: s
       },
       body: JSON.stringify({
         sender: {
-          name: "Foco na Meta",
+          name: "Meu Faturamento App",
           email: "suporte@bateuameta.com",
         },
         to: [{ email }],
-        subject: "Pagamento confirmado! Finalize seu cadastro no Foco na Meta",
+        subject: "Pagamento confirmado! Finalize seu cadastro no Meu Faturamento App",
         htmlContent: emailContent,
       }),
     });
@@ -321,11 +321,11 @@ async function sendRenewalEmail(email: string, nome: string, expiresAt: string, 
       },
       body: JSON.stringify({
         sender: {
-          name: "Foco na Meta",
+          name: "Meu Faturamento App",
           email: "suporte@bateuameta.com",
         },
         to: [{ email }],
-        subject: "🔄 Assinatura Renovada! Continue batendo suas metas - Foco na Meta",
+        subject: "🔄 Assinatura Renovada! Continue batendo suas metas - Meu Faturamento App",
         htmlContent: emailContent,
       }),
     });

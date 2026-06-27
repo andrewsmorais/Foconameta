@@ -240,7 +240,7 @@ const PagamentoSucesso = () => {
           <div className="mx-auto mb-4">
             <img 
               src={logoImage} 
-              alt="Foco na Meta" 
+              alt="Meu Faturamento App" 
               className="w-20 h-20 rounded-full object-cover mx-auto"
             />
           </div>

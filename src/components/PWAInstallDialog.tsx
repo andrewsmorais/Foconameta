@@ -233,10 +233,10 @@ export const PWAInstallDialog = ({ open, onOpenChange }: PWAInstallDialogProps) 
             <DialogTitle className="flex items-center gap-3">
               <img 
                 src="/pwa-icon.png" 
-                alt="Foco na Meta" 
+                alt="Meu Faturamento App" 
                 className="w-12 h-12 rounded-xl object-cover"
               />
-              <span>Foco na Meta</span>
+              <span>Meu Faturamento App</span>
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col items-center justify-center py-6 space-y-4">
@@ -262,7 +262,7 @@ export const PWAInstallDialog = ({ open, onOpenChange }: PWAInstallDialogProps) 
           <DialogTitle className="flex items-center gap-3">
             <img 
               src="/pwa-icon.png" 
-              alt="Foco na Meta" 
+              alt="Meu Faturamento App" 
               className="w-12 h-12 rounded-xl object-cover"
             />
             <span>{t("pwa.installTitle")}</span>

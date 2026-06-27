@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Foco na Meta"
+    "name": "Meu Faturamento App"
   },
   "common": {
     "delete": "Löschen",
@@ -210,7 +210,7 @@
     "editarFotoDesc": "Passen Sie den Zoom und die Positionierung Ihres Fotos an",
     "dadosAtualizados": "Informationen erfolgreich aktualisiert!",
     "reembolsoTexto": "Sie haben innerhalb von 7 Tagen nach dem Kauf Anspruch auf eine vollständige Rückerstattung, wie im Verbraucherrecht garantiert.",
-    "sobreTexto": "Foco na Meta wurde entwickelt, um App-Fahrern bei der Verwaltung ihrer Finanzen zu helfen.",
+    "sobreTexto": "Meu Faturamento App wurde entwickelt, um App-Fahrern bei der Verwaltung ihrer Finanzen zu helfen.",
     "lgpdTexto": "Ihre personenbezogenen Daten werden gemäß dem Allgemeinen Datenschutzgesetz Brasiliens (LGPD – Gesetz 13.709/2018) erhoben und verarbeitet. Wir speichern nur Informationen, die für den Betrieb der App und den Schutz Ihrer Daten erforderlich sind. Sie können jederzeit auf Ihre Daten zugreifen, diese korrigieren oder löschen.",
     "erroCarregar": "Profil konnte nicht geladen werden",
     "politicaReembolso": "Rückerstattungsrichtlinie",
@@ -419,7 +419,7 @@
     "selectPeriod": "Zeitraum auswählen",
     "verifying": "Berechtigungen werden überprüft...",
     "title": "Super-Admin-Dashboard",
-    "subtitle": "Vollständige Verwaltung der Foco na Meta-Plattform",
+    "subtitle": "Vollständige Verwaltung der Meu Faturamento App-Plattform",
     "custom": "Brauch",
     "actNewSub": "Benutzer",
     "noActivities": "Keine aktuelle Aktivität",
@@ -624,7 +624,7 @@
   },
   "pwa": {
     "iosDetected": "iPhone/iPad erkannt",
-    "installTitle": "Installieren Sie Foco na Meta",
+    "installTitle": "Installieren Sie Meu Faturamento App",
     "installNow": "Jetzt installieren",
     "installedTitle": "App bereits installiert!",
     "installDesc": "Installieren Sie die App für schnellen Zugriff und umfassendes Erlebnis",
@@ -633,7 +633,7 @@
     "iosUseSafari": "Verwenden Sie unter iOS Safari, um die App zu installieren",
     "alreadyInstalled": "App ist bereits installiert!",
     "androidDetected": "Android erkannt ({{browser}})",
-    "installedSub": "Foco na Meta ist bereits auf Ihrem Startbildschirm",
+    "installedSub": "Meu Faturamento App ist bereits auf Ihrem Startbildschirm",
     "desktopFollow": "{{browser}} erkannt – befolgen Sie diese Schritte:",
     "step1DeskDesc": "In der Adressleiste des Browsers",
     "step3AndDesc": "Tippen Sie im Popup auf „Installieren“.",
@@ -657,7 +657,7 @@
   "instalar": {
     "alreadyInstalled": "App ist bereits installiert!",
     "ios1Btn": "Aktie",
-    "title": "Installieren Sie Foco na Meta",
+    "title": "Installieren Sie Meu Faturamento App",
     "installNow": "Jetzt installieren",
     "installedBadge": "App ist bereits installiert!",
     "canceled": "Installation vom Benutzer abgebrochen.",
@@ -691,6 +691,6 @@
     "desk2Title": "Oder nutzen Sie das Browser-Menü",
     "and2Btn": "App installieren",
     "desk1Desc": "In Chrome/Edge erscheint rechts ein Installationssymbol:",
-    "desk2Desc": "Menü (⋮) → „Foco na Meta installieren…“ oder „Verknüpfung erstellen“"
+    "desk2Desc": "Menü (⋮) → „Meu Faturamento App installieren…“ oder „Verknüpfung erstellen“"
   }
 }

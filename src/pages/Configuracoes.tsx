@@ -337,7 +337,7 @@ const Configuracoes = () => {
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  @Foco na Meta
+                  @Meu Faturamento App
                 </a>
               </div>
               <div className="flex items-center gap-2">

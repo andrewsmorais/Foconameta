@@ -17,7 +17,7 @@ const TermosDeUso = () => {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">1. Aceitação dos Termos</h2>
             <p>
-              Ao acessar e utilizar o aplicativo <strong>Foco na Meta</strong>, você concorda com 
+              Ao acessar e utilizar o aplicativo <strong>Meu Faturamento App</strong>, você concorda com 
               estes Termos de Uso. Caso não concorde com algum dos termos, não utilize o serviço.
             </p>
           </section>
@@ -25,7 +25,7 @@ const TermosDeUso = () => {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">2. Descrição do Serviço</h2>
             <p>
-              O Foco na Meta é um aplicativo de controle financeiro desenvolvido para motoristas 
+              O Meu Faturamento App é um aplicativo de controle financeiro desenvolvido para motoristas 
               de aplicativos. O serviço permite registrar turnos, quilometragem, ganhos, despesas, 
               manutenções de veículos e acompanhar metas financeiras.
             </p>
@@ -44,7 +44,7 @@ const TermosDeUso = () => {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">4. Planos e Assinatura</h2>
             <p>
-              O Foco na Meta oferece planos de assinatura com diferentes períodos. 
+              O Meu Faturamento App oferece planos de assinatura com diferentes períodos. 
               O acesso às funcionalidades do aplicativo está condicionado à manutenção 
               de uma assinatura ativa.
             </p>
@@ -88,7 +88,7 @@ const TermosDeUso = () => {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">7. Limitação de Responsabilidade</h2>
             <p>
-              O Foco na Meta é uma ferramenta de auxílio ao controle financeiro. 
+              O Meu Faturamento App é uma ferramenta de auxílio ao controle financeiro. 
               Não nos responsabilizamos por:
             </p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
@@ -102,7 +102,7 @@ const TermosDeUso = () => {
             <h2 className="text-xl font-semibold text-foreground mb-3">8. Propriedade Intelectual</h2>
             <p>
               Todo o conteúdo do aplicativo, incluindo design, textos, logotipos e funcionalidades, 
-              é de propriedade exclusiva do Foco na Meta e está protegido por leis de direitos autorais.
+              é de propriedade exclusiva do Meu Faturamento App e está protegido por leis de direitos autorais.
             </p>
           </section>
 

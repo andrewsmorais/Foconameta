@@ -187,10 +187,10 @@ const Auth = () => {
       <div className="w-full max-w-md flex flex-col items-center">
         <img 
           src={logoImage} 
-          alt="Foco na Meta" 
+          alt="Meu Faturamento App" 
           className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover mb-4"
         />
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Foco na Meta</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Meu Faturamento App</h1>
         
         {paymentSuccess && (
           <Card className="w-full mb-4 border-green-500 bg-green-500/10">

@@ -218,7 +218,7 @@
     "editarFotoDesc": "사진의 확대/축소 및 위치 조정",
     "dadosAtualizados": "정보가 업데이트되었습니다!",
     "idiomaDesc": "앱 언어를 선택하세요. 기본값은 장치 언어입니다.",
-    "sobreTexto": "Foco na Meta는 앱 드라이버가 재정을 관리할 수 있도록 돕기 위해 만들어졌습니다.",
+    "sobreTexto": "Meu Faturamento App는 앱 드라이버가 재정을 관리할 수 있도록 돕기 위해 만들어졌습니다.",
     "reembolsoTexto": "소비자법에 따라 구매 후 7일 이내에 전액 환불을 받을 수 있습니다.",
     "lgpdTexto": "귀하의 개인 데이터는 브라질의 일반 데이터 보호법(LGPD - 법률 13.709/2018)에 따라 수집되고 처리됩니다. 당사는 앱을 작동하고 귀하의 데이터를 보호하는 데 필요한 정보만 저장합니다. 귀하는 언제든지 귀하의 정보에 접근, 수정 또는 삭제할 수 있습니다."
   },
@@ -419,7 +419,7 @@
     "selectPeriod": "기간 선택",
     "verifying": "권한 확인 중...",
     "title": "최고 관리자 대시보드",
-    "subtitle": "Foco na Meta 플랫폼의 전체 관리",
+    "subtitle": "Meu Faturamento App 플랫폼의 전체 관리",
     "badgeNewSub": "신청",
     "custom": "관습",
     "actNewSub": "사용자",
@@ -626,10 +626,10 @@
     "alreadyInstalled": "앱이 이미 설치되어 있습니다!",
     "iosUseSafari": "iOS에서는 Safari를 사용하여 앱을 설치하세요.",
     "androidDetected": "Android 감지됨({{브라우저}})",
-    "installedSub": "Foco na Meta가 이미 홈 화면에 있습니다.",
+    "installedSub": "Meu Faturamento App가 이미 홈 화면에 있습니다.",
     "followOnScreen": "화면의 지시에 따라 설치하세요.",
     "installedOk": "앱이 성공적으로 설치되었습니다!",
-    "installTitle": "Foco na Meta 설치",
+    "installTitle": "Meu Faturamento App 설치",
     "installedTitle": "앱이 이미 설치되어 있습니다!",
     "iosDetected": "iPhone/iPad가 감지되었습니다.",
     "installNow": "지금 설치",
@@ -657,7 +657,7 @@
   "instalar": {
     "alreadyInstalled": "앱이 이미 설치되어 있습니다!",
     "installedBadge": "앱이 이미 설치되어 있습니다!",
-    "title": "Foco na Meta 설치",
+    "title": "Meu Faturamento App 설치",
     "installNow": "지금 설치",
     "ios1Btn": "공유하다",
     "canceled": "사용자가 설치를 취소했습니다.",
@@ -690,7 +690,7 @@
     "desk3Desc": "앱이 컴퓨터에 설치됩니다.",
     "desk2Title": "또는 브라우저 메뉴를 사용하세요.",
     "and2Btn": "앱 설치",
-    "desk2Desc": "메뉴(⋮) → \"Foco na Meta 설치...\" 또는 \"바로가기 만들기\"",
+    "desk2Desc": "메뉴(⋮) → \"Meu Faturamento App 설치...\" 또는 \"바로가기 만들기\"",
     "desk1Desc": "Chrome/Edge에서는 오른쪽에 설치 아이콘이 나타납니다."
   }
 }

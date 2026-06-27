@@ -28,9 +28,9 @@ async function sendPasswordResetEmail(email: string, name: string, password: str
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        sender: { name: "Foco na Meta", email: "suporte@bateuameta.com" },
+        sender: { name: "Meu Faturamento App", email: "suporte@bateuameta.com" },
         to: [{ email: email, name: name || "Usuário" }],
-        subject: "Sua nova senha - Foco na Meta",
+        subject: "Sua nova senha - Meu Faturamento App",
         htmlContent: `
           <!DOCTYPE html>
           <html>
@@ -69,7 +69,7 @@ async function sendPasswordResetEmail(email: string, name: string, password: str
                 
                 <div class="footer">
                   <p>Se você não solicitou esta alteração, entre em contato conosco imediatamente.</p>
-                  <p>© ${new Date().getFullYear()} Foco na Meta - Todos os direitos reservados</p>
+                  <p>© ${new Date().getFullYear()} Meu Faturamento App - Todos os direitos reservados</p>
                 </div>
               </div>
             </div>

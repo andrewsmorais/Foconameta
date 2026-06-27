@@ -220,7 +220,7 @@
     "editarFotoDesc": "调整照片的缩放和位置",
     "idiomaDesc": "选择应用程序语言。默认是您的设备语言。",
     "reembolsoTexto": "根据消费者法的保证，您有权在购买后 7 天内获得全额退款。",
-    "sobreTexto": "Foco na Meta 旨在帮助应用程序驱动程序管理其财务。"
+    "sobreTexto": "Meu Faturamento App 旨在帮助应用程序驱动程序管理其财务。"
   },
   "auth": {
     "title": "登入",
@@ -419,7 +419,7 @@
     "selectPeriod": "选择期间",
     "title": "超级管理仪表板",
     "verifying": "正在验证权限...",
-    "subtitle": "全面管理 Foco na Meta 平台",
+    "subtitle": "全面管理 Meu Faturamento App 平台",
     "custom": "风俗",
     "lastYear": "去年",
     "badgeNewSub": "订阅",
@@ -624,7 +624,7 @@
   },
   "pwa": {
     "installNow": "立即安装",
-    "installTitle": "安装 Foco na Meta",
+    "installTitle": "安装 Meu Faturamento App",
     "installedTitle": "应用程序已安装！",
     "iosDetected": "检测到 iPhone/iPad",
     "installDesc": "安装应用程序以获得快速访问和完整体验",
@@ -633,7 +633,7 @@
     "iosUseSafari": "在 iOS 上，使用 Safari 安装应用程序",
     "followOnScreen": "按照屏幕上的说明进行安装",
     "alreadyInstalled": "应用程序已安装！",
-    "installedSub": "Foco na Meta 已在您的主屏幕上",
+    "installedSub": "Meu Faturamento App 已在您的主屏幕上",
     "step1AndTitle": "点击浏览器菜单",
     "step1IosDesc": "在 Safari 的底部栏上",
     "step2AndTitle": "点击“安装应用程序”",
@@ -656,7 +656,7 @@
   },
   "instalar": {
     "alreadyInstalled": "应用程序已安装！",
-    "title": "安装 Foco na Meta",
+    "title": "安装 Meu Faturamento App",
     "installNow": "立即安装",
     "ios1Btn": "分享",
     "installedBadge": "应用程序已安装！",
@@ -683,7 +683,7 @@
     "and1Btn": "菜单",
     "desk1Title": "在地址栏中找到安装图标",
     "and2Title": "选择“安装应用程序”或“添加到主屏幕”",
-    "desk2Desc": "菜单 (⋮) →“安装 Foco na Meta...”或“创建快捷方式”",
+    "desk2Desc": "菜单 (⋮) →“安装 Meu Faturamento App...”或“创建快捷方式”",
     "desk1Desc": "在 Chrome/Edge 中，安装图标出现在右侧：",
     "desk2Title": "或者使用浏览器菜单",
     "and2Btn": "安装应用程序",

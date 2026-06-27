@@ -208,7 +208,7 @@
     "instagram": "Instagram",
     "nomeCompleto": "Volledige naam",
     "lgpdTexto": "Uw persoonlijke gegevens worden verzameld en verwerkt onder de Braziliaanse Algemene Wet Gegevensbescherming (LGPD - Wet 13.709/2018). We slaan alleen informatie op die nodig is om de app te laten werken en uw gegevens te beschermen. U kunt uw gegevens op elk moment inzien, corrigeren of verwijderen.",
-    "sobreTexto": "Foco na Meta is gebouwd om app-bestuurders te helpen hun financiën te beheren.",
+    "sobreTexto": "Meu Faturamento App is gebouwd om app-bestuurders te helpen hun financiën te beheren.",
     "reembolsoTexto": "U heeft recht op een volledige terugbetaling binnen 7 dagen na aankoop, zoals gegarandeerd door de consumentenwetgeving.",
     "editarFotoDesc": "Pas de zoom en positionering van uw foto aan",
     "dadosAtualizados": "Informatie succesvol bijgewerkt!",
@@ -417,7 +417,7 @@
   },
   "superAdmin": {
     "selectPeriod": "Selecteer periode",
-    "subtitle": "Volledig beheer van het Foco na Meta-platform",
+    "subtitle": "Volledig beheer van het Meu Faturamento App-platform",
     "title": "Superbeheerdersdashboard",
     "verifying": "Rechten verifiëren...",
     "custom": "Aangepast",
@@ -631,7 +631,7 @@
     "installedOk": "App succesvol geïnstalleerd!",
     "alreadyInstalled": "App is al geïnstalleerd!",
     "iosUseSafari": "Op iOS gebruikt u Safari om de app te installeren",
-    "installedSub": "Foco na Meta staat al op je startscherm",
+    "installedSub": "Meu Faturamento App staat al op je startscherm",
     "followOnScreen": "Volg de instructies op het scherm om te installeren",
     "installDesc": "Installeer de app voor snelle toegang en volledige ervaring",
     "step1DeskTitle": "Klik op het installatiepictogram",
@@ -690,7 +690,7 @@
     "and2Desc": "De optie kan per browser verschillen",
     "and2Title": "Selecteer 'App installeren' of 'Toevoegen aan startscherm'",
     "desk3Desc": "De app wordt op uw computer geïnstalleerd",
-    "desk2Desc": "Menu (⋮) → \"Foco na Meta installeren...\" of \"Snelkoppeling maken\"",
+    "desk2Desc": "Menu (⋮) → \"Meu Faturamento App installeren...\" of \"Snelkoppeling maken\"",
     "desk1Desc": "In Chrome/Edge verschijnt aan de rechterkant een installatiepictogram:"
   }
 }

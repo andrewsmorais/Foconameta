@@ -203,7 +203,7 @@ const Instalar = () => {
         <div className="space-y-4">
           <img
             src={pwaIcon}
-            alt="Foco na Meta"
+            alt="Meu Faturamento App"
             className="w-24 h-24 mx-auto rounded-2xl shadow-lg"
           />
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">

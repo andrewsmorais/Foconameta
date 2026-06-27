@@ -75,7 +75,7 @@ const Planos = () => {
         <div className="text-center mb-8">
           <img 
             src={logoImage} 
-            alt="Foco na Meta" 
+            alt="Meu Faturamento App" 
             className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4"
           />
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">

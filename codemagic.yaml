@@ -37,6 +37,10 @@ workflows:
         script: |
           cd ios/App
           xcode-project use-profiles
+      - name: Resolver Dependências do SPM (Swift)
+        script: |
+          cd ios/App
+          xcodebuild -resolvePackageDependencies -project "App.xcodeproj" -scheme "App"
       - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App

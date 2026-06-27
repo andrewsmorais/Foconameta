@@ -41,10 +41,26 @@ workflows:
         script: |
           cd ios/App
           xcodebuild -resolvePackageDependencies -project "App.xcodeproj" -scheme "App"
-      - name: Debug de Compilacao Swift (Verifica se o codigo esta quebrado)
+      - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App
-          echo "Iniciando compilação de diagnóstico (ignorando chaves e assinaturas)..."
-          xcodebuild clean build -project "App.xcodeproj" -scheme "App" -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO | tee diagnostic.log
+          # 1. Aplica os perfis lidos do painel e gera o export_options.plist
+          xcode-project use-profiles
+          
+          # 2. Arquiva o projeto (Gera o .xcarchive)
+          echo "Gerando Arquivo (.xcarchive)..."
+          xcodebuild archive \
+            -project "App.xcodeproj" \
+            -scheme "App" \
+            -archivePath "build/App.xcarchive" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM
+            
+          # 3. Exporta o .xcarchive para .ipa final
+          echo "Exportando para IPA..."
+          xcodebuild -exportArchive \
+            -archivePath "build/App.xcarchive" \
+            -exportOptionsPlist /Users/builder/export_options.plist \
+            -exportPath "build/ios/ipa"
     artifacts:
       - "**/build/ios/ipa/*.ipa"

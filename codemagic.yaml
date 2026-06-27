@@ -40,6 +40,7 @@ workflows:
       - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App
+          xcode-project use-profiles
           xcode-project build-ipa --project "App.xcodeproj" --scheme "App"
     artifacts:
       - "**/build/ios/ipa/*.ipa"

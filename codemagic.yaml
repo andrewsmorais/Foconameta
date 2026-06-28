@@ -28,6 +28,10 @@ workflows:
         script: |
           cd ios/App
           xcodebuild -resolvePackageDependencies -project "App.xcodeproj" -scheme "App"
+      - name: Atualizar Build Number
+        script: |
+          cd ios/App
+          agvtool new-version -all $BUILD_NUMBER
       - name: Compilar o App (Gerar IPA)
         script: |
           cd ios/App

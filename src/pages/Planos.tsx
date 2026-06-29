@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
+import { Capacitor } from "@capacitor/core";
+import { toast } from "sonner";
 
 const CAKTO_CHECKOUT_MENSAL = "https://pay.cakto.com.br/hrg5kq9";
 const CAKTO_CHECKOUT_ANUAL = "https://pay.cakto.com.br/pxje8kx_669077";
@@ -42,9 +44,69 @@ const Planos = () => {
     };
     
     checkAuth();
+
+    // StoreKit Initialization para iOS
+    if (Capacitor.getPlatform() === 'ios') {
+      const initStoreKit = () => {
+        const store = (window as any).store;
+        const CdvPurchase = (window as any).CdvPurchase;
+        if (!store || !CdvPurchase) return;
+
+        store.register([
+          {
+            id: 'com.meufaturamento.mensal',
+            type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
+            platform: CdvPurchase.Platform.APPLE_APPSTORE,
+          },
+          {
+            id: 'com.meufaturamento.anual',
+            type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
+            platform: CdvPurchase.Platform.APPLE_APPSTORE,
+          }
+        ]);
+
+        store.when().approved((transaction: any) => {
+          transaction.verify();
+        });
+
+        store.when().verified((receipt: any) => {
+          receipt.finish();
+          toast.success("Assinatura confirmada pela Apple!");
+          navigate("/dashboard");
+        });
+
+        store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]);
+      };
+      
+      // Delay pequeno para garantir que os plugins cordova foram carregados no window
+      setTimeout(initStoreKit, 1000);
+    }
   }, [navigate]);
 
   const handleSelectPlan = async (plan: 'mensal' | 'anual' = 'anual') => {
+    // Integração Nativa App Store (Somente iOS)
+    if (Capacitor.getPlatform() === 'ios') {
+      const store = (window as any).store;
+      const CdvPurchase = (window as any).CdvPurchase;
+      if (!store || !CdvPurchase) {
+        toast.error("O sistema de compras nativo ainda está carregando. Tente novamente em segundos.");
+        return;
+      }
+      
+      const productId = plan === 'mensal' ? 'com.meufaturamento.mensal' : 'com.meufaturamento.anual';
+      const product = store.get(productId, CdvPurchase.Platform.APPLE_APPSTORE);
+      
+      if (!product) {
+        toast.error("Produto não encontrado na App Store. Tente novamente mais tarde.");
+        return;
+      }
+
+      toast.info("Processando pagamento pela App Store...");
+      product.getOffer()?.order();
+      return;
+    }
+
+    // Fallback Web/Android (Cakto)
     const { data: { session } } = await supabase.auth.getSession();
     const email = session?.user?.email || "";
 
@@ -166,6 +228,26 @@ const Planos = () => {
             </CardContent>
           </Card>
         </div>
+
+        {Capacitor.getPlatform() === 'ios' && (
+          <div className="mt-8 text-center bg-gray-900/50 p-4 rounded-xl border border-gray-800">
+            <Button variant="outline" className="w-full md:w-auto border-gray-600 hover:bg-gray-800" onClick={() => {
+              const store = (window as any).store;
+              if (store) {
+                toast.info("Buscando compras anteriores na App Store...");
+                store.restorePurchases();
+              } else {
+                toast.error("Sistema não inicializado.");
+              }
+            }}>
+              Restaurar Compras Anteriores
+            </Button>
+            <p className="text-xs text-gray-500 mt-3 max-w-md mx-auto">
+              Se você já é assinante e trocou de aparelho (ou desinstalou o app), 
+              clique no botão acima para restaurar seu acesso na App Store sem pagar novamente.
+            </p>
+          </div>
+        )}
 
         <div className="text-center space-y-2 mt-8">
           {isAuthenticated ? (

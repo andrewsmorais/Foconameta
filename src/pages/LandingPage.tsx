@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { useGoogleAds } from "@/hooks/useGoogleAds";
 import { toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
 import {
   BarChart3, 
   Car, 
@@ -151,7 +152,43 @@ const LandingPage = () => {
   
   useEffect(() => {
     setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-  }, []);
+
+    // StoreKit Initialization para iOS
+    if (Capacitor.getPlatform() === 'ios') {
+      const initStoreKit = () => {
+        const store = (window as any).store;
+        const CdvPurchase = (window as any).CdvPurchase;
+        if (!store || !CdvPurchase) return;
+
+        store.register([
+          {
+            id: 'com.meufaturamento.mensal',
+            type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
+            platform: CdvPurchase.Platform.APPLE_APPSTORE,
+          },
+          {
+            id: 'com.meufaturamento.anual',
+            type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
+            platform: CdvPurchase.Platform.APPLE_APPSTORE,
+          }
+        ]);
+
+        store.when().approved((transaction: any) => {
+          transaction.verify();
+        });
+
+        store.when().verified((receipt: any) => {
+          receipt.finish();
+          toast.success("Assinatura confirmada pela Apple!");
+          navigate("/auth");
+        });
+
+        store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]);
+      };
+      
+      setTimeout(initStoreKit, 1000);
+    }
+  }, [navigate]);
 
   // Update current slide when carousel changes
   useEffect(() => {
@@ -236,6 +273,28 @@ const LandingPage = () => {
   };
 
   const handleSelectPlan = async (plan: 'mensal' | 'anual' = 'anual') => {
+    // Integração Nativa App Store (Somente iOS)
+    if (Capacitor.getPlatform() === 'ios') {
+      const store = (window as any).store;
+      const CdvPurchase = (window as any).CdvPurchase;
+      if (!store || !CdvPurchase) {
+        toast.error("O sistema de compras nativo ainda está carregando. Tente novamente em segundos.");
+        return;
+      }
+      
+      const productId = plan === 'mensal' ? 'com.meufaturamento.mensal' : 'com.meufaturamento.anual';
+      const product = store.get(productId, CdvPurchase.Platform.APPLE_APPSTORE);
+      
+      if (!product) {
+        toast.error("Produto não encontrado na App Store. Tente novamente mais tarde.");
+        return;
+      }
+
+      toast.info("Processando pagamento pela App Store...");
+      product.getOffer()?.order();
+      return;
+    }
+
     // Facebook Pixel - InitiateCheckout
     trackInitiateCheckout(plan === 'anual' ? "Anual" : "Mensal", plan === 'anual' ? 97.90 : 19.90);
 

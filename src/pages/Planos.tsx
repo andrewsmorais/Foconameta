@@ -9,8 +9,7 @@ import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { Capacitor } from "@capacitor/core";
 import { toast } from "sonner";
 
-const CAKTO_CHECKOUT_MENSAL = "https://pay.cakto.com.br/hrg5kq9";
-const CAKTO_CHECKOUT_ANUAL = "https://pay.cakto.com.br/pxje8kx_669077";
+// Checkout URLs externos (Cakto) foram removidos em prol de StoreKit 100% nativo.
 
 const features = [
   "Descubra qual é o seu Custo e o seu Lucro real em cada viagem",
@@ -106,16 +105,10 @@ const Planos = () => {
       return;
     }
 
-    // Fallback Web/Android (Cakto)
-    const { data: { session } } = await supabase.auth.getSession();
-    const email = session?.user?.email || "";
-
-    const baseUrl = plan === 'mensal' ? CAKTO_CHECKOUT_MENSAL : CAKTO_CHECKOUT_ANUAL;
-    const checkoutUrl = email 
-      ? `${baseUrl}?email=${encodeURIComponent(email)}`
-      : baseUrl;
-    
-    window.location.href = checkoutUrl;
+    // Alerta de ambiente restrito ao iOS
+    toast.error("Assinaturas Indisponíveis", {
+      description: "As assinaturas só podem ser realizadas dentro do aplicativo Meu Faturamento App para iOS (iPhone)."
+    });
   };
 
   const handleLogout = async () => {

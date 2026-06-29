@@ -74,9 +74,7 @@ import motoristaCacheado from "@/assets/testimonials/motorista-cacheado.png";
 // Founder image
 import fundadorImg from "@/assets/andrews-morais.jpeg";
 
-// Cakto checkout URLs
-const CAKTO_CHECKOUT_MENSAL = "https://pay.cakto.com.br/hrg5kq9";
-const CAKTO_CHECKOUT_ANUAL = "https://pay.cakto.com.br/pxje8kx_669077";
+// Checkout URLs externos (Cakto) foram removidos em prol de StoreKit 100% nativo.
 
 // Slides data for carousel
 const carouselSlides = [
@@ -295,18 +293,10 @@ const LandingPage = () => {
       return;
     }
 
-    // Facebook Pixel - InitiateCheckout
-    trackInitiateCheckout(plan === 'anual' ? "Anual" : "Mensal", plan === 'anual' ? 97.90 : 19.90);
-
-    const { data: { session } } = await supabase.auth.getSession();
-    const email = session?.user?.email || "";
-
-    const baseUrl = plan === 'mensal' ? CAKTO_CHECKOUT_MENSAL : CAKTO_CHECKOUT_ANUAL;
-    const checkoutUrl = email 
-      ? `${baseUrl}?email=${encodeURIComponent(email)}`
-      : baseUrl;
-    
-    window.location.href = checkoutUrl;
+    // Alerta de ambiente restrito ao iOS
+    toast.error("Assinaturas Indisponíveis", {
+      description: "As assinaturas só podem ser realizadas dentro do aplicativo Meu Faturamento App para iOS (iPhone)."
+    });
   };
 
   // Rastreia cliques em contato (WhatsApp/Instagram)

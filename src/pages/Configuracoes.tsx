@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { AvatarEditor } from "@/components/AvatarEditor";
 import { Link, useNavigate } from "react-router-dom";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { Browser } from "@capacitor/browser";
 import { PWAInstallDialog } from "@/components/PWAInstallDialog";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -42,8 +43,6 @@ const Configuracoes = () => {
     avatar_url: null,
   });
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
-  const [showRefundPolicy, setShowRefundPolicy] = useState(false);
-  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -268,7 +267,9 @@ const Configuracoes = () => {
           <Button 
             variant="outline"
             className="w-full justify-start text-base"
-            onClick={() => setShowRefundPolicy(true)}
+            onClick={async () => {
+              await Browser.open({ url: 'COLE_SEU_LINK_DA_POLITICA_DE_REEMBOLSO_AQUI' });
+            }}
           >
             {t("configuracoes.politicaReembolso")}
           </Button>
@@ -276,7 +277,9 @@ const Configuracoes = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start text-base"
-            onClick={() => setShowPrivacyPolicy(true)}
+            onClick={async () => {
+              await Browser.open({ url: 'COLE_SEU_LINK_DA_POLITICA_DE_PRIVACIDADE_AQUI' });
+            }}
           >
             {t("configuracoes.politicaPrivacidade")}
           </Button>
@@ -320,31 +323,7 @@ const Configuracoes = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Refund Policy Dialog */}
-      <AlertDialog open={showRefundPolicy} onOpenChange={setShowRefundPolicy}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("configuracoes.politicaReembolso")}</AlertDialogTitle>
-            <AlertDialogDescription className="text-foreground">
-              {t("configuracoes.reembolsoTexto")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <Button onClick={() => setShowRefundPolicy(false)}>{t("common.close")}</Button>
-        </AlertDialogContent>
-      </AlertDialog>
 
-      {/* Privacy Policy Dialog */}
-      <AlertDialog open={showPrivacyPolicy} onOpenChange={setShowPrivacyPolicy}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("configuracoes.politicaPrivacidade")}</AlertDialogTitle>
-            <AlertDialogDescription className="text-foreground">
-              {t("configuracoes.lgpdTexto")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <Button onClick={() => setShowPrivacyPolicy(false)}>{t("common.close")}</Button>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* About Dialog */}
       <AlertDialog open={showAbout} onOpenChange={setShowAbout}>

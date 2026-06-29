@@ -183,16 +183,17 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md flex flex-col items-center relative">
-        <Button 
-          variant="ghost" 
-          className="absolute -top-12 left-0 text-muted-foreground hover:text-foreground"
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar para o site
-        </Button>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
+      <Button 
+        variant="outline" 
+        className="absolute top-4 right-4 md:top-8 md:right-8 bg-card shadow-sm border-border flex items-center gap-2 px-4 py-2 h-auto"
+        onClick={() => navigate("/")}
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Voltar
+      </Button>
+
+      <div className="w-full max-w-md flex flex-col items-center">
         <img 
           src={logoImage} 
           alt="Meu Faturamento App" 

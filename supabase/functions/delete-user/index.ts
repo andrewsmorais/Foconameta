@@ -35,36 +35,39 @@ serve(async (req) => {
 
     console.log('[delete-user] Request from user:', requestingUser.email);
 
-    // Check if requesting user is super admin
-    const { data: roleData } = await supabaseClient
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', requestingUser.id)
-      .eq('role', 'super_admin')
-      .maybeSingle();
-
-    if (!roleData) {
-      console.error('[delete-user] User is not super_admin:', requestingUser.id);
-      throw new Error('Unauthorized: Super admin access required');
+    let user_id = null;
+    try {
+      const body = await req.json();
+      user_id = body?.user_id;
+    } catch (e) {
+      // Body might be empty
     }
 
-    const { user_id } = await req.json();
+    let targetUserId = user_id;
 
-    if (!user_id) {
-      console.error('[delete-user] No user_id provided');
-      throw new Error('user_id is required');
+    if (!targetUserId) {
+      // Self-deletion
+      targetUserId = requestingUser.id;
+      console.log('[delete-user] Self-deletion requested by:', targetUserId);
+    } else {
+      // Admin deleting another user
+      const { data: roleData } = await supabaseClient
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', requestingUser.id)
+        .eq('role', 'super_admin')
+        .maybeSingle();
+
+      if (!roleData) {
+        console.error('[delete-user] User is not super_admin:', requestingUser.id);
+        throw new Error('Unauthorized: Super admin access required');
+      }
     }
 
-    console.log('[delete-user] Attempting to delete user:', user_id);
-
-    // Prevent self-deletion
-    if (user_id === requestingUser.id) {
-      console.error('[delete-user] Attempted self-deletion');
-      throw new Error('Cannot delete your own account');
-    }
+    console.log('[delete-user] Attempting to delete user:', targetUserId);
 
     // Delete user from auth.users (cascades to profiles, user_roles, subscriptions)
-    const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(user_id);
+    const { error: deleteError } = await supabaseClient.auth.admin.deleteUser(targetUserId);
 
     if (deleteError) {
       console.error('[delete-user] Error deleting user:', deleteError);

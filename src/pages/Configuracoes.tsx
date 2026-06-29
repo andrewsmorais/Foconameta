@@ -46,7 +46,10 @@ const Configuracoes = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showInstallDialog, setShowInstallDialog] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { install, isInstallable } = usePWAInstall();
 
@@ -124,6 +127,32 @@ const Configuracoes = () => {
     setShowAvatarEditor(false);
   };
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { error } = await supabase.functions.invoke("delete-user", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      await supabase.auth.signOut();
+      toast({ title: "Conta excluída com sucesso" });
+      navigate("/");
+    } catch (error) {
+      console.error("Erro ao excluir conta:", error);
+      toast({ variant: "destructive", title: "Ocorreu um erro ao tentar excluir sua conta" });
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   const getInitials = () => {
     if (!profile.nome_completo) return "?";
     const names = profile.nome_completo.split(" ");
@@ -133,7 +162,7 @@ const Configuracoes = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto pb-20">
       <div>
         <h1 className="text-3xl font-bold">{t("configuracoes.title")}</h1>
         <p className="text-muted-foreground">{t("configuracoes.subtitle")}</p>
@@ -269,6 +298,14 @@ const Configuracoes = () => {
             <Phone className="mr-2 h-5 w-5" />
             {t("configuracoes.contato")}
           </Button>
+          
+          <Button 
+            variant="destructive" 
+            className="w-full justify-start text-base mt-4"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Excluir Conta Permanentemente
+          </Button>
         </CardContent>
       </Card>
 
@@ -355,6 +392,26 @@ const Configuracoes = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Button onClick={() => setShowContact(false)}>{t("common.close")}</Button>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Account Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Conta Permanentemente</AlertDialogTitle>
+            <AlertDialogDescription className="text-foreground">
+              Tem certeza que deseja excluir sua conta? Esta ação apagará todos os seus dados e assinaturas e não poderá ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteAccount} disabled={isDeleting}>
+              {isDeleting ? "Excluindo..." : "Sim, Excluir Minha Conta"}
+            </Button>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
 

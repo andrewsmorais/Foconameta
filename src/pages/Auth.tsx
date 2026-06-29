@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Capacitor } from "@capacitor/core";
 
@@ -184,13 +184,21 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md flex flex-col items-center">
+      <div className="w-full max-w-md flex flex-col items-center relative">
+        <Button 
+          variant="ghost" 
+          className="absolute -top-12 left-0 text-muted-foreground hover:text-foreground"
+          onClick={() => navigate("/")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar para o site
+        </Button>
         <img 
           src={logoImage} 
           alt="Meu Faturamento App" 
           className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover mb-4"
         />
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Meu Faturamento App</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-center w-full">Meu Faturamento App</h1>
         
         {paymentSuccess && (
           <Card className="w-full mb-4 border-green-500 bg-green-500/10">
@@ -285,8 +293,8 @@ const Auth = () => {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      {t("common.or") || "ou"}
+                    <span className="bg-background px-2 text-muted-foreground font-medium">
+                      OU
                     </span>
                   </div>
                 </div>

@@ -268,7 +268,7 @@ const Configuracoes = () => {
             variant="outline"
             className="w-full justify-start text-base"
             onClick={async () => {
-              await Browser.open({ url: 'COLE_SEU_LINK_DA_POLITICA_DE_REEMBOLSO_AQUI' });
+              await Browser.open({ url: 'https://bateuameta.com/termos-de-uso#reembolso' });
             }}
           >
             {t("configuracoes.politicaReembolso")}
@@ -278,7 +278,7 @@ const Configuracoes = () => {
             variant="outline" 
             className="w-full justify-start text-base"
             onClick={async () => {
-              await Browser.open({ url: 'COLE_SEU_LINK_DA_POLITICA_DE_PRIVACIDADE_AQUI' });
+              await Browser.open({ url: 'https://bateuameta.com/politica-privacidade' });
             }}
           >
             {t("configuracoes.politicaPrivacidade")}

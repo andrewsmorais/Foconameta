@@ -11,7 +11,9 @@ workflows:
         bundle_identifier: br.com.foconameta.app
     scripts:
       - name: Instalar dependências
-        script: npm install --legacy-peer-deps
+        script: |
+          npm cache clean --force
+          npm install --include=dev --legacy-peer-deps
       - name: Build Web
         script: npm run build
       - name: Sincronizar iOS nativo

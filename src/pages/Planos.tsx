@@ -68,10 +68,53 @@ const Planos = () => {
           transaction.verify();
         });
 
-        store.when().verified((receipt: any) => {
-          receipt.finish();
-          toast.success("Assinatura confirmada pela Apple!");
-          navigate("/dashboard");
+        store.when().verified(async (receipt: any) => {
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+              const selectedPlan = sessionStorage.getItem('storekit_selected_plan') || 'anual';
+              const planName = selectedPlan === 'mensal' ? 'Mensal' : 'Anual';
+              
+              const { data: planData } = await supabase
+                .from('plans')
+                .select('id')
+                .ilike('name', `%${planName}%`)
+                .maybeSingle();
+
+              if (planData) {
+                const { data: existingSub } = await supabase
+                  .from('subscriptions')
+                  .select('id')
+                  .eq('user_id', session.user.id)
+                  .eq('status', 'active')
+                  .maybeSingle();
+
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + (selectedPlan === 'mensal' ? 30 : 365));
+
+                if (existingSub) {
+                  await supabase.from('subscriptions').update({
+                    plan_id: planData.id,
+                    expires_at: expirationDate.toISOString()
+                  }).eq('id', existingSub.id);
+                } else {
+                  await supabase.from('subscriptions').insert({
+                    user_id: session.user.id,
+                    plan_id: planData.id,
+                    status: 'active',
+                    started_at: new Date().toISOString(),
+                    expires_at: expirationDate.toISOString()
+                  });
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Erro ao sincronizar assinatura com Supabase:", error);
+          } finally {
+            receipt.finish();
+            toast.success("Assinatura confirmada pela Apple!");
+            navigate("/dashboard");
+          }
         });
 
         store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]);
@@ -100,8 +143,19 @@ const Planos = () => {
         return;
       }
 
-      toast.info("Processando pagamento pela App Store...");
-      product.getOffer()?.order();
+      try {
+        sessionStorage.setItem('storekit_selected_plan', plan);
+        toast.info("Processando pagamento pela App Store...");
+        const offer = product.getOffer();
+        if (offer) {
+          offer.order();
+        } else {
+          toast.error("Oferta não disponível para este produto. Tente novamente mais tarde.");
+        }
+      } catch (error) {
+        console.error("Erro StoreKit:", error);
+        toast.error("Erro ao processar a compra na App Store.");
+      }
       return;
     }
 

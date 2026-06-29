@@ -71,49 +71,62 @@ const Planos = () => {
         store.when().verified(async (receipt: any) => {
           try {
             const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-              const selectedPlan = sessionStorage.getItem('storekit_selected_plan') || 'anual';
-              const planName = selectedPlan === 'mensal' ? 'Mensal' : 'Anual';
-              
-              const { data: planData } = await supabase
-                .from('plans')
+            if (!session?.user) return;
+
+            // 1. Ler o ID direto da Apple
+            const productId = receipt.id;
+            const isMensal = productId === 'com.meufaturamento.mensal';
+            const planName = isMensal ? 'Mensal' : 'Anual';
+            
+            const { data: planData } = await supabase
+              .from('plans')
+              .select('id')
+              .ilike('name', `%${planName}%`)
+              .maybeSingle();
+
+            if (planData) {
+              const { data: existingSub } = await supabase
+                .from('subscriptions')
                 .select('id')
-                .ilike('name', `%${planName}%`)
+                .eq('user_id', session.user.id)
+                .eq('status', 'active')
                 .maybeSingle();
 
-              if (planData) {
-                const { data: existingSub } = await supabase
-                  .from('subscriptions')
-                  .select('id')
-                  .eq('user_id', session.user.id)
-                  .eq('status', 'active')
-                  .maybeSingle();
+              const expirationDate = new Date();
+              expirationDate.setDate(expirationDate.getDate() + (isMensal ? 30 : 365));
 
-                const expirationDate = new Date();
-                expirationDate.setDate(expirationDate.getDate() + (selectedPlan === 'mensal' ? 30 : 365));
+              let dbError = null;
 
-                if (existingSub) {
-                  await supabase.from('subscriptions').update({
-                    plan_id: planData.id,
-                    expires_at: expirationDate.toISOString()
-                  }).eq('id', existingSub.id);
-                } else {
-                  await supabase.from('subscriptions').insert({
-                    user_id: session.user.id,
-                    plan_id: planData.id,
-                    status: 'active',
-                    started_at: new Date().toISOString(),
-                    expires_at: expirationDate.toISOString()
-                  });
-                }
+              if (existingSub) {
+                const { error } = await supabase.from('subscriptions').update({
+                  plan_id: planData.id,
+                  expires_at: expirationDate.toISOString()
+                }).eq('id', existingSub.id);
+                dbError = error;
+              } else {
+                const { error } = await supabase.from('subscriptions').insert({
+                  user_id: session.user.id,
+                  plan_id: planData.id,
+                  status: 'active',
+                  started_at: new Date().toISOString(),
+                  expires_at: expirationDate.toISOString()
+                });
+                dbError = error;
+              }
+
+              // 2. Finaliza recibo somente se DB atualizou
+              if (!dbError) {
+                receipt.finish();
+                toast.success("Assinatura sincronizada com sucesso!");
+                navigate("/dashboard");
+              } else {
+                console.error("Erro do DB:", dbError);
+                toast.error("Erro ao sincronizar. Verifique a internet e tente 'Restaurar Compras'.");
               }
             }
           } catch (error) {
-            console.error("Erro ao sincronizar assinatura com Supabase:", error);
-          } finally {
-            receipt.finish();
-            toast.success("Assinatura confirmada pela Apple!");
-            navigate("/dashboard");
+            console.error("Erro geral no verified:", error);
+            toast.error("Ocorreu um erro. Tente restaurar suas compras.");
           }
         });
 

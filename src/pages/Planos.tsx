@@ -58,11 +58,13 @@ const Planos = () => {
             id: 'com.meufaturamento.mensal',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
+            group: '22195342'
           },
           {
             id: 'com.meufaturamento.anual',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
+            group: '22195342'
           }
         ]);
 

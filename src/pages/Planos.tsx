@@ -54,12 +54,12 @@ const Planos = () => {
 
         store.register([
           {
-            id: 'br.com.foconameta.app.mensal',
+            id: 'com.meufaturamento.mensal',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
           },
           {
-            id: 'br.com.foconameta.app.anual',
+            id: 'com.meufaturamento.anual',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
           }
@@ -76,7 +76,7 @@ const Planos = () => {
 
             // 1. Ler o ID direto da Apple
             const productId = receipt.id;
-            const isMensal = productId === 'br.com.foconameta.app.mensal';
+            const isMensal = productId === 'com.meufaturamento.mensal';
             const planName = isMensal ? 'Mensal' : 'Anual';
             
             const { data: planData } = await supabase
@@ -169,7 +169,7 @@ const Planos = () => {
         return;
       }
       
-      const productId = plan === 'mensal' ? 'br.com.foconameta.app.mensal' : 'br.com.foconameta.app.anual';
+      const productId = plan === 'mensal' ? 'com.meufaturamento.mensal' : 'com.meufaturamento.anual';
       const product = store.get(productId, CdvPurchase.Platform.APPLE_APPSTORE);
       
       if (!product) {

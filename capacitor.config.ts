@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.meufaturamento.app',
+  appId: 'br.com.foconameta.app',
   appName: 'Meu Faturamento App',
   webDir: 'dist',
   bundledWebRuntime: false,

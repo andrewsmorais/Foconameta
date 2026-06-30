@@ -21,6 +21,7 @@ const features = [
 ];
 
 const Planos = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<'mensal' | 'anual' | null>(null);
   const [isStoreReady, setIsStoreReady] = useState(false);
   const navigate = useNavigate();

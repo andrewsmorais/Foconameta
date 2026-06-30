@@ -4,7 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.meufaturamento.app',
   appName: 'Meu Faturamento App',
   webDir: 'dist',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  plugins: {
+    StatusBar: {
+      overlaysWebView: true
+    }
+  }
 };
 
 export default config;

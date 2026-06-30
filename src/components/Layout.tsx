@@ -210,10 +210,16 @@ export const Layout = ({
       {/* Main Content */}
       <div className="flex-1 md:pl-64">
         {/* Mobile Header */}
-        <header className={cn(
-          "flex items-center justify-between h-16 px-4 border-b border-border md:hidden bg-card",
-          isIOSPWA && "ios-pwa-header"
-        )}>
+        <header 
+          className={cn(
+            "flex items-center justify-between px-4 border-b border-border md:hidden bg-card",
+            isIOSPWA && "ios-pwa-header"
+          )}
+          style={{ 
+            paddingTop: 'env(safe-area-inset-top, 24px)', 
+            height: 'calc(4rem + env(safe-area-inset-top, 24px))' 
+          }}
+        >
           <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
               <Menu className="w-5 h-5" />

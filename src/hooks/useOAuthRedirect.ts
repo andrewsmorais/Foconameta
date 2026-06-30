@@ -12,7 +12,7 @@ export const useOAuthRedirect = () => {
 
     const authListener = CapacitorApp.addListener("appUrlOpen", async (data) => {
       // Verifica se a URL retornada é a do nosso deep link
-      if (data.url.includes("br.com.foconameta.app://")) {
+      if (data.url.includes("com.meufaturamento.app://")) {
         const url = new URL(data.url);
         const params = new URLSearchParams(url.hash.substring(1));
         const access_token = params.get("access_token");
@@ -26,7 +26,15 @@ export const useOAuthRedirect = () => {
           });
 
           if (!error) {
-            navigate("/dashboard");
+            const { data: subData } = await supabase.functions.invoke("check-subscription", {
+              headers: { Authorization: `Bearer ${access_token}` },
+            });
+
+            if (subData?.hasActiveSubscription) {
+              navigate("/dashboard");
+            } else {
+              navigate("/planos");
+            }
           }
         }
       }

@@ -42,7 +42,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Assinatura Expirada",
-            description: "Seu plano expirou. Por favor, renove sua assinatura para continuar utilizando o aplicativo.",
+            description: "Bom te ver de volta! Identificamos que sua assinatura expirou. Escolha um dos planos abaixo para reativar seu acesso.",
             duration: 5000,
           });
           navigate("/planos");
@@ -115,26 +115,40 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      let { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            variant: "destructive",
-            title: t("auth.errLogin"),
-            description: t("auth.errInvalidCreds"),
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: t("auth.errLogin"),
-            description: error.message,
-          });
+      if (error && error.message.includes("Invalid login credentials")) {
+        // Tentativa de Auto-Signup se as credenciais forem inválidas
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (signUpError) {
+          if (signUpError.message.includes("User already registered")) {
+            // Usuário existe, então ele apenas errou a senha
+            toast({
+              variant: "destructive",
+              title: t("auth.errLogin"),
+              description: t("auth.errInvalidCreds"),
+            });
+            setLoading(false);
+            return;
+          }
+          throw signUpError;
         }
-      } else {
+
+        // Auto-Signup bem sucedido, atualizar data
+        data = signUpData;
+        error = null;
+      } else if (error) {
+        throw error;
+      }
+
+      if (!error && data?.session) {
         const { data: subData } = await supabase.functions.invoke("check-subscription", {
           headers: {
             Authorization: `Bearer ${data.session?.access_token}`,
@@ -150,7 +164,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Assinatura Expirada",
-            description: "Seu plano expirou. Por favor, renove sua assinatura para continuar utilizando o aplicativo.",
+            description: "Bom te ver de volta! Identificamos que sua assinatura expirou. Escolha um dos planos abaixo para reativar seu acesso.",
             duration: 5000,
           });
           navigate("/planos");

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Zap } from "lucide-react";
+import { Check, Crown, Zap, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { Capacitor } from "@capacitor/core";
@@ -203,21 +203,29 @@ const Planos = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8 relative">
+      <Button 
+        variant="ghost" 
+        className="absolute top-4 left-4 md:top-8 md:left-8 text-muted-foreground hover:text-foreground z-10"
+        onClick={() => {
+          supabase.auth.signOut();
+          navigate("/auth");
+        }}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Voltar para o Login
+      </Button>
+
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 pt-14">
           <img 
             src={logoImage} 
             alt="Meu Faturamento App" 
-            className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4"
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover mx-auto mb-4 shadow-md"
           />
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
             Escolha seu Plano
           </h1>
-          <p className="text-muted-foreground">
-            Controle suas finanças como motorista de app
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -301,31 +309,28 @@ const Planos = () => {
           </Card>
         </div>
 
-        {Capacitor.getPlatform() === 'ios' && (
-          <div className="mt-8 text-center bg-gray-900/50 p-4 rounded-xl border border-gray-800">
-            <Button variant="outline" className="w-full md:w-auto border-gray-600 hover:bg-gray-800" onClick={() => {
-              const store = (window as any).store;
-              if (store) {
-                toast.info("Buscando compras anteriores na App Store...");
-                store.restorePurchases();
-              } else {
-                toast.error("Sistema não inicializado.");
-              }
-            }}>
-              Restaurar Compras Anteriores
-            </Button>
-            <p className="text-xs text-gray-500 mt-3 max-w-md mx-auto">
-              Se você já é assinante e trocou de aparelho (ou desinstalou o app), 
-              clique no botão acima para restaurar seu acesso na App Store sem pagar novamente.
-            </p>
-          </div>
-        )}
-
-        <div className="text-center space-y-2 mt-8">
+        <div className="text-center space-y-2 mt-12 flex flex-col items-center gap-4">
           {isAuthenticated ? (
-            <Button variant="ghost" onClick={handleLogout}>
-              Sair da conta
-            </Button>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm">
+              <button onClick={handleLogout} className="text-muted-foreground hover:text-foreground font-medium">
+                Sair da conta
+              </button>
+              
+              {Capacitor.getPlatform() === 'ios' && (
+                <button 
+                  onClick={() => {
+                    const store = (window as any).store;
+                    if (store) {
+                      toast.info("Buscando compras anteriores na App Store...");
+                      store.restorePurchases();
+                    }
+                  }}
+                  className="text-muted-foreground hover:text-foreground font-medium"
+                >
+                  Restaurar Compras
+                </button>
+              )}
+            </div>
           ) : (
             <p className="text-sm text-muted-foreground">
               Já é cliente?{" "}

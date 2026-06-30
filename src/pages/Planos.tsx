@@ -135,8 +135,20 @@ const Planos = () => {
           console.log("StoreKit is ready!");
           setIsStoreReady(true);
         });
+        
+        store.when().updated(() => {
+          console.log("StoreKit produtos atualizados");
+        });
 
-        store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]);
+        store.error((err: any) => {
+          console.error("Erro StoreKit:", err);
+          alert("Erro StoreKit: " + (err.message || JSON.stringify(err)));
+        });
+
+        store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]).then(() => {
+          console.log("Store initialization finished, calling update...");
+          store.update();
+        });
       };
       
       // Delay pequeno para garantir que os plugins cordova foram carregados no window

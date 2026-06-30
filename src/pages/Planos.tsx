@@ -54,12 +54,12 @@ const Planos = () => {
 
         store.register([
           {
-            id: 'com.meufaturamento.mensal',
+            id: 'br.com.foconameta.app.mensal',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
           },
           {
-            id: 'com.meufaturamento.anual',
+            id: 'br.com.foconameta.app.anual',
             type: CdvPurchase.ProductType.PAID_SUBSCRIPTION,
             platform: CdvPurchase.Platform.APPLE_APPSTORE,
           }
@@ -76,7 +76,7 @@ const Planos = () => {
 
             // 1. Ler o ID direto da Apple
             const productId = receipt.id;
-            const isMensal = productId === 'com.meufaturamento.mensal';
+            const isMensal = productId === 'br.com.foconameta.app.mensal';
             const planName = isMensal ? 'Mensal' : 'Anual';
             
             const { data: planData } = await supabase
@@ -148,6 +148,9 @@ const Planos = () => {
         store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]).then(() => {
           console.log("Store initialization finished, calling update...");
           store.update();
+        }).catch((err: any) => {
+          console.error("Erro fatal ao inicializar StoreKit:", err);
+          alert("Erro crítico na loja da Apple: " + (err?.message || "Desconhecido"));
         });
       };
       
@@ -166,7 +169,7 @@ const Planos = () => {
         return;
       }
       
-      const productId = plan === 'mensal' ? 'com.meufaturamento.mensal' : 'com.meufaturamento.anual';
+      const productId = plan === 'mensal' ? 'br.com.foconameta.app.mensal' : 'br.com.foconameta.app.anual';
       const product = store.get(productId, CdvPurchase.Platform.APPLE_APPSTORE);
       
       if (!product) {

@@ -163,7 +163,17 @@ const Planos = () => {
       };
       
       // Delay pequeno para garantir que os plugins cordova foram carregados no window
-      setTimeout(initStoreKit, 1000);
+      const timer = setTimeout(() => {
+        const storeObj = (window as any).store;
+        if (!storeObj) {
+          console.error("Plugin StoreKit não encontrado no objeto window!");
+          alert("O sistema de pagamentos da Apple não foi carregado corretamente. Entre em contato com o suporte.");
+          setIsStoreReady(false); // Mantém falso, mas o usuário saberá o motivo
+          return;
+        }
+        initStoreKit();
+      }, 1500);
+      return () => clearTimeout(timer);
     }
   }, [navigate]);
 

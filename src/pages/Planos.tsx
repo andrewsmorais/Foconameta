@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Zap, ArrowLeft } from "lucide-react";
+import { Check, Crown, Zap, ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoImage from "@/assets/bateu-a-meta-logo.png";
 import { Capacitor } from "@capacitor/core";
@@ -21,7 +21,7 @@ const features = [
 ];
 
 const Planos = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState<'mensal' | 'anual' | null>(null);
   const [isStoreReady, setIsStoreReady] = useState(false);
   const navigate = useNavigate();
 
@@ -135,6 +135,12 @@ const Planos = () => {
           console.log("StoreKit is ready!");
           setIsStoreReady(true);
         });
+
+        store.when().cancelled((transaction: any) => {
+          console.log("Compra cancelada:", transaction);
+          setLoadingPlan(null);
+          toast.info("Compra cancelada pelo usuário.");
+        });
         
         store.when().updated(() => {
           console.log("StoreKit produtos atualizados");
@@ -142,6 +148,7 @@ const Planos = () => {
 
         store.error((err: any) => {
           console.error("Erro StoreKit:", err);
+          setLoadingPlan(null);
           alert("Erro StoreKit: " + (err.message || JSON.stringify(err)));
         });
 
@@ -164,16 +171,15 @@ const Planos = () => {
     if (Capacitor.getPlatform() === 'ios') {
       const store = (window as any).store;
       const CdvPurchase = (window as any).CdvPurchase;
-      if (!store || !CdvPurchase || !isStoreReady) {
-        toast.error("O sistema de compras nativo ainda está inicializando na App Store. Aguarde alguns segundos e tente novamente.");
-        return;
-      }
+      
+      setLoadingPlan(plan);
       
       const productId = plan === 'mensal' ? 'com.meufaturamento.mensal' : 'com.meufaturamento.anual';
       const product = store.get(productId, CdvPurchase.Platform.APPLE_APPSTORE);
       
       if (!product) {
         toast.error("Produto não encontrado na App Store. Tente novamente mais tarde.");
+        setLoadingPlan(null);
         return;
       }
 
@@ -182,6 +188,7 @@ const Planos = () => {
         
         if (!product.canPurchase) {
            toast.error("Este produto não está disponível para compra no momento. Verifique sua conexão ou tente mais tarde.");
+           setLoadingPlan(null);
            return;
         }
 
@@ -191,10 +198,12 @@ const Planos = () => {
           offer.order();
         } else {
           toast.error("Oferta não disponível para este produto. Tente novamente mais tarde.");
+          setLoadingPlan(null);
         }
       } catch (error) {
         console.error("Erro StoreKit:", error);
         toast.error("Erro ao processar a compra na App Store.");
+        setLoadingPlan(null);
       }
       return;
     }
@@ -220,17 +229,19 @@ const Planos = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 relative">
-      <Button 
-        variant="ghost" 
-        className="absolute top-4 left-4 md:top-8 md:left-8 text-muted-foreground hover:text-foreground z-10"
-        onClick={() => {
-          supabase.auth.signOut();
-          navigate("/auth");
-        }}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Voltar para o Login
-      </Button>
+      <div style={{ paddingTop: 'env(safe-area-inset-top, 24px)' }} className="absolute left-4 md:left-8 z-10 top-4">
+        <Button 
+          variant="ghost" 
+          className="text-muted-foreground hover:text-foreground"
+          onClick={() => {
+            supabase.auth.signOut();
+            navigate("/auth");
+          }}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar para o Login
+        </Button>
+      </div>
 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8 pt-14">
@@ -268,11 +279,24 @@ const Planos = () => {
               </ul>
 
               <Button 
-                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
+                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse flex items-center justify-center gap-2" 
                 size="lg"
                 onClick={() => handleSelectPlan('mensal')}
+                disabled={loadingPlan === 'mensal' || (!isStoreReady && Capacitor.getPlatform() === 'ios')}
               >
-                ASSINAR AGORA
+                {(!isStoreReady && Capacitor.getPlatform() === 'ios') ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Conectando Store...
+                  </>
+                ) : loadingPlan === 'mensal' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processando...
+                  </>
+                ) : (
+                  "COMEÇAR AGORA"
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -315,11 +339,24 @@ const Planos = () => {
               </ul>
 
               <Button 
-                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse" 
+                className="w-full bg-[hsl(142,69%,49%)] hover:bg-[hsl(142,69%,40%)] text-white font-bold rounded-full animate-soft-pulse flex items-center justify-center gap-2" 
                 size="lg"
                 onClick={() => handleSelectPlan('anual')}
+                disabled={loadingPlan === 'anual' || (!isStoreReady && Capacitor.getPlatform() === 'ios')}
               >
-                COMEÇAR AGORA
+                {(!isStoreReady && Capacitor.getPlatform() === 'ios') ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Conectando Store...
+                  </>
+                ) : loadingPlan === 'anual' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processando...
+                  </>
+                ) : (
+                  "COMEÇAR AGORA"
+                )}
               </Button>
             </CardContent>
           </Card>

@@ -374,6 +374,14 @@ const Auth = () => {
                     </p>
                   )}
                 </div>
+                </div>
+
+                <div className="mt-6 text-center text-xs text-muted-foreground">
+                  Ao continuar, você concorda com nossos{" "}
+                  <a href="#" className="underline hover:text-primary">Termos de Uso</a>
+                  {" "}e{" "}
+                  <a href="#" className="underline hover:text-primary">Política de Privacidade</a>.
+                </div>
               </>
             )}
           </CardContent>

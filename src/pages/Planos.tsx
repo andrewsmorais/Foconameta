@@ -399,11 +399,11 @@ const Planos = () => {
         
         {/* Links Legais Obrigatórios (Apple App Store Guideline) */}
         <div className="mt-12 text-center text-xs text-muted-foreground flex flex-col md:flex-row items-center justify-center gap-4">
-          <a href="/termos-de-uso" target="_blank" rel="noopener noreferrer" className="hover:underline">
+          <a href="#" target="_blank" rel="noopener noreferrer" className="hover:underline">
             Termos de Uso (EULA)
           </a>
           <span className="hidden md:inline">•</span>
-          <a href="/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="hover:underline">
+          <a href="#" target="_blank" rel="noopener noreferrer" className="hover:underline">
             Política de Privacidade
           </a>
         </div>

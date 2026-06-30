@@ -203,6 +203,7 @@ const Planos = () => {
     );
   }
 
+  return (
     <div className="min-h-screen bg-background p-4 md:p-8 relative">
       <Button 
         variant="ghost" 

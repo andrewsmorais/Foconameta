@@ -200,6 +200,12 @@ const Auth = () => {
       });
       if (error) throw error;
     } catch (error: any) {
+      const errorMessage = error.message?.toLowerCase() || '';
+      if (errorMessage.includes("canceled") || errorMessage.includes("cancelled") || errorMessage.includes("user canceled")) {
+        setLoading(false);
+        return;
+      }
+      
       toast({
         variant: "destructive",
         title: t("common.error"),
@@ -210,14 +216,20 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
+    <div 
+      className="flex min-h-screen items-center justify-center bg-background p-4 relative" 
+      style={{ 
+        paddingBottom: 'env(safe-area-inset-bottom, 16px)', 
+        paddingTop: 'env(safe-area-inset-top, 24px)' 
+      }}
+    >
       <div className="w-full max-w-md flex flex-col items-center">
         <img 
           src={logoImage} 
           alt="Meu Faturamento App" 
-          className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover mb-4"
+          className="w-24 h-24 md:w-28 md:h-28 max-w-[120px] rounded-full object-cover mb-4"
         />
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-center w-full">Meu Faturamento App</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-center w-full">Meu Faturamento App</h1>
         
         {paymentSuccess && (
           <Card className="w-full mb-4 border-green-500 bg-green-500/10">

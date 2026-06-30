@@ -22,6 +22,7 @@ const features = [
 
 const Planos = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isStoreReady, setIsStoreReady] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -130,6 +131,11 @@ const Planos = () => {
           }
         });
 
+        store.when().ready(() => {
+          console.log("StoreKit is ready!");
+          setIsStoreReady(true);
+        });
+
         store.initialize([CdvPurchase.Platform.APPLE_APPSTORE]);
       };
       
@@ -143,8 +149,8 @@ const Planos = () => {
     if (Capacitor.getPlatform() === 'ios') {
       const store = (window as any).store;
       const CdvPurchase = (window as any).CdvPurchase;
-      if (!store || !CdvPurchase) {
-        toast.error("O sistema de compras nativo ainda está carregando. Tente novamente em segundos.");
+      if (!store || !CdvPurchase || !isStoreReady) {
+        toast.error("O sistema de compras nativo ainda está inicializando na App Store. Aguarde alguns segundos e tente novamente.");
         return;
       }
       
@@ -158,6 +164,12 @@ const Planos = () => {
 
       try {
         sessionStorage.setItem('storekit_selected_plan', plan);
+        
+        if (!product.canPurchase) {
+           toast.error("Este produto não está disponível para compra no momento. Verifique sua conexão ou tente mais tarde.");
+           return;
+        }
+
         toast.info("Processando pagamento pela App Store...");
         const offer = product.getOffer();
         if (offer) {

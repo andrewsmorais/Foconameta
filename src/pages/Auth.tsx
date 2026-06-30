@@ -40,6 +40,11 @@ const Auth = () => {
         if (data?.hasActiveSubscription) {
           navigate("/dashboard");
         } else {
+          toast({
+            title: "Assinatura Expirada",
+            description: "Seu plano expirou. Por favor, renove sua assinatura para continuar utilizando o aplicativo.",
+            duration: 5000,
+          });
           navigate("/planos");
         }
       }
@@ -144,8 +149,9 @@ const Auth = () => {
           navigate("/dashboard");
         } else {
           toast({
-            title: t("auth.loginOkChoosePlan"),
-            description: t("auth.choosePlan"),
+            title: "Assinatura Expirada",
+            description: "Seu plano expirou. Por favor, renove sua assinatura para continuar utilizando o aplicativo.",
+            duration: 5000,
           });
           navigate("/planos");
         }
@@ -186,7 +192,7 @@ const Auth = () => {
     <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
       <Button 
         variant="outline" 
-        className="absolute top-4 right-4 md:top-8 md:right-8 bg-card shadow-sm border-border flex items-center gap-2 px-4 py-2 h-auto"
+        className="absolute top-12 right-4 md:top-8 md:right-8 bg-card shadow-sm border-border flex items-center gap-2 px-4 py-2 h-auto"
         onClick={() => navigate("/")}
       >
         <ArrowLeft className="h-4 w-4" />
@@ -228,7 +234,7 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             {isForgotPassword ? (
-              <form onSubmit={handleForgotPassword} className="space-y-4">
+              <form onSubmit={handleForgotPassword} className="space-y-3">
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("auth.email")}</Label>
                   <Input
@@ -254,7 +260,7 @@ const Auth = () => {
               </form>
             ) : (
               <>
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-3">
                   <div className="space-y-2">
                     <Label htmlFor="email">{t("auth.email")}</Label>
                     <Input
@@ -289,7 +295,7 @@ const Auth = () => {
                   </Button>
                 </form>
 
-                <div className="relative my-6">
+                <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>

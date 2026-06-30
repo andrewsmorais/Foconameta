@@ -374,7 +374,6 @@ const Auth = () => {
                     </p>
                   )}
                 </div>
-                </div>
 
                 <div className="mt-6 text-center text-xs text-muted-foreground">
                   Ao continuar, você concorda com nossos{" "}

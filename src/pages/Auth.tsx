@@ -195,7 +195,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: isNative ? 'com.meufaturamento.app://auth-callback' : `${window.location.origin}/dashboard`,
+          redirectTo: isNative ? 'br.com.foconameta.app://auth-callback' : `${window.location.origin}/dashboard`,
         },
       });
       if (error) throw error;

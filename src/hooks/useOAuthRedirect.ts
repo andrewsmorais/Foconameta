@@ -12,7 +12,7 @@ export const useOAuthRedirect = () => {
 
     const authListener = CapacitorApp.addListener("appUrlOpen", async (data) => {
       // Verifica se a URL retornada é a do nosso deep link
-      if (data.url.includes("com.meufaturamento.app://")) {
+      if (data.url.includes("br.com.foconameta.app://")) {
         const url = new URL(data.url);
         const params = new URLSearchParams(url.hash.substring(1));
         const access_token = params.get("access_token");

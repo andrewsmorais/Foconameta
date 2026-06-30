@@ -54,7 +54,7 @@
 			<string>com.getcapacitor.capacitor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.meufaturamento.app</string>
+				<string>br.com.foconameta.app</string>
 			</array>
 		</dict>
 	</array>

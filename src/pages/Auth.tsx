@@ -19,6 +19,7 @@ const Auth = () => {
     password: z.string().min(4, t("auth.invalidPassword")),
   });
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -115,44 +116,47 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      let { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      let authData;
+      let authError;
 
-      if (error && error.message.includes("Invalid login credentials")) {
-        // Tentativa de Auto-Signup se as credenciais forem inválidas
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+      if (isSignUp) {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        authData = data;
+        authError = error;
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        authData = data;
+        authError = error;
 
-        if (signUpError) {
-          if (signUpError.message.includes("User already registered")) {
-            // Usuário existe, então ele apenas errou a senha
-            toast({
-              variant: "destructive",
-              title: t("auth.errLogin"),
-              description: t("auth.errInvalidCreds"),
-            });
-            setLoading(false);
-            return;
+        if (authError && authError.message.includes("Invalid login credentials")) {
+          // Fallback de Auto-Signup inteligente (Rede de Segurança)
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+          
+          if (signUpError) {
+            if (signUpError.message.includes("User already registered")) {
+              toast({
+                variant: "destructive",
+                title: "Falha na Autenticação",
+                description: "E-mail ou senha incorretos. Por favor, verifique suas credenciais e tente novamente.",
+              });
+              setLoading(false);
+              return;
+            }
+            authError = signUpError;
+          } else {
+            authData = signUpData;
+            authError = null;
           }
-          throw signUpError;
         }
-
-        // Auto-Signup bem sucedido, atualizar data
-        data = signUpData;
-        error = null;
-      } else if (error) {
-        throw error;
       }
 
-      if (!error && data?.session) {
+      if (authError) {
+        throw authError;
+      }
+
+      if (!authError && authData?.session) {
         const { data: subData } = await supabase.functions.invoke("check-subscription", {
-          headers: {
-            Authorization: `Bearer ${data.session?.access_token}`,
-          },
+          headers: { Authorization: `Bearer ${authData.session.access_token}` },
         });
 
         if (subData?.hasActiveSubscription) {
@@ -170,12 +174,15 @@ const Auth = () => {
           navigate("/planos");
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
-        title: t("common.error"),
-        description: t("auth.errUnexpected"),
+        title: "Erro no Login",
+        description: error.message?.includes("Invalid login credentials") 
+          ? "E-mail ou senha incorretos. Por favor, verifique suas credenciais e tente novamente." 
+          : error.message || t("auth.errUnexpected"),
       });
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -204,15 +211,6 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 relative">
-      <Button 
-        variant="outline" 
-        className="absolute top-12 right-4 md:top-8 md:right-8 bg-card shadow-sm border-border flex items-center gap-2 px-4 py-2 h-auto"
-        onClick={() => navigate("/")}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Voltar
-      </Button>
-
       <div className="w-full max-w-md flex flex-col items-center">
         <img 
           src={logoImage} 
@@ -240,10 +238,10 @@ const Auth = () => {
         <Card className="w-full">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl md:text-4xl font-bold text-center">
-              {isForgotPassword ? t("auth.forgotTitle") : t("auth.title")}
+              {isForgotPassword ? t("auth.forgotTitle") : isSignUp ? "Cadastrar" : "Entrar"}
             </CardTitle>
             <CardDescription className="text-center">
-              {isForgotPassword ? t("auth.forgotSubtitle") : t("auth.subtitle")}
+              {isForgotPassword ? t("auth.forgotSubtitle") : isSignUp ? "Crie sua conta com e-mail e senha para ver os planos" : "Entre com suas credenciais para acessar seu painel"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -305,7 +303,7 @@ const Auth = () => {
                     </button>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? t("auth.processing") : t("auth.submit")}
+                    {loading ? t("auth.processing") : isSignUp ? "Criar Conta" : "Entrar"}
                   </Button>
                 </form>
 
@@ -352,13 +350,29 @@ const Auth = () => {
                 </div>
 
                 <div className="mt-4 text-center text-sm text-muted-foreground">
-                  <p>{t("auth.notClient")}</p>
-                  <button
-                    onClick={() => navigate("/#pricing")}
-                    className="text-primary hover:underline font-medium"
-                  >
-                    {t("auth.subscribeCta")}
-                  </button>
+                  {isSignUp ? (
+                    <p>
+                      Já tem uma conta?{" "}
+                      <button
+                        onClick={() => setIsSignUp(false)}
+                        className="text-primary hover:underline font-medium"
+                        type="button"
+                      >
+                        Entrar
+                      </button>
+                    </p>
+                  ) : (
+                    <p>
+                      Ainda não é cliente?{" "}
+                      <button
+                        onClick={() => setIsSignUp(true)}
+                        className="text-primary hover:underline font-medium"
+                        type="button"
+                      >
+                        Criar uma conta
+                      </button>
+                    </p>
+                  )}
                 </div>
               </>
             )}
